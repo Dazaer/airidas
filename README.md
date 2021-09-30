@@ -1,5 +1,7 @@
 # airidas-web
 
+A personal project intended to provide Airidas Dapkevicius with a website that has all the requested features.
+
 ## Project setup
 ```
 yarn install
