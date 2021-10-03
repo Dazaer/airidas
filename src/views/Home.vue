@@ -1,30 +1,18 @@
 <template>
-	<div class="home">
-		<h2>Homepage</h2>
-	</div>
+  <div class="home">
+    <img alt="Vue logo" src="../assets/logo.png" />
+    <HelloWorld msg="Welcome to Your Vue.js App" />
+  </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import { reactive } from "vue";
+import HelloWorld from "@/components/HelloWorld.vue";
 
 export default {
-	name: "Home",
-
-	setup() {
-		const state = reactive({
-		});
-
-		return {
-			state,
-		};
-	}
+  name: "Home",
+  components: {
+    HelloWorld,
+  },
 };
 </script>
-
-<style lang="scss" scoped>
-.home{
-	background: black;
-	color: blanchedalmond;
-}
-</style>
