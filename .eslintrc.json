@@ -1,0 +1,62 @@
+
+{
+	"root": true,
+	"env": {
+		"browser": true,
+		"es6": true
+	},
+	"extends": [
+		"eslint:recommended",
+		"plugin:@typescript-eslint/eslint-recommended",
+		"@vue/typescript/recommended"
+	],
+	"globals": {
+		"Atomics": "readonly",
+		"SharedArrayBuffer": "readonly"
+	},
+	"parserOptions": {
+		"ecmaVersion": 2020,
+		"parser": "@typescript-eslint/parser",
+		"sourceType": "module"
+	},
+	"plugins": [
+		"vue",
+		"@typescript-eslint"
+	],
+	"rules": {
+		"indent": [
+			"warn",
+			"tab"
+		],
+		/*
+        "linebreak-style": [
+            "error",
+            "windows"
+        ],
+				*/
+		"quotes": [
+			"warn",
+			"double"
+		],
+		"semi": [
+			"warn",
+			"never"
+		],
+		//from package.json rules
+		"vue/comment-directive": 1,
+		"vue/no-inferrable-types": [
+			0,
+			"ignore-params"
+		],
+		"no-inferrable-types": 0,
+		"no-use-before-define": "off",
+		"@typescript-eslint/no-use-before-define": "off",
+		"@typescript-eslint/no-inferrable-types": "off",
+		"@typescript-eslint/no-implicit-any-catch": "off",
+		"comma-dangle": [
+			"error",
+			"only-multiline"
+		],
+		"eol-last": 0
+	}
+}
