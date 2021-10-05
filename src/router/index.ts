@@ -14,8 +14,7 @@ const routes: Array<RouteRecordRaw> = [
 		// route level code-splitting
 		// this generates a separate chunk (about.[hash].js) for this route
 		// which is lazy-loaded when the route is visited.
-		component: () =>
-			import(/* webpackChunkName: "about" */ "../views/About.vue"),
+		component: lazyLoad("About"),
 	},
 	/*
 	{
@@ -48,5 +47,9 @@ router.beforeEach((to, from, next) => {
 	verifyAdminPermission(to, next);
 });
 */
+
+function lazyLoad(viewPath: string){
+  return() => import(`@/views/${viewPath}.vue`)
+}
 
 export default router;
