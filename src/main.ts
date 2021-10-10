@@ -5,13 +5,17 @@ import {
   create as createNaiveUi,
   // components
   NButton,
-	NConfigProvider
+	NConfigProvider,
+	NMenu,
+	NSpace
 } from 'naive-ui'
 
 const naive = createNaiveUi({
   components: [
 		NConfigProvider,
-		NButton, 
+		NMenu,
+		NSpace,
+		NButton,
 	],
 })
 

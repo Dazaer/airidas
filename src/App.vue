@@ -1,9 +1,11 @@
 <template>
-	<n-config-provider :theme-overrides="themeOverrides">
-		<div id="nav">
-			<router-link to="/">Home</router-link>|
-			<router-link to="/about">About</router-link>
-		</div>
+	<n-config-provider :theme-overrides="themeOverrides" :theme="darkTheme">
+		<!-- Home button -->
+		<n-space>
+			<n-menu v-model:value="activeKey" mode="horizontal" :options="menuOptions"></n-menu>
+		</n-space>
+		<!-- Profile button -->
+
 		<router-view />
 
 		<div>
@@ -14,7 +16,9 @@
 </template>
 
 <script lang="ts" setup>
-import { GlobalThemeOverrides } from "naive-ui";
+import { GlobalThemeOverrides, darkTheme, NIcon } from "naive-ui";
+import { RouterLink } from "vue-router";
+import { h, ref } from 'vue'
 import HelloWorld from "./components/HelloWorld.vue";
 
 const themeOverrides: GlobalThemeOverrides = {
@@ -44,6 +48,96 @@ const themeOverrides: GlobalThemeOverrides = {
 	// ...
 }
 
+
+/*
+function renderIcon (icon) {
+	return () => h(NIcon, null, { default: () => h(icon) })
+}
+*/
+
+const activeKey = ref(null)
+
+const menuOptions = [
+	{
+		label: () =>
+			h(
+				RouterLink,
+				{
+					to: {
+						name: 'Home',
+						params: {
+							lang: 'en-US'
+						}
+					}
+				},
+				{ default: () => 'Home' }
+			),
+		key: 'home',
+		//icon: renderIcon(BookIcon),
+		disabled: false,
+		/*
+		children: [
+			{
+				label: 'Rat',
+				key: 'rat'
+			}
+		]
+		*/
+	},
+	/*
+	{
+		label: () =>
+			h(
+				'a',
+				{
+					href: 'https://en.wikipedia.org/wiki/Hear_the_Wind_Sing',
+					target: '_blank',
+					rel: 'noopenner noreferrer'
+				},
+				'Hear The Wind'
+			),
+		key: 'hear-the-wind-sing',
+	},
+	*/
+	{
+		label: () =>
+			h(
+				RouterLink,
+				{
+					to: {
+						name: 'About',
+					}
+				},
+				{ default: () => 'About' }
+			),
+		key: 'about',
+	},
+	{
+		label: 'Feature Request',
+		key: 'feature-request',
+	},
+	{
+		label: 'Login',
+		key: 'login',
+	},
+	{
+		label: 'Profile',
+		key: 'profile',
+		disabled: true,
+		children: [
+			{
+				//type: 'group',
+				label: 'Settings',
+				key: 'settings',
+			},
+			{
+				label: 'Logout',
+				key: 'logout'
+			}
+		]
+	}
+]
+
 </script>
 
 <style lang="scss">
@@ -52,8 +146,6 @@ const themeOverrides: GlobalThemeOverrides = {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	text-align: center;
-	color: $FONT_COLOR;
-	background-color: $BODY_BACKGROUND_COLOR;
 	height: 100%;
 }
 
