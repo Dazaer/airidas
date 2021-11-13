@@ -18,11 +18,12 @@
 <script lang="ts" setup>
 import { GlobalThemeOverrides, darkTheme, NIcon } from "naive-ui";
 import { RouterLink } from "vue-router";
-import { h, ref } from 'vue'
+import { h, ref } from "vue"
 import HelloWorld from "./components/HelloWorld.vue";
 
 const themeOverrides: GlobalThemeOverrides = {
 	common: {
+		//fontWeight: "600",
 		primaryColor: '#FFFF00',
 		textColorBase: '#FFFF00',
 		actionColor: '#FFFF00',
@@ -141,12 +142,15 @@ const menuOptions = [
 </script>
 
 <style lang="scss">
+
 #app {
-	font-family: Avenir, Helvetica, Arial, sans-serif;
+	font-family: "Butler", 'Segoe UI', 'Lucida Sans Unicode', Verdana;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	text-align: center;
-	height: 100%;
+	//font-weight: 500;
+	font-size: 30px;
+	//height: 100%;
 }
 
 #nav {

@@ -1,7 +1,25 @@
+/* »» FONTS */
+
+@font-face {
+  font-family: "Butler";
+  //font-weight: 600;
+  //font-style: normal;
+  font-display: auto;
+  unicode-range: U+000-5FF;
+  src: url("../public/fonts/Butler.woff2") format("woff2"), url("../public/fonts/Butler.woff") format("woff");
+}
+
+@font-face {
+  font-family: "OptimusPrinceps";
+  font-display: auto;
+  unicode-range: U+000-5FF;
+  src: url("../public/fonts/OptimusPrincepsSemiBold.woff") format("woff2"), url("../public/fonts/OptimusPrincepsSemiBold.ttf") format("truetype");
+}
+
 /* »» COLORS */
 
 $BODY_BACKGROUND_COLOR: rgb(20, 20, 20);
-$FONT_COLOR: #884d00;
+$FONT_COLOR: #f5dbb9;
 $FONT_COLOR_DARK: #005544;
 $FONT_COLOR_LIGHT: #acd4cc;
 
@@ -18,7 +36,7 @@ $FONT_COLOR_LIGHT: #acd4cc;
 /* »» ROOT ELEMENTS */
 
 html {
-	font-size: medium;
+	font-size: large;
 }
 
 body {
