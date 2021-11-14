@@ -4,12 +4,14 @@ import router from "./router";
 import PrimeVue from 'primevue/config';
 //import "bootstrap";
 //import "bootstrap/dist/css/bootstrap.min.css";
+import 'primeflex/primeflex.css';
 import "primevue/resources/primevue.min.css"                 //core css
 import "primeicons/primeicons.css"                           //icons
 //import "primevue/resources/themes/bootstrap4-dark-blue/theme.css" //theme
 import "./assets/_theme.scss"
 
 import Button from 'primevue/button';
+import Menubar from 'primevue/menubar'
 
 import {
   create as createNaiveUi,
@@ -36,6 +38,7 @@ const naive = createNaiveUi({
 export const vueApp = createApp(App)
 .use(naive)
 .use(PrimeVue)
-.component("Button", Button)
+.component("p-button", Button)
+.component("p-menubar", Menubar)
 .use(router)
 .mount("#app");

@@ -1,17 +1,26 @@
 <template>
 	<n-config-provider :theme-overrides="themeOverrides" :theme="darkTheme">
-		<!-- Home button -->
+		<!-- Profile button 
 		<n-space>
 			<n-button text>Airidas</n-button>
 			<n-menu v-model:value="activeKey" mode="horizontal" :options="menuOptions"></n-menu>
 		</n-space>
-		<!-- Profile button -->
+		-->
+		<p-menubar :model="menu">
+			<template #start>
+				<router-link to="/">
+					<p-button class="p-button-text p-button-text mr-4">Airidas.net</p-button>
+				</router-link>
+			</template>
+			<!-- <template #end></template> -->
+		</p-menubar>
 
 		<router-view />
 
 		<div>
 			<n-button>naive-ui</n-button>
-			<Button label="PrimeVue" icon="pi pi-user"></Button>
+			<p-button label="PrimeVue" icon="pi pi-user"></p-button>
+			<button>regular</button>
 			<HelloWorld location="Airidas.net"></HelloWorld>
 		</div>
 	</n-config-provider>
@@ -20,7 +29,7 @@
 <script lang="ts" setup>
 import { GlobalThemeOverrides, darkTheme, NIcon } from "naive-ui";
 import { RouterLink } from "vue-router";
-import { h, ref } from "vue"
+import { defineComponent, h, ref } from "vue"
 import HelloWorld from "./components/HelloWorld.vue";
 
 const themeOverrides: GlobalThemeOverrides = {
@@ -51,100 +60,42 @@ const themeOverrides: GlobalThemeOverrides = {
 	// ...
 }
 
-
-/*
-function renderIcon (icon) {
-	return () => h(NIcon, null, { default: () => h(icon) })
-}
-*/
-
 const activeKey = ref(null)
 
-const menuOptions = [
-	{
-		label: () =>
-			h(
-				RouterLink,
-				{
-					to: {
-						name: 'Home',
-						params: {
-							lang: 'en-US'
-						}
-					}
-				},
-				{ default: () => 'Home' }
-			),
-		key: 'home',
-		//icon: renderIcon(BookIcon),
-		disabled: false,
-		/*
-		children: [
-			{
-				label: 'Rat',
-				key: 'rat'
-			}
-		]
-		*/
-	},
+
+
+const menu = ref([
 	/*
 	{
-		label: () =>
-			h(
-				'a',
-				{
-					href: 'https://en.wikipedia.org/wiki/Hear_the_Wind_Sing',
-					target: '_blank',
-					rel: 'noopenner noreferrer'
-				},
-				'Hear The Wind'
-			),
-		key: 'hear-the-wind-sing',
+		label: 'Home',
+		icon: "pi pi-home",
+		to: "/"
 	},
 	*/
 	{
-		label: () =>
-			h(
-				RouterLink,
-				{
-					to: {
-						name: 'About',
-					}
-				},
-				{ default: () => 'About' }
-			),
-		key: 'about',
+		label: 'About',
+		to: { name: "About" }
 	},
 	{
 		label: 'Feature Request',
-		key: 'feature-request',
+		//to: { name: "feature-request" }
 	},
 	{
 		label: 'Login',
-		key: 'login',
+		//to: { name: "login" },
+		disabled: true,
 	},
 	{
 		label: 'Profile',
-		key: 'profile',
-		disabled: true,
-		children: [
-			{
-				//type: 'group',
-				label: 'Settings',
-				key: 'settings',
-			},
-			{
-				label: 'Logout',
-				key: 'logout'
-			}
+		items: [
+			{ label: "Settings", icon: "pi pi-fw pi-cog" /*to: "/settings"*/ },
+			{ label: "Logout", icon: "pi pi-fw pi-power-off", command: function () { alert("You have logged out") } }
 		]
-	}
-]
-
+	},
+]);
 </script>
 
 <style lang="scss">
-
 #app {
 	//font-family: "Butler", 'Segoe UI', 'Lucida Sans Unicode', Verdana;
 	-webkit-font-smoothing: antialiased;

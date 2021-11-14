@@ -29,6 +29,7 @@
 		"less": "^3.0.4",
 		"less-loader": "^5.0.0",
 		"naive-ui": "^2.19.3",
+		"primeflex": "^3.1.0",
 		"primeicons": "^5.0.0",
 		"primevue": "^3.8.2",
 		"sass": "^1.42.1",
