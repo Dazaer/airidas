@@ -36,10 +36,6 @@ $FONT_COLOR_LIGHT: #acd4cc;
 
 /* »» ROOT ELEMENTS */
 
-html {
-	//font-size: medium;
-}
-
 body {
 	height: 100vh;
 	margin: 0;
@@ -75,21 +71,6 @@ body {
 .fill {
 	height: 100%;
 	width: 100%;
-}
-
-@mixin proportional-box($a: 1, $b: $a) {
-	position: absolute;
-	top: 0;
-	left: calc(50vw - #{$a/$b/2 * 100vh});
-	width: $a/$b * 100vh;
-	height: 100vh;
-
-	@media (max-aspect-ratio: #{$a}/#{$b}) {
-		top: calc(50vh - #{$b/$a/2 * 100vw});
-		left: 0;
-		width: 100vw;
-		height: $b/$a * 100vw;
-	}
 }
 
 /* »» PROJECT */

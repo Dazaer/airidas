@@ -34,39 +34,6 @@
 		"style-resources-loader": "^1.4.1",
 		"typescript": "~4.1.5"
 	},
-	"eslintConfig": {
-		"root": true,
-		"env": {
-			"node": true
-		},
-		"extends": [
-			"plugin:vue/vue3-essential",
-			"eslint:recommended",
-			"@vue/typescript/recommended",
-			"@vue/prettier",
-			"@vue/prettier/@typescript-eslint"
-		],
-		"parserOptions": {
-			"ecmaVersion": 2020
-		},
-		"rules": {
-			"vue/comment-directive": 1,
-			"vue/no-inferrable-types": [
-				0,
-				"ignore-params"
-			],
-			"no-inferrable-types": 0,
-			"no-use-before-define": "off",
-			"@typescript-eslint/no-use-before-define": "off",
-			"@typescript-eslint/no-inferrable-types": "off",
-			"@typescript-eslint/no-implicit-any-catch": "off",
-			"comma-dangle": [
-				"error",
-				"only-multiline"
-			],
-			"eol-last": 0
-		}
-	},
 	"browserslist": [
 		"> 1%",
 		"last 2 versions",

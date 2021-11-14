@@ -48,8 +48,8 @@ router.beforeEach((to, from, next) => {
 });
 */
 
-function lazyLoad(viewPath: string){
-  return() => import(`@/views/${viewPath}.vue`)
+function lazyLoad(viewPath: string) {
+	return () => import(`@/views/${viewPath}.vue`)
 }
 
-export default router;
+export default router
