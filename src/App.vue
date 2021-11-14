@@ -1,7 +1,7 @@
 <template>
 		<MainNavbar></MainNavbar>
 		<router-view />
-
+		<MainFooter></MainFooter>
 	<!--
 	<div>
 		<p-button label="PrimeVue" icon="pi pi-user"></p-button>
@@ -13,6 +13,7 @@
 <script lang="ts" setup>
 //import HelloWorld from "./components/HelloWorld.vue"
 import MainNavbar from "./components/MainNavbar.vue"
+import MainFooter from "./components/MainFooter.vue"
 </script>
 
 <style lang="scss">
@@ -23,6 +24,6 @@ import MainNavbar from "./components/MainNavbar.vue"
 	//text-align: center;
 	//font-family: "Butler", 'Segoe UI', 'Lucida Sans Unicode', Verdana;
 	//font-size: medium;
-	//height: 100%;
+	height: 100%;
 }
 </style>
