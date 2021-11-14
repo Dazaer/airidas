@@ -1,12 +1,19 @@
 <template>
-  <div class="home">
-		<h1>home</h1>
-		<h2>home</h2>
-		<h3>home</h3>
-    <img alt="Vue logo" src="../assets/logo.png" />
-  </div>
+  <article class="grid grid-nogutter">
+		<h1 class="col-12 center">Airidas Dapkevicius</h1>
+		<img class="col-12 center main-image" src="https://i.imgur.com/8t5EDAj.jpg" alt="Airidas Dapkevicius image"> <!--//https://imgur.com/a/waGVbKe-->
+		<p class="col-12 center">A scientist, teacher, photographer, musician, food enthusiast, tech geek and more.</p>
+  </article>
 </template>
 
 <script lang="ts" setup>
 // @ is an alias to /src
 </script>
+
+<style scoped lang="scss">
+.main-image {
+	height: 50vh;
+	width: auto;
+	margin: auto;
+}
+</style>
