@@ -1,11 +1,4 @@
 <template>
-	<n-config-provider :theme-overrides="themeOverrides" :theme="darkTheme">
-		<!-- Profile button 
-		<n-space>
-			<n-button text>Airidas</n-button>
-			<n-menu v-model:value="activeKey" mode="horizontal" :options="menuOptions"></n-menu>
-		</n-space>
-		-->
 		<p-menubar :model="menu">
 			<template #start>
 				<router-link to="/">
@@ -18,51 +11,16 @@
 		<router-view />
 
 		<div>
-			<n-button>naive-ui</n-button>
 			<p-button label="PrimeVue" icon="pi pi-user"></p-button>
 			<button>regular</button>
 			<HelloWorld location="Airidas.net"></HelloWorld>
 		</div>
-	</n-config-provider>
 </template>
 
 <script lang="ts" setup>
-import { GlobalThemeOverrides, darkTheme, NIcon } from "naive-ui";
 import { RouterLink } from "vue-router";
-import { defineComponent, h, ref } from "vue"
+import { ref } from "vue"
 import HelloWorld from "./components/HelloWorld.vue";
-
-const themeOverrides: GlobalThemeOverrides = {
-	common: {
-		//fontWeight: "600",
-		primaryColor: '#FFFF00',
-		textColorBase: '#FFFF00',
-		actionColor: '#FFFF00',
-		bodyColor: '#FFFF00',
-		textColor1: '#FFFF00',
-		//textColor2: '#FFFF00', //Color of text inside button
-		textColor3: '#FFFF00',
-		//primaryColorHover: '#FFFF00', // On primary button hover
-		hoverColor: '#FF0000',
-	},
-	Button: {
-		//textColor: '#FFFF00'
-	},
-	Select: {
-		/*
-		peers: {
-			InternalSelection: {
-				textColor: '#FF0000'
-			}
-		}
-		*/
-	},
-	// ...
-}
-
-const activeKey = ref(null)
-
-
 
 const menu = ref([
 	/*
