@@ -2,6 +2,7 @@
 	<n-config-provider :theme-overrides="themeOverrides" :theme="darkTheme">
 		<!-- Home button -->
 		<n-space>
+			<n-button text>Airidas</n-button>
 			<n-menu v-model:value="activeKey" mode="horizontal" :options="menuOptions"></n-menu>
 		</n-space>
 		<!-- Profile button -->
@@ -10,6 +11,7 @@
 
 		<div>
 			<n-button>naive-ui</n-button>
+			<Button label="PrimeVue" icon="pi pi-user"></Button>
 			<HelloWorld location="Airidas.net"></HelloWorld>
 		</div>
 	</n-config-provider>
@@ -144,12 +146,12 @@ const menuOptions = [
 <style lang="scss">
 
 #app {
-	font-family: "Butler", 'Segoe UI', 'Lucida Sans Unicode', Verdana;
+	//font-family: "Butler", 'Segoe UI', 'Lucida Sans Unicode', Verdana;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	text-align: center;
-	//font-weight: 500;
-	font-size: 30px;
+	//	font-size: medium;
+
 	//height: 100%;
 }
 
