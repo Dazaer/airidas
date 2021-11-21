@@ -5,6 +5,24 @@ module.exports = {
     const types = ['vue-modules', 'vue', 'normal-modules', 'normal']
     types.forEach(type => addStyleResource(config.module.rule('scss').oneOf(type)))
   },
+	configureWebpack: {
+		module: {
+			rules: [
+				{
+					include: path.resolve('node_modules', 'primeflex'),
+					sideEffects: false,
+				}
+			]
+		},
+		optimization: {
+      splitChunks: {
+        minSize: 10000,
+        maxSize: 250000,
+      }
+    }
+	}
+	/*
+	*/
 }
 
 function addStyleResource (rule) {
