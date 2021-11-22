@@ -7,12 +7,14 @@ module.exports = {
   },
 	configureWebpack: {
 		module: {
+			/*
 			rules: [
 				{
 					include: path.resolve('node_modules', 'primeflex'),
 					sideEffects: false,
 				}
 			]
+			*/
 		},
 		optimization: {
       splitChunks: {
