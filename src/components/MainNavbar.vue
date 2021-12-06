@@ -7,10 +7,13 @@
 		</template>
 		<!-- <template #end></template> -->
 	</p-menubar>
+
+	<LoginModal :is-open="isLoginModalOpen" @change-open-state="changeLoginModalState"></LoginModal>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue"
+import LoginModal from "./LoginModal.vue";
 
 const menu = ref([
 	/*
@@ -30,8 +33,8 @@ const menu = ref([
 	},
 	{
 		label: "Login",
-		//to: { name: "login" },
-		disabled: true,
+		command: () => changeLoginModalState(true),
+		disabled: false,
 	},
 	{
 		label: "Profile",
@@ -41,6 +44,14 @@ const menu = ref([
 		]
 	},
 ])
+
+/* Properties */
+const isLoginModalOpen = ref(false)
+
+/* Methods */
+function changeLoginModalState(isOpening: boolean) {
+	isLoginModalOpen.value = isOpening
+}
 
 </script>
 
