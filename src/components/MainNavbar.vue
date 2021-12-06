@@ -14,6 +14,7 @@
 <script setup lang="ts">
 import { ref } from "vue"
 import LoginModal from "./LoginModal.vue";
+import { getAuth, signOut } from "firebase/auth"
 
 const menu = ref([
 	/*
@@ -40,7 +41,7 @@ const menu = ref([
 		label: "Profile",
 		items: [
 			{ label: "Settings", icon: "pi pi-fw pi-cog" /*to: "/settings"*/ },
-			{ label: "Logout", icon: "pi pi-fw pi-power-off", command: function () { alert("You have logged out") } }
+			{ label: "Logout", icon: "pi pi-fw pi-power-off", command: logout }
 		]
 	},
 ])
@@ -53,18 +54,26 @@ function changeLoginModalState(isOpening: boolean) {
 	isLoginModalOpen.value = isOpening
 }
 
+function logout() {
+	const auth = getAuth();
+
+	signOut(auth).then(() => {
+		console.log("Successfully signed out")
+	}).catch((error) => {
+		console.error("Error signing out")
+	});
+}
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
-
 .home-button {
 	font-family: "OptimusPrinceps", "Butler";
 }
 
-	a {
-		color: inherit;
-		text-decoration: none;
-	}
-
+a {
+	color: inherit;
+	text-decoration: none;
+}
 </style>

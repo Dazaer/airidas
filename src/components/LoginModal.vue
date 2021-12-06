@@ -19,7 +19,8 @@
 			</span>
 
 			<span class="field grid p-float-label mb-4">
-				<p-password id="loginPassword" v-model="password"/>
+				<p-input-text id="loginPassword" type="password" v-model="password"/>
+				<!-- <p-password id="loginPassword" v-model="password"/> -->
 				<label for="loginPassword">Password</label>
 			</span>
 		</article>
@@ -69,9 +70,17 @@ let password = ref("")
 /* Methods */
 async function login() {
 	const auth = getAuth(firebaseApp)
-	const userCredentials = await signInWithEmailAndPassword(auth, "karolisvicius@gmail.com", "password")
 
-	console.log(userCredentials.user.email)
+	const userCredentials = await signInWithEmailAndPassword(auth, email.value, password.value)
+	.catch((error) => {
+		console.error("There was an error logging in: " + error)
+	})
+
+	if (!userCredentials) {
+		return
+	}
+
+	console.log("Successfully signed in: " + userCredentials.user.email)
 	changeOpenState(false)
 }
 
