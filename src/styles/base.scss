@@ -64,13 +64,20 @@ body {
 	display: flex;
 	text-align: center;
 	//align-content: flex-end;
-	//align-items: flex-end;
+	align-items: center;
 	justify-content: flex-end;
 }
 
 .fill {
 	height: 100%;
 	width: 100%;
+}
+
+.text--mini {
+	font-size: 0.8rem;
+	* {
+		font-size: 0.8rem;
+	}
 }
 
 /* »» PROJECT */
