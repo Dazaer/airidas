@@ -20,8 +20,9 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from "vue"
-import LoginModal from "./LoginModal.vue";
+import firebaseApp from "@/utilities/firebase";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth"
+import LoginModal from "./LoginModal.vue";
 
 
 const menu = ref([
@@ -61,7 +62,7 @@ const menu = ref([
 
 /* Lifecycle */
 onMounted(async () => {
-	const auth = getAuth();
+	const auth = getAuth(firebaseApp);
 
 	onAuthStateChanged(auth, (user) => {
 

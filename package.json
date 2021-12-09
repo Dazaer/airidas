@@ -26,6 +26,8 @@
 		"@vue/cli-service": "~4.5.0",
 		"@vue/compiler-sfc": "^3.0.0",
 		"@vue/eslint-config-typescript": "^7.0.0",
+		"@vuelidate/core": "^2.0.0-alpha.32",
+		"@vuelidate/validators": "^2.0.0-alpha.25",
 		"eslint": "^6.7.2",
 		"eslint-plugin-vue": "^7.0.0",
 		"firebase": "^9.5.0",

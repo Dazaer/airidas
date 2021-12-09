@@ -2,16 +2,11 @@
 		<MainNavbar></MainNavbar>
 		<router-view />
 		<MainFooter></MainFooter>
-	<!--
-	<div>
-		<p-button label="PrimeVue" icon="pi pi-user"></p-button>
-			<HelloWorld location="Airidas.net"></HelloWorld>
-		</div>
-	-->
+
+		<p-toast position="top-center" :auto-z-index="false" :base-z-index="10"/>
 </template>
 
 <script lang="ts" setup>
-//import HelloWorld from "./components/HelloWorld.vue"
 import MainNavbar from "./components/MainNavbar.vue"
 import MainFooter from "./components/MainFooter.vue"
 </script>
