@@ -14,6 +14,7 @@ import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext';
 import Menubar from 'primevue/menubar'
 import Password from 'primevue/password';
+import ProgressBar from 'primevue/progressbar';
 /* PRIME VUE */
 
 
@@ -25,5 +26,6 @@ export const vueApp = createApp(App)
 .component("p-input-text", InputText)
 .component("p-menubar", Menubar)
 .component("p-password", Password)
+.component("p-progress-bar", ProgressBar)
 .component("fa", FontAwesomeIcon)
 .mount("#app");
