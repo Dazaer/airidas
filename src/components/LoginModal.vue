@@ -65,7 +65,7 @@
 			<fa :icon="['fas', 'question-circle']" class="text--mini"></fa>
 			<p-button
 				@click="openSettingsPage()"
-				label="Help. I forgot my password."
+				label="Help, I forgot my password."
 				class="p-button-link p-button-sm text--mini"
 			/>
 		</div>

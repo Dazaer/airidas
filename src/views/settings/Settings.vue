@@ -5,7 +5,7 @@
 		<!-- Main container for settings -->
 		<div class="formgrid grid grid-nogutter col-12 pt-4 box">
 			<!-- Reset Password with Email -->
-			<div class="field col-9 p-1">
+			<div class="field col-9 p-2">
 				<div class="p-float-label">
 					<p-input-text
 						id="email"
@@ -24,7 +24,7 @@
 				</div>
 			</div>
 
-			<div class="field col-3 p-1">
+			<div class="field col-3 p-2">
 				<p-button @click="resetPassword" label="Reset password" class="p-button-danger w-full" />
 			</div>
 		</div>

@@ -1,16 +1,19 @@
 <template>
-	<article class="grid grid-nogutter">
-		<h1 class="col-12 center">Airidas Dapkevicius</h1>
-		<img
-			class="col-12 center main-image"
-			src="https://i.imgur.com/8t5EDAj.jpg"
-			alt="Airidas Dapkevicius image"
-		/>
-		<!--//https://imgur.com/a/waGVbKe-->
-		<p
-			class="col-12 center"
-		>A scientist, teacher, photographer, musician, food enthusiast, tech geek and more.</p>
-	</article>
+	<div class="grid grid-nogutter col-12 md:col-8 md:col-offset-2 lg:col-4 lg:col-offset-4">
+		<h1 class="col-12 center">A place for many things</h1>
+
+		<!-- Main container for about -->
+		<main class="grid grid-nogutter col-12">
+			<div class="col-12 center p-1 container-icons">
+				<fa :icon="['fas', 'utensils']" size="2x" class="m-1"></fa>
+				<fa :icon="['fas', 'flask']" size="2x" class="m-1"></fa>
+				<fa :icon="['fas', 'camera']" size="2x" class="m-1"></fa>
+				<fa :icon="['fas', 'music']" size="2x" class="m-1"></fa>
+				<fa :icon="['fas', 'desktop']" size="2x" class="m-1"></fa>
+				<fa :icon="['fas', 'book']" size="2x" class="m-1"></fa>
+			</div>
+		</main>
+	</div>
 </template>
 
 <script lang="ts" setup>
@@ -23,5 +26,9 @@
 	height: 50vh;
 	width: auto;
 	margin: auto;
+}
+
+.container-icons {
+	color: var(--text-color);
 }
 </style>
