@@ -1,4 +1,6 @@
 <template>
+	<p-progress-bar v-if="isLoading" mode="indeterminate" />
+
 	<div class="grid grid-nogutter col-12 md:col-8 md:col-offset-2 lg:col-4 lg:col-offset-4">
 		<h2 class="col-12 center">Settings</h2>
 
@@ -12,6 +14,7 @@
 						v-model="validation.email.$model"
 						type="email"
 						autofocus
+						:disabled="isLoggedIn"
 						:class="{ 'p-invalid': validation.email.$invalid && hasBeenSubmitted }"
 						class="w-full"
 					/>
@@ -29,28 +32,52 @@
 			</div>
 		</div>
 	</div>
+
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import useVuelidate from "@vuelidate/core";
 import { email, required } from '@vuelidate/validators'
 import firebaseApp from "@/utilities/firebase";
-import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import { getAuth, onAuthStateChanged, sendPasswordResetEmail } from "firebase/auth";
 import { useToast } from "primevue/usetoast";
+
+/* Lifecycle */
+onMounted(async () => {
+	const auth = getAuth(firebaseApp);
+	isLoading.value = true
+
+	onAuthStateChanged(auth, (user) => {
+
+		// User is signed in
+		if (user) {
+			profileForm.email = user.email ?? ""
+			isLoggedIn.value = true
+		} else {
+			isLoggedIn.value = false
+		}
+
+		isLoading.value = false
+	});
+
+});
 
 /* ------------------- Properties ----------------- */
 const auth = getAuth(firebaseApp)
 const toast = useToast();
+const isLoggedIn = ref(false)
+const isLoading = ref(false)
+
 
 /* ------------------- Validation ----------------- */
-const loginForm = reactive({
+const profileForm = reactive({
 	email: "",
 })
 const rules = {
 	email: { required, email },
 }
-const validation = useVuelidate(rules, loginForm)
+const validation = useVuelidate(rules, profileForm)
 const hasBeenSubmitted = ref(false)
 
 /* ------------------- Methods ----------------- */
@@ -63,9 +90,9 @@ function resetPassword() {
 		return
 	}
 
-	sendPasswordResetEmail(auth, loginForm.email)
+	sendPasswordResetEmail(auth, profileForm.email)
 		.then(() => {
-			return toast.add({ severity: 'success', summary: "Email sent", detail: `A password reset confirmation email has been sent to ${loginForm.email}`, life: 5000 });
+			return toast.add({ severity: 'success', summary: "Email sent", detail: `A password reset confirmation email has been sent to ${profileForm.email}`, life: 5000 });
 		})
 		.catch((error) => {
 			if (error.code == "auth/user-not-found") {
