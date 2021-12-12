@@ -23,6 +23,7 @@ import { onMounted, ref } from "vue"
 import firebaseApp from "@/utilities/firebase";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth"
 import LoginModal from "./LoginModal.vue";
+import { RouteNames } from "@/router";
 
 
 const menu = ref([
@@ -35,7 +36,7 @@ const menu = ref([
 	*/
 	{
 		label: "About",
-		to: { name: "About" }
+		to: { name: RouteNames.About }
 	},
 	{
 		label: "Feature Request",
@@ -51,7 +52,7 @@ const menu = ref([
 	{
 		label: "Profile",
 		items: [
-			{ label: "Settings", icon: "pi pi-fw pi-cog" /*to: "/settings"*/ },
+			{ label: "Settings", icon: "pi pi-fw pi-cog", to: { name: RouteNames.Settings } },
 			{ label: "Logout", icon: "pi pi-fw pi-power-off", command: logout }
 		],
 		visible: () => isLoggedIn.value,

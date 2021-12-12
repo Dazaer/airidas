@@ -58,11 +58,16 @@
 					class="p-error"
 				>{{ validation.password.required.$message.replace('Value', 'Password') }}</small>
 			</div>
+
 		</article>
 
 		<div class="grid justify-content-end center">
 			<fa :icon="['fas', 'question-circle']" class="text--mini"></fa>
-			<p-button label="Help. I forgot my password." class="p-button-link p-button-sm text--mini" />
+			<p-button
+				@click="openSettingsPage()"
+				label="Help. I forgot my password."
+				class="p-button-link p-button-sm text--mini"
+			/>
 		</div>
 
 		<template #footer>
@@ -76,10 +81,12 @@
 import firebaseApp from "@/utilities/firebase";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth"
 import { withDefaults, defineProps, defineEmits, computed, ref, reactive } from 'vue'
-import { email, required } from '@vuelidate/validators'
+import { required } from '@vuelidate/validators'
 import useVuelidate from "@vuelidate/core";
 import { FirebaseError } from "firebase/app";
 import { useToast } from "primevue/usetoast";
+import { useRouter } from "vue-router";
+import { RouteNames } from "@/router";
 
 /* Props */
 interface propsInterface {
@@ -96,6 +103,9 @@ const emit = defineEmits<{
 
 /* Properties */
 const toast = useToast();
+const auth = getAuth(firebaseApp)
+const router = useRouter()
+
 
 const isVisible = computed({
 	get() {
@@ -126,8 +136,6 @@ async function login() {
 		return toast.add({ severity: 'error', summary: 'Form error', detail: "Please correct the invalid fields", life: 3000 });
 	}
 
-	const auth = getAuth(firebaseApp)
-
 	const userCredentials = await signInWithEmailAndPassword(auth, loginForm.email, loginForm.password)
 		.catch((error: FirebaseError) => {
 			console.error("There was an error logging in: " + error)
@@ -137,7 +145,7 @@ async function login() {
 	if (userCredentials instanceof FirebaseError) {
 		console.warn("code: " + userCredentials.code + "message: " + userCredentials.message + "name: " + userCredentials.name + "customData: " + userCredentials.customData)
 		if (userCredentials.code == 'auth/invalid-email') {
-			return toast.add({ severity: 'error', summary: 'Invalid login credentials', detail: "The email and password do not match an existing user."});
+			return toast.add({ severity: 'error', summary: 'Invalid login credentials', detail: "The email and password do not match an existing user." });
 		}
 
 		return toast.add({ severity: 'error', summary: 'Error logging in', detail: `${userCredentials.code}`, life: 3000 });
@@ -145,6 +153,11 @@ async function login() {
 
 	console.log("Successfully signed in: " + userCredentials.user.email)
 	changeOpenState(false)
+}
+
+function openSettingsPage() {
+	changeOpenState(false)
+	router.push(RouteNames.Settings)
 }
 
 function changeOpenState(isOpen: boolean) {
