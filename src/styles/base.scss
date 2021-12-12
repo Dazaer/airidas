@@ -36,8 +36,8 @@ $FONT_COLOR_LIGHT: #f7e6d0;
 
 /* »» ROOT ELEMENTS */
 
-body {
-	height: 100vh;
+html, body {
+	//height: 100vh;
 	margin: 0;
 	color: $FONT_COLOR;
 	background-color: $BODY_BACKGROUND_COLOR;

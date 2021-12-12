@@ -1,19 +1,21 @@
 <template>
-	<p-menubar :model="menu">
-		<template #start>
-			<router-link to="/">
-				<p-button class="p-button-text p-button-text mr-4 home-button">Airidas.net</p-button>
-			</router-link>
-		</template>
+	<div class="sticky top-0">
+		<p-menubar :model="menu">
+			<template #start>
+				<router-link to="/">
+					<p-button class="p-button-text p-button-text mr-4 home-button">Airidas.net</p-button>
+				</router-link>
+			</template>
 
-		<template v-if="!hasFullyLoaded" #item></template>
+			<template v-if="!hasFullyLoaded" #item></template>
 
-		<template v-if="isLoggedIn" #end>
-			<p class="center-right text--mini">Logged in as: {{ loggedInEmail }}</p>
-		</template>
-	</p-menubar>
+			<template v-if="isLoggedIn" #end>
+				<p class="center-right text--mini">Logged in as: {{ loggedInEmail }}</p>
+			</template>
+		</p-menubar>
 
-	<p-progress-bar v-if="!hasFullyLoaded" mode="indeterminate" />
+		<p-progress-bar v-if="!hasFullyLoaded" mode="indeterminate" />
+	</div>
 
 	<LoginModal :is-open="isLoginModalOpen" @change-open-state="changeLoginModalState"></LoginModal>
 </template>

@@ -2,7 +2,7 @@
 	<div class="grid grid-nogutter col-12 md:col-8 md:col-offset-2 lg:col-4 lg:col-offset-4">
 		<h1 class="col-12 center">A place for many things</h1>
 
-		<!-- Main container for about -->
+		<!-- Main container for home -->
 		<main class="grid grid-nogutter col-12">
 			<div class="col-12 center p-1 container-icons">
 				<fa :icon="['fas', 'utensils']" size="2x" class="m-1"></fa>
@@ -22,11 +22,6 @@
 </script>
 
 <style scoped lang="scss">
-.main-image {
-	height: 50vh;
-	width: auto;
-	margin: auto;
-}
 
 .container-icons {
 	color: var(--text-color);
