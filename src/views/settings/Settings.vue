@@ -1,6 +1,4 @@
 <template>
-	<p-progress-bar v-if="isLoading" mode="indeterminate" />
-
 	<div class="grid grid-nogutter col-12 md:col-8 md:col-offset-2 lg:col-4 lg:col-offset-4">
 		<h2 class="col-12 center">Settings</h2>
 
@@ -46,7 +44,6 @@ import { useToast } from "primevue/usetoast";
 /* Lifecycle */
 onMounted(async () => {
 	const auth = getAuth(firebaseApp);
-	isLoading.value = true
 
 	onAuthStateChanged(auth, (user) => {
 
@@ -55,10 +52,10 @@ onMounted(async () => {
 			profileForm.email = user.email ?? ""
 			isLoggedIn.value = true
 		} else {
+			profileForm.email = ""
 			isLoggedIn.value = false
 		}
 
-		isLoading.value = false
 	});
 
 });
@@ -67,7 +64,6 @@ onMounted(async () => {
 const auth = getAuth(firebaseApp)
 const toast = useToast();
 const isLoggedIn = ref(false)
-const isLoading = ref(false)
 
 
 /* ------------------- Validation ----------------- */
