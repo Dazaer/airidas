@@ -1,5 +1,5 @@
 <template>
-	<div class="sticky top-0">
+	<div class="sticky top-0 z-1">
 		<p-menubar :model="menu">
 			<template #start>
 				<router-link to="/">
