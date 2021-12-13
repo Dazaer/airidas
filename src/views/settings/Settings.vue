@@ -26,7 +26,7 @@
 			</div>
 
 			<div class="field col-3 p-2">
-				<p-button @click="resetPassword" label="Reset password" class="p-button-danger w-full" />
+				<p-button @click="resetPassword" label="Reset password" class="p-button-danger w-full center" />
 			</div>
 		</div>
 	</div>
