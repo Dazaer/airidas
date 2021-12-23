@@ -5,6 +5,7 @@ import Home from "../views/Home.vue";
 export enum RouteNames {
 	Home = "home",
 	About = "about",
+	FeatureRequest = "feature-request",
 	Settings = "settings",
 	ConfirmPasswordReset = "confirm-password-reset",
 }
@@ -22,6 +23,11 @@ const routes: Array<RouteRecordRaw> = [
 		// this generates a separate chunk (about.[hash].js) for this route
 		// which is lazy-loaded when the route is visited.
 		component: lazyLoad("About"),
+	},
+	{
+		path: "/feature-request",
+		name: RouteNames.FeatureRequest,
+		component: lazyLoad("FeatureRequest"),
 	},
 	{
 		path: "/settings",

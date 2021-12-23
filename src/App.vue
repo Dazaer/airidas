@@ -7,7 +7,7 @@
 		<MainFooter></MainFooter>
 	</div>
 
-	<p-toast position="top-center" :auto-z-index="false" :base-z-index="10" />
+	<p-toast position="top-right" :auto-z-index="false" :base-z-index="10" style="z-index: 99999;" />
 </template>
 
 <script lang="ts" setup>

@@ -3,7 +3,7 @@
 		<h2 class="col-12 center">Settings</h2>
 
 		<!-- Main container for settings -->
-		<div class="formgrid grid grid-nogutter col-12 pt-4 box">
+		<div class="formgrid grid grid-nogutter col-12 pt-4 container-box">
 			<!-- Reset Password with Email -->
 			<div class="field col-9 p-2">
 				<div class="p-float-label">
@@ -102,13 +102,5 @@ function resetPassword() {
 </script>
 
 <style scoped lang="scss">
-.box {
-	background-color: var(--surface-e);
-	//text-align: center;
-	padding-top: 1rem;
-	padding-bottom: 1rem;
-	border-radius: 4px;
-	box-shadow: 2px 6px 4px -1px rgba(0, 0, 0, 0.2),
-		0 3px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
-}
+
 </style>

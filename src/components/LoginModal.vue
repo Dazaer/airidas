@@ -9,10 +9,10 @@
 		:dismissableMask="true"
 		:draggable="false"
 		:closable="true"
-		:auto-z-index="false"
-		:base-z-index="1"
+		:auto-z-index="true"
+		:base-z-index="100"
 		:breakpoints="{ '1080px': '75vw', '640px': '100vw' }"
-		:style="{ width: '40vw' }"
+		class="login__container"
 	>
 		<article class="p-fluid pt-3">
 			<!-- Email Input -->
@@ -25,10 +25,7 @@
 						autofocus
 						:class="{ 'p-invalid': validation.email.$invalid && hasBeenSubmitted }"
 					/>
-					<label
-						for="loginEmail"
-						:class="{ 'p-error': validation.email.$invalid && hasBeenSubmitted }"
-					>Email</label>
+					<label for="loginEmail" :class="{ 'p-error': validation.email.$invalid && hasBeenSubmitted }">Email</label>
 				</div>
 
 				<small
@@ -47,10 +44,7 @@
 						autofocus
 						:class="{ 'p-invalid': validation.password.$invalid && hasBeenSubmitted }"
 					/>
-					<label
-						for="loginPassword"
-						:class="{ 'p-error': validation.password.$invalid && hasBeenSubmitted }"
-					>Password</label>
+					<label for="loginPassword" :class="{ 'p-error': validation.password.$invalid && hasBeenSubmitted }">Password</label>
 				</div>
 
 				<small
@@ -58,16 +52,11 @@
 					class="p-error"
 				>{{ validation.password.required.$message.replace('Value', 'Password') }}</small>
 			</div>
-
 		</article>
 
 		<div class="grid justify-content-end center">
 			<fa :icon="['fas', 'question-circle']" class="text--mini"></fa>
-			<p-button
-				@click="openSettingsPage()"
-				label="Help, I forgot my password."
-				class="p-button-link p-button-sm text--mini"
-			/>
+			<p-button @click="openSettingsPage()" label="Help, I forgot my password." class="p-button-link p-button-sm text--mini" />
 		</div>
 
 		<template #footer>
@@ -166,6 +155,9 @@ function changeOpenState(isOpen: boolean) {
 
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="less">
+<!-- Cannot use scoped here as it won't affect the modal -->
+<style lang="scss">
+.login__container {
+	width: 40vw;
+}
 </style>

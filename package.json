@@ -35,7 +35,7 @@
 		"less-loader": "^5.0.0",
 		"primeflex": "^3.1.0",
 		"primeicons": "^5.0.0",
-		"primevue": "^3.8.2",
+		"primevue": "3.10.0",
 		"sass": "^1.42.1",
 		"sass-loader": "^10.2.0",
 		"style-resources-loader": "^1.4.1",

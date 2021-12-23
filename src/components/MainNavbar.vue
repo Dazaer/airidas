@@ -42,7 +42,7 @@ const menu = ref([
 	},
 	{
 		label: "Feature Request",
-		//to: { name: "feature-request" }
+		to: { name: "feature-request" },
 		visible: () => isLoggedIn.value,
 	},
 	{
