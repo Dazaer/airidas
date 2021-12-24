@@ -42,7 +42,7 @@
 				:rowClass="getRowClass"
 				-->
 
-				<p-column field="title" header="Title" style="width: 80%;">
+				<p-column field="title" header="Title" style="width: 70%;">
 					<template #header>
 						<!-- <div class="text-secondary center w-full">
 						Title
@@ -59,14 +59,14 @@
 					</template>
 				</p-column>-->
 
-				<p-column field="priority" header="Priority" sortable style="width: 10%">
+				<p-column field="priority" header="Priority" sortable style="width: 5%">
 					<template #body="slotProps">
 						<div class="center">{{ getStatusLabel(slotProps.data.priority) }}</div>
 					</template>
 				</p-column>
 
-				<p-column field="isConfirmed" header="Confirmed" sortable style="width: 10%">
-					<template #body="slotProps" class="center">
+				<p-column field="isConfirmed" header="Confirmed" sortable style="width: 5%">
+					<template #body="slotProps">
 						<div class="center">
 							<fa v-if="slotProps.data.isConfirmed" :icon="['fas', 'check']" class="text-success"></fa>
 							<fa v-else :icon="['fas', 'question']" class="text-secondary"></fa>
@@ -75,10 +75,10 @@
 				</p-column>
 
 				<!-- <p-column :rowEditor="true" style="width: 5%"></p-column> -->
-				<p-column :exportable="false" style="width: 5%; justify-content: end;">
+				<p-column :exportable="false" style="width: 15%; justify-content: end;" body-class="text-center">
 					<template #body="slotProps">
-						<p-button icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" @click="alert(`edit ${slotProps.data}`)" />
-						<p-button icon="pi pi-trash" class="p-button-rounded p-button-danger" @click="alert(`delete ${slotProps.data}`)" />
+						<p-button icon="pi pi-pencil" class="p-button-rounded p-button-primary m-1" @click="alert(`edit ${slotProps.data}`)" />
+						<p-button icon="pi pi-trash" class="p-button-rounded p-button-danger m-1" @click="alert(`delete ${slotProps.data}`)" />
 					</template>
 				</p-column>
 			</p-data-table>
