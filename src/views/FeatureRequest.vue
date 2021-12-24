@@ -12,10 +12,10 @@
 
 		<!-- Main container for feature development -->
 		<main class="grid grid-nogutter col-12 container-box">
-			<!-- <div class="col-12 center p-1">
+			<div class="col-12 center p-1">
 				<fa :icon="['fas', 'spinner']" size="2x" spin class="m-1"></fa>
 				<p class="font-italic">In development</p>
-			</div> -->
+			</div>
 
 			<p-toolbar class="mb-2 col-12 p-1">
 				<template #start>
@@ -79,8 +79,9 @@
 				<p-column :exportable="false" style="width: 15%; justify-content: end;" body-class="text-center">
 					<template #body="slotProps">
 						<p-button icon="pi pi-pencil" class="p-button-rounded p-button-primary m-1" @click="openDetailsModal(slotProps.data.id)" />
-						<p-button :disabled="slotProps.data.isConfirmed" icon="pi pi-trash" class="p-button-rounded p-button-danger m-1" @click="alert(`delete ${slotProps.data}`)" />
+						<p-button :disabled="true" icon="pi pi-trash" class="p-button-rounded p-button-danger m-1" @click="alert(`delete ${slotProps.data}`)" />
 					</template>
+					<!-- :disabled="slotProps.data.isConfirmed" -->
 				</p-column>
 			</p-data-table>
 		</main>

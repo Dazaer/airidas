@@ -218,7 +218,7 @@ async function getPriorities() {
 }
 
 function saveFeatureRequest() {
-	alert("Saved")
+	alert("Functionality soon to be available!")
 }
 
 /* ------------------- Lifecycle ----------------- */
