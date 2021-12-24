@@ -2,6 +2,7 @@
 	<p-dialog
 		header="Feature details"
 		:visible="isOpen"
+		@show="loadFeatureDetails"
 		@update:visible="changeOpenState"
 		position="top"
 		:displayPosition="true"
@@ -22,7 +23,7 @@
 						id="featureTitle"
 						v-model="validation.title.$model"
 						type="text"
-						autofocus
+						:autofocus="props.featureRequestId == 0"
 						:class="{ 'p-invalid': validation.title.$invalid && hasBeenSubmitted }"
 						class="w-full"
 					/>
@@ -38,7 +39,7 @@
 			<!-- Description Input -->
 			<div class="field col-12">
 				<div class="p-float-label">
-					<p-textarea id="featureDescription" v-model="validation.description.$model" :autoResize="true" rows="5" cols="30" autofocus />
+					<p-textarea id="featureDescription" v-model="validation.description.$model" :autoResize="true" rows="5" cols="30" />
 					<label for="featureDescription" :class="{ 'p-error': validation.description.$invalid && hasBeenSubmitted }">Description</label>
 				</div>
 			</div>
@@ -51,10 +52,23 @@
 						v-model="validation.priority.$model"
 						:options="statuses"
 						optionLabel="label"
-						optionValue="value"
 						placeholder="Select a priority"
-					></p-dropdown>
-					<label for="featurePriority" :class="{ 'p-error': validation.priority.$invalid && hasBeenSubmitted }"><span v-if="validation.priority.$model != null">Priority</span></label>
+					>
+						<template #value="slotProps">
+							<div v-if="slotProps.value.id > 0">
+								<div>{{ slotProps.value.label }}</div>
+							</div>
+							<span v-else>{{ slotProps.placeholder }}</span>
+						</template>
+						<template #option="slotProps">
+							<div>
+								<div>{{ slotProps.option.label }}</div>
+							</div>
+						</template>
+					</p-dropdown>
+					<label for="featurePriority" :class="{ 'p-error': validation.priority.$invalid && hasBeenSubmitted }">
+						<span v-if="validation.priority.$model != null">Priority</span>
+					</label>
 				</div>
 
 				<small
@@ -73,18 +87,22 @@
 
 <script setup lang="ts">
 import firebaseApp from "@/utilities/firebase";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth"
-import { withDefaults, defineProps, defineEmits, computed, ref, reactive } from 'vue'
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth"
+import { withDefaults, defineProps, defineEmits, computed, ref, reactive, onMounted, Ref } from 'vue'
 import { required } from '@vuelidate/validators'
 import useVuelidate from "@vuelidate/core";
 import { FirebaseError } from "firebase/app";
 import { useToast } from "primevue/usetoast";
 import { useRouter } from "vue-router";
 import { RouteNames } from "@/router";
+import FeatureRequest from "@/models/FeatureRequest";
+import Priority from "@/models/Priority";
 
-/* Props */
+/* ------------------- Props ----------------- */
+
 interface propsInterface {
-	isOpen?: boolean;
+	isOpen?: boolean
+	featureRequestId: number
 }
 const props = withDefaults(defineProps<propsInterface>(), {
 	isOpen: false,
@@ -95,7 +113,8 @@ const emit = defineEmits<{
 }>();
 
 
-/* Properties */
+/* ------------------- Properties ----------------- */
+
 const toast = useToast();
 const auth = getAuth(firebaseApp)
 const router = useRouter()
@@ -110,18 +129,21 @@ const isVisible = computed({
 	}
 })
 
-const statuses = ref([
-	{ label: 'Low', value: 1 },
-	{ label: 'Medium', value: 2 },
-	{ label: 'High', value: 3 }
+const statuses: Ref<Priority[]> = ref([
+	new Priority({ label: 'Low', id: 1 }),
+	new Priority({ label: 'Medium', id: 2 }),
+	new Priority({ label: 'High', id: 3 }),
 ]);
 
-const featureRequestDetails = reactive({
-	title: "",
-	description: "",
-	priority: null,
-	isConfirmed: false,
-})
+const features: Ref<FeatureRequest[]> = ref([
+	new FeatureRequest({ "id": 1, "title": "Add a thing", "description": "Orange", "priority": new Priority({ id: 1, label: "Low" }), "isConfirmed": true }),
+	new FeatureRequest({ "id": 2, "title": "Change something there", "description": "Black", "priority": new Priority({ id: 1, label: "Low" }), "isConfirmed": true }),
+	new FeatureRequest({ "id": 3, "title": "Create a new something", "description": "Gray", "priority": new Priority({ id: 2, label: "Medium" }), "isConfirmed": false }),
+	new FeatureRequest({ "id": 4, "title": "Remove the things", "description": "Blue", "priority": new Priority({ id: 3, label: "High" }), "isConfirmed": true }),
+	new FeatureRequest({ "id": 5, "title": "If there's one thing that I think should go is the large titles or something else somewhere in this application", "description": "Orange", "priority": new Priority({ id: 2, label: "Medium" }), "isConfirmed": false }),
+])
+
+const featureRequestDetails: Ref<FeatureRequest> = ref(new FeatureRequest())
 const rules = {
 	title: { required },
 	description: {},
@@ -131,15 +153,33 @@ const rules = {
 const validation = useVuelidate(rules, featureRequestDetails)
 const hasBeenSubmitted = ref(false)
 
-/* Methods */
+/* ------------------- Methods ----------------- */
 
 function changeOpenState(isOpen: boolean) {
 	isVisible.value = isOpen
 }
 
+function loadFeatureDetails() {
+	const existingFeatureRequest = features.value.find(feature => feature.id === props.featureRequestId)
+
+	featureRequestDetails.value = existingFeatureRequest ?? new FeatureRequest()
+	validation.value.$model = featureRequestDetails.value
+}
+
 function saveFeatureRequest() {
 	alert("Saved")
 }
+
+/* ------------------- Lifecycle ----------------- */
+/*
+onMounted(async () => {
+	const auth = getAuth(firebaseApp);
+
+	const existingFeatureRequest = features.value.find(feature => feature.id === props.featureRequestId)
+	featureRequestDetails.value = existingFeatureRequest ?? featureRequestDetails.value
+	validation.value.$model = featureRequestDetails.value
+});
+*/
 
 </script>
 

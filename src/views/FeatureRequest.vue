@@ -11,19 +11,19 @@
 
 		<!-- Main container for feature development -->
 		<main class="grid grid-nogutter col-12 container-box">
-			<div class="col-12 center p-1">
+			<!-- <div class="col-12 center p-1">
 				<fa :icon="['fas', 'spinner']" size="2x" spin class="m-1"></fa>
 				<p class="font-italic">In development</p>
-			</div>
+			</div> -->
 
 			<p-toolbar class="mb-2 col-12 p-1">
 				<template #start>
 					<p-button @click="openDetailsModal()" label="New" icon="pi pi-plus" class="p-button-success"></p-button>
 				</template>
 
-				<template #end>
+				<!-- <template #end>
 					<p-button label="Delete" icon="pi pi-trash" class="p-button-danger"></p-button>
-				</template>
+				</template> -->
 			</p-toolbar>
 
 			<p-data-table
@@ -61,7 +61,7 @@
 
 				<p-column field="priority" header="Priority" sortable style="width: 5%">
 					<template #body="slotProps">
-						<div class="center">{{ getStatusLabel(slotProps.data.priority) }}</div>
+						<div class="center">{{ slotProps.data.priority.label }}</div>
 					</template>
 				</p-column>
 
@@ -77,14 +77,18 @@
 				<!-- <p-column :rowEditor="true" style="width: 5%"></p-column> -->
 				<p-column :exportable="false" style="width: 15%; justify-content: end;" body-class="text-center">
 					<template #body="slotProps">
-						<p-button icon="pi pi-pencil" class="p-button-rounded p-button-primary m-1" @click="alert(`edit ${slotProps.data}`)" />
+						<p-button icon="pi pi-pencil" class="p-button-rounded p-button-primary m-1" @click="openDetailsModal(slotProps.data.id)" />
 						<p-button icon="pi pi-trash" class="p-button-rounded p-button-danger m-1" @click="alert(`delete ${slotProps.data}`)" />
 					</template>
 				</p-column>
 			</p-data-table>
 		</main>
 
-		<FeatureRequestDetailsModal :is-open="isDetailsOpen" @change-open-state="changeDetailsModalState"></FeatureRequestDetailsModal>
+		<FeatureRequestDetailsModal
+			:is-open="isDetailsOpen"
+			:feature-request-id="selectedFeatureRequestId"
+			@change-open-state="changeDetailsModalState"
+		></FeatureRequestDetailsModal>
 
 		<!--
 			HELP
@@ -94,46 +98,37 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { Ref, ref } from "vue";
 import FeatureRequestDetailsModal from "@/components/modals/FeatureRequestDetailsModal.vue";
+import Priority from "@/models/Priority";
+
+/* ------------------- Properties ----------------- */
 
 const isDetailsOpen = ref(false)
+const selectedFeatureRequestId: Ref<number> = ref(0)
 
-const editingRows = ref([]);
+//const editingRows = ref([]); //for row editing, probably to remove because we're editing in popup modal
 const features = ref([
-	{ "id": 1, "title": "Add a thing", "description": "Orange", "priority": 1, "isConfirmed": true },
-	{ "id": 2, "title": "Change something there", "description": "Black", "priority": 1, "isConfirmed": true },
-	{ "id": 3, "title": "Create a new something", "description": "Gray", "priority": 2, "isConfirmed": false },
-	{ "id": 4, "title": "Remove the things", "description": "Blue", "priority": 3, "isConfirmed": true },
-	{ "id": 5, "title": "If there's one thing that I think should go is the large titles or something else somewhere in this application", "description": "Orange", "priority": 2, "isConfirmed": false },
+	{ "id": 1, "title": "Add a thing", "description": "Orange", "priority": new Priority({ id: 1, label: "Low" }), "isConfirmed": true },
+	{ "id": 2, "title": "Change something there", "description": "Black", "priority": new Priority({ id: 1, label: "Low" }), "isConfirmed": true },
+	{ "id": 3, "title": "Create a new something", "description": "Gray", "priority": new Priority({ id: 2, label: "Medium" }), "isConfirmed": false },
+	{ "id": 4, "title": "Remove the things", "description": "Blue", "priority": new Priority({ id: 3, label: "High" }), "isConfirmed": true },
+	{ "id": 5, "title": "If there's one thing that I think should go is the large titles or something else somewhere in this application", "description": "Orange", "priority": new Priority({ id: 2, label: "Medium" }), "isConfirmed": false },
 ])
-//date added
 
+/* ------------------- Methods ----------------- */
 
-const getStatusLabel = (status: number) => {
-	switch (status) {
-		case 1:
-			return 'Low';
-
-		case 2:
-			return 'Medium';
-
-		case 3:
-			return 'High';
-
-		default:
-			return 'NA';
-	}
-};
+function openDetailsModal(featureId: number = 0) {
+	selectedFeatureRequestId.value = featureId
+	changeDetailsModalState(true)
+}
 
 function changeDetailsModalState(isOpening: boolean) {
 	isDetailsOpen.value = isOpening
 }
 
-function openDetailsModal() {
-	changeDetailsModalState(true)
-}
-
+/*
+//If I want to make the row a certain colour for example when confirmed, instead of having a checkmark there.
 function getRowClass(data: any) {
 	let rowClass = "";
 
@@ -143,10 +138,14 @@ function getRowClass(data: any) {
 
 	return rowClass
 }
+*/
 
 function saveRowEdit(event: { newData: any; index: any; }) {
 	features.value[event.index] = event.newData;
 }
+
+/* ------------------- Lifecycle ----------------- */
+
 </script>
 
 <style scoped lang="scss">
