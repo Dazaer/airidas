@@ -12,7 +12,7 @@
 		:auto-z-index="true"
 		:base-z-index="100"
 		:breakpoints="{ '1080px': '75vw', '640px': '100vw' }"
-		class="login__container"
+		class="container-modal"
 	>
 		<article class="p-fluid pt-3">
 			<!-- Email Input -->
@@ -157,7 +157,5 @@ function changeOpenState(isOpen: boolean) {
 
 <!-- Cannot use scoped here as it won't affect the modal -->
 <style lang="scss">
-.login__container {
-	width: 40vw;
-}
+
 </style>

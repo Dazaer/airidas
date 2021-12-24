@@ -18,7 +18,7 @@
 
 			<p-toolbar class="mb-2 col-12 p-1">
 				<template #start>
-					<p-button @click="openFeatureModal()" label="New" icon="pi pi-plus" class="p-button-success"></p-button>
+					<p-button @click="openDetailsModal()" label="New" icon="pi pi-plus" class="p-button-success"></p-button>
 				</template>
 
 				<template #end>
@@ -30,8 +30,6 @@
 				:value="features"
 				data-key="id"
 				stripedRows
-				editMode="row"
-				v-model:editingRows="editingRows"
 				sortMode="multiple"
 				@row-edit-save="saveRowEdit"
 				responsiveLayout="stack"
@@ -39,53 +37,35 @@
 				class="col-12"
 			>
 				<!--
+				v-model:editingRows="editingRows"
+				editMode="row"
 				:rowClass="getRowClass"
-
 				-->
+
 				<p-column field="title" header="Title" style="width: 80%;">
-				<template #header>
-					<!-- <div class="text-secondary center w-full">
+					<template #header>
+						<!-- <div class="text-secondary center w-full">
 						Title
-					</div> -->
-				</template>
-					<template #editor="{ data, field }">
-						<p-input-text v-model="data[field]" autofocus class="w-full ml-2 md:ml-0"/>
+						</div>-->
 					</template>
 					<template #body="slotProps">
-						<div class="pl-2 text-center md:pl-0 md:text-left w-full">{{slotProps.data.title}}</div>
+						<div class="pl-2 text-center md:pl-0 md:text-left w-full">{{ slotProps.data.title }}</div>
 					</template>
 				</p-column>
 
 				<!-- <p-column field="description" header="Description" style="width: 80%">
-					<template #editor="{ data, field }">
-						<p-textarea v-model="data[field]" :autoResize="true" rows="5" cols="30" autofocus />
-					</template>
 					<template #body="slotProps">
 						<div class="center">{{slotProps.data.description}}</div>
 					</template>
-				</p-column> -->
+				</p-column>-->
 
 				<p-column field="priority" header="Priority" sortable style="width: 10%">
-					<template #editor="{ data, field }" class="w-full">
-						<p-dropdown
-							v-model="data[field]"
-							:options="statuses"
-							optionLabel="label"
-							optionValue="value"
-							placeholder="Select a Status"
-							class="w-full ml-2 md:ml-0"
-						></p-dropdown>
-					</template>
 					<template #body="slotProps">
 						<div class="center">{{ getStatusLabel(slotProps.data.priority) }}</div>
 					</template>
 				</p-column>
 
 				<p-column field="isConfirmed" header="Confirmed" sortable style="width: 10%">
-					<!-- <template #editor="{ data, field }" class="w-full">
-						Add a checkbox here for dev to confirm
-					</template>-->
-
 					<template #body="slotProps" class="center">
 						<div class="center">
 							<fa v-if="slotProps.data.isConfirmed" :icon="['fas', 'check']" class="text-success"></fa>
@@ -94,9 +74,17 @@
 					</template>
 				</p-column>
 
-				<p-column :rowEditor="true" style="width: 5%"></p-column>
+				<!-- <p-column :rowEditor="true" style="width: 5%"></p-column> -->
+				<p-column :exportable="false" style="width: 5%; justify-content: end;">
+					<template #body="slotProps">
+						<p-button icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" @click="alert(`edit ${slotProps.data}`)" />
+						<p-button icon="pi pi-trash" class="p-button-rounded p-button-danger" @click="alert(`delete ${slotProps.data}`)" />
+					</template>
+				</p-column>
 			</p-data-table>
 		</main>
+
+		<FeatureRequestDetailsModal :is-open="isDetailsOpen" @change-open-state="changeDetailsModalState"></FeatureRequestDetailsModal>
 
 		<!--
 			HELP
@@ -107,6 +95,9 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
+import FeatureRequestDetailsModal from "@/components/modals/FeatureRequestDetailsModal.vue";
+
+const isDetailsOpen = ref(false)
 
 const editingRows = ref([]);
 const features = ref([
@@ -118,12 +109,6 @@ const features = ref([
 ])
 //date added
 
-
-const statuses = ref([
-	{ label: 'Low', value: 1 },
-	{ label: 'Medium', value: 2 },
-	{ label: 'High', value: 3 }
-]);
 
 const getStatusLabel = (status: number) => {
 	switch (status) {
@@ -141,8 +126,12 @@ const getStatusLabel = (status: number) => {
 	}
 };
 
-function openFeatureModal() {
-	
+function changeDetailsModalState(isOpening: boolean) {
+	isDetailsOpen.value = isOpening
+}
+
+function openDetailsModal() {
+	changeDetailsModalState(true)
 }
 
 function getRowClass(data: any) {
