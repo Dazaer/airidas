@@ -4,8 +4,9 @@
 			<h1 class="col-12">Feature Request</h1>
 
 			<p class="col-12">
-				Add, edit and delete features that you wish to be implemented in a future release.
-				<br />Upon a feature being confirmed, please contact the developer if you do not wish to have the feature implemented anymore.
+				Add, edit and delete features that you wish to be implemented in a future release.<br />
+				One or more features may be implemented depending on their complexity and priority!
+				<br /><br /><span class="text--mini">Upon a feature being confirmed, please contact the developer if you do not wish to have the feature implemented anymore, as its development might already be in progress.</span>
 			</p>
 		</section>
 
@@ -78,7 +79,7 @@
 				<p-column :exportable="false" style="width: 15%; justify-content: end;" body-class="text-center">
 					<template #body="slotProps">
 						<p-button icon="pi pi-pencil" class="p-button-rounded p-button-primary m-1" @click="openDetailsModal(slotProps.data.id)" />
-						<p-button icon="pi pi-trash" class="p-button-rounded p-button-danger m-1" @click="alert(`delete ${slotProps.data}`)" />
+						<p-button :disabled="slotProps.data.isConfirmed" icon="pi pi-trash" class="p-button-rounded p-button-danger m-1" @click="alert(`delete ${slotProps.data}`)" />
 					</template>
 				</p-column>
 			</p-data-table>

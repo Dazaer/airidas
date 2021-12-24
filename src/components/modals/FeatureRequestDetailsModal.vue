@@ -25,6 +25,7 @@
 						type="text"
 						:autofocus="props.featureRequestId == 0"
 						:class="{ 'p-invalid': validation.title.$invalid && hasBeenSubmitted }"
+						:disabled="validation.isConfirmed"
 						class="w-full"
 					/>
 					<label for="featureTitle" :class="{ 'p-error': validation.title.$invalid && hasBeenSubmitted }">Title</label>
