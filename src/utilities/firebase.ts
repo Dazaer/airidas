@@ -6,8 +6,9 @@ import firebaseAuth from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA4HGqgYL5V-r9gcCIIupKY8O7KJK2ueHE",
-  authDomain: "airidas-site.firebaseapp.com",
   projectId: "airidas-site",
+  authDomain: "airidas-site.firebaseapp.com",
+	databaseURL: "https://airidas-site-default-rtdb.europe-west1.firebasedatabase.app",
   storageBucket: "airidas-site.appspot.com",
   messagingSenderId: "895343697389",
   appId: "1:895343697389:web:d38524bb1cf7ba5fb19be4",

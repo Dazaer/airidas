@@ -51,7 +51,7 @@
 					<p-dropdown
 						id="featurePriority"
 						v-model="validation.priority.$model"
-						:options="statuses"
+						:options="priorities"
 						optionLabel="label"
 						placeholder="Select a priority"
 					>
@@ -88,8 +88,9 @@
 
 <script setup lang="ts">
 import firebaseApp from "@/utilities/firebase";
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth"
-import { withDefaults, defineProps, defineEmits, computed, ref, reactive, onMounted, Ref } from 'vue'
+import { getAuth, onAuthStateChanged } from "firebase/auth"
+import { DataSnapshot, getDatabase, onValue, ref as firebaseRef } from "firebase/database";
+import { withDefaults, defineProps, defineEmits, computed, reactive, onMounted, Ref, ref as ref } from 'vue'
 import { required } from '@vuelidate/validators'
 import useVuelidate from "@vuelidate/core";
 import { FirebaseError } from "firebase/app";
@@ -98,6 +99,7 @@ import { useRouter } from "vue-router";
 import { RouteNames } from "@/router";
 import FeatureRequest from "@/models/FeatureRequest";
 import Priority from "@/models/Priority";
+import snapshotToArray from "@/utilities/snapshotToArray";
 
 /* ------------------- Props ----------------- */
 
@@ -118,6 +120,7 @@ const emit = defineEmits<{
 
 const toast = useToast();
 const auth = getAuth(firebaseApp)
+const db = getDatabase();
 const router = useRouter()
 
 
@@ -130,11 +133,7 @@ const isVisible = computed({
 	}
 })
 
-const statuses: Ref<Priority[]> = ref([
-	new Priority({ label: 'Low', id: 1 }),
-	new Priority({ label: 'Medium', id: 2 }),
-	new Priority({ label: 'High', id: 3 }),
-]);
+const priorities: Ref<Priority[]> = ref([]);
 
 const features: Ref<FeatureRequest[]> = ref([
 	new FeatureRequest({ "id": 1, "title": "Add a thing", "description": "Orange", "priority": new Priority({ id: 1, label: "Low" }), "isConfirmed": true }),
@@ -167,20 +166,23 @@ function loadFeatureDetails() {
 	validation.value.$model = featureRequestDetails.value
 }
 
+function getPriorities() {
+	const prioritiesRef = firebaseRef(db, 'priorities/');
+
+	onValue(prioritiesRef, (snapshot: DataSnapshot) => {
+		priorities.value = snapshotToArray(snapshot, 'id')
+	});
+}
+
 function saveFeatureRequest() {
 	alert("Saved")
 }
 
 /* ------------------- Lifecycle ----------------- */
-/*
 onMounted(async () => {
-	const auth = getAuth(firebaseApp);
-
-	const existingFeatureRequest = features.value.find(feature => feature.id === props.featureRequestId)
-	featureRequestDetails.value = existingFeatureRequest ?? featureRequestDetails.value
-	validation.value.$model = featureRequestDetails.value
+	//const auth = getAuth(firebaseApp);
+	getPriorities()
 });
-*/
 
 </script>
 
