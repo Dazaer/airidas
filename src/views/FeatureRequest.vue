@@ -18,7 +18,7 @@
 
 			<p-toolbar class="mb-2 col-12 p-1">
 				<template #start>
-					<p-button label="New" icon="pi pi-plus" class="p-button-success"></p-button>
+					<p-button @click="openFeatureModal()" label="New" icon="pi pi-plus" class="p-button-success"></p-button>
 				</template>
 
 				<template #end>
@@ -42,12 +42,17 @@
 				:rowClass="getRowClass"
 
 				-->
-				<p-column field="title" header="Title" style="width: 80%">
+				<p-column field="title" header="Title" style="width: 80%;">
+				<template #header>
+					<!-- <div class="text-secondary center w-full">
+						Title
+					</div> -->
+				</template>
 					<template #editor="{ data, field }">
 						<p-input-text v-model="data[field]" autofocus class="w-full ml-2 md:ml-0"/>
 					</template>
 					<template #body="slotProps">
-						<div class="sm:center w-full ml-2 md:ml-0">{{slotProps.data.title}}</div>
+						<div class="pl-2 text-center md:pl-0 md:text-left w-full">{{slotProps.data.title}}</div>
 					</template>
 				</p-column>
 
@@ -109,7 +114,7 @@ const features = ref([
 	{ "id": 2, "title": "Change something there", "description": "Black", "priority": 1, "isConfirmed": true },
 	{ "id": 3, "title": "Create a new something", "description": "Gray", "priority": 2, "isConfirmed": false },
 	{ "id": 4, "title": "Remove the things", "description": "Blue", "priority": 3, "isConfirmed": true },
-	{ "id": 5, "title": "If there's one thing that I think should go is the large titles", "description": "Orange", "priority": 2, "isConfirmed": false },
+	{ "id": 5, "title": "If there's one thing that I think should go is the large titles or something else somewhere in this application", "description": "Orange", "priority": 2, "isConfirmed": false },
 ])
 //date added
 
@@ -135,6 +140,10 @@ const getStatusLabel = (status: number) => {
 			return 'NA';
 	}
 };
+
+function openFeatureModal() {
+	
+}
 
 function getRowClass(data: any) {
 	let rowClass = "";
