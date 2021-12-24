@@ -1,5 +1,5 @@
 export default class Priority {
-  public id: number = 0
+  public id: string = ""
   public label: string = ""
 	public isActive: boolean = true
 

@@ -28,7 +28,7 @@
 			</p-toolbar>
 
 			<p-data-table
-				:value="features"
+				:value="featureRequests"
 				data-key="id"
 				stripedRows
 				sortMode="multiple"
@@ -99,27 +99,45 @@
 </template>
 
 <script lang="ts" setup>
-import { Ref, ref } from "vue";
+import { onMounted, Ref, ref } from "vue";
+import { DataSnapshot, getDatabase, onValue, ref as firebaseRef } from "firebase/database";
+import { getFirestore, collection, getDocs, doc, getDoc } from "firebase/firestore"
 import FeatureRequestDetailsModal from "@/components/modals/FeatureRequestDetailsModal.vue";
 import Priority from "@/models/Priority";
+import snapshotToArray from "@/utilities/snapshotToArray";
+import FeatureRequest from "@/models/FeatureRequest";
+import querySnapshotToArray from "@/utilities/querySnapshotToArray";
 
 /* ------------------- Properties ----------------- */
+const db = getFirestore();
 
 const isDetailsOpen = ref(false)
-const selectedFeatureRequestId: Ref<number> = ref(0)
+const selectedFeatureRequestId: Ref<string> = ref("")
 
 //const editingRows = ref([]); //for row editing, probably to remove because we're editing in popup modal
-const features = ref([
-	{ "id": 1, "title": "Add a thing", "description": "Orange", "priority": new Priority({ id: 1, label: "Low" }), "isConfirmed": true },
-	{ "id": 2, "title": "Change something there", "description": "Black", "priority": new Priority({ id: 1, label: "Low" }), "isConfirmed": true },
-	{ "id": 3, "title": "Create a new something", "description": "Gray", "priority": new Priority({ id: 2, label: "Medium" }), "isConfirmed": false },
-	{ "id": 4, "title": "Remove the things", "description": "Blue", "priority": new Priority({ id: 3, label: "High" }), "isConfirmed": true },
-	{ "id": 5, "title": "If there's one thing that I think should go is the large titles or something else somewhere in this application", "description": "Orange", "priority": new Priority({ id: 2, label: "Medium" }), "isConfirmed": false },
-])
+const featureRequests: Ref<FeatureRequest[]> = ref([])
 
 /* ------------------- Methods ----------------- */
 
-function openDetailsModal(featureId: number = 0) {
+async function getFeatureRequests() {
+	const querySnapshot = await getDocs(collection(db, "feature-requests"));
+	featureRequests.value = querySnapshotToArray(querySnapshot, "id")
+
+const prios = doc(db, "priorities", "3");
+const priosSnap = await getDoc(prios);
+console.log(priosSnap)
+let prioData = priosSnap.data() as Priority;
+let priority = new Priority(prioData)
+priority.id = priosSnap.id
+
+featureRequests.value = featureRequests.value.map(fr => {
+	fr.priority = priority
+	return fr
+})
+
+}
+
+function openDetailsModal(featureId: string = "") {
 	selectedFeatureRequestId.value = featureId
 	changeDetailsModalState(true)
 }
@@ -142,10 +160,14 @@ function getRowClass(data: any) {
 */
 
 function saveRowEdit(event: { newData: any; index: any; }) {
-	features.value[event.index] = event.newData;
+	featureRequests.value[event.index] = event.newData;
 }
 
 /* ------------------- Lifecycle ----------------- */
+onMounted(async () => {
+	//const auth = getAuth(firebaseApp);
+	await getFeatureRequests()
+});
 
 </script>
 

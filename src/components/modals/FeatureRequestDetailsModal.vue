@@ -23,7 +23,7 @@
 						id="featureTitle"
 						v-model="validation.title.$model"
 						type="text"
-						:autofocus="props.featureRequestId == 0"
+						:autofocus="props.featureRequestId == ''"
 						:class="{ 'p-invalid': validation.title.$invalid && hasBeenSubmitted }"
 						:disabled="featureRequestDetails.isConfirmed"
 						class="w-full"
@@ -56,7 +56,7 @@
 						placeholder="Select a priority"
 					>
 						<template #value="slotProps">
-							<div v-if="slotProps.value.id > 0">
+							<div v-if="slotProps.value.id != ''">
 								<div>{{ slotProps.value.label }}</div>
 							</div>
 							<span v-else>{{ slotProps.placeholder }}</span>
@@ -90,6 +90,7 @@
 import firebaseApp from "@/utilities/firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth"
 import { DataSnapshot, getDatabase, onValue, ref as firebaseRef } from "firebase/database";
+import { getFirestore, collection, getDocs, query, where, doc, getDoc } from "firebase/firestore"
 import { withDefaults, defineProps, defineEmits, computed, reactive, onMounted, Ref, ref as ref } from 'vue'
 import { required } from '@vuelidate/validators'
 import useVuelidate from "@vuelidate/core";
@@ -100,12 +101,13 @@ import { RouteNames } from "@/router";
 import FeatureRequest from "@/models/FeatureRequest";
 import Priority from "@/models/Priority";
 import snapshotToArray from "@/utilities/snapshotToArray";
+import querySnapshotToArray from "@/utilities/querySnapshotToArray";
 
 /* ------------------- Props ----------------- */
 
 interface propsInterface {
 	isOpen?: boolean
-	featureRequestId: number
+	featureRequestId: string
 }
 const props = withDefaults(defineProps<propsInterface>(), {
 	isOpen: false,
@@ -120,7 +122,8 @@ const emit = defineEmits<{
 
 const toast = useToast();
 const auth = getAuth(firebaseApp)
-const db = getDatabase();
+//const db = getDatabase();
+const db = getFirestore();
 const router = useRouter()
 
 
@@ -134,14 +137,6 @@ const isVisible = computed({
 })
 
 const priorities: Ref<Priority[]> = ref([]);
-
-const features: Ref<FeatureRequest[]> = ref([
-	new FeatureRequest({ "id": 1, "title": "Add a thing", "description": "Orange", "priority": new Priority({ id: 1, label: "Low" }), "isConfirmed": true }),
-	new FeatureRequest({ "id": 2, "title": "Change something there", "description": "Black", "priority": new Priority({ id: 1, label: "Low" }), "isConfirmed": true }),
-	new FeatureRequest({ "id": 3, "title": "Create a new something", "description": "Gray", "priority": new Priority({ id: 2, label: "Medium" }), "isConfirmed": false }),
-	new FeatureRequest({ "id": 4, "title": "Remove the things", "description": "Blue", "priority": new Priority({ id: 3, label: "High" }), "isConfirmed": true }),
-	new FeatureRequest({ "id": 5, "title": "If there's one thing that I think should go is the large titles or something else somewhere in this application", "description": "Orange", "priority": new Priority({ id: 2, label: "Medium" }), "isConfirmed": false }),
-])
 
 const featureRequestDetails: Ref<FeatureRequest> = ref(new FeatureRequest())
 const rules = {
@@ -159,19 +154,67 @@ function changeOpenState(isOpen: boolean) {
 	isVisible.value = isOpen
 }
 
-function loadFeatureDetails() {
+async function loadFeatureDetails() {
+
+if (props.featureRequestId == "") {
+	return featureRequestDetails.value = new FeatureRequest()
+}
+
+console.log(props.featureRequestId)
+const docRef = doc(db, "feature-requests", props.featureRequestId);
+const docSnap = await getDoc(docRef);
+featureRequestDetails.value = docSnap.data() as FeatureRequest
+
+console.log(featureRequestDetails.value.priority)
+
+const prios = doc(db, "priorities", "3");
+const priosSnap = await getDoc(prios);
+console.log(priosSnap)
+let prioData = priosSnap.data() as Priority;
+let priority = new Priority(prioData)
+priority.id = priosSnap.id
+
+console.log(prioData)
+console.log(priority)
+console.log(featureRequestDetails.value.priority.id)
+console.log(featureRequestDetails.value.priority.label)
+featureRequestDetails.value.priority = priority
+/*
+
+const featureRequestsRef = collection(db, "feature-requests");
+console.log(featureRequestsRef);
+console.log(featureRequestsRef.id);
+// Create a query against the collection.
+const q = query(featureRequestsRef, where("priority", "==", "priorities/1"));
+console.log(q);
+
+const querySnapshot = await getDocs(q);
+querySnapshot.forEach((doc) => {
+	console.log(doc.id, " => ", doc.data());
+
+});
+
+	*/
+	/*
 	const existingFeatureRequest = features.value.find(feature => feature.id === props.featureRequestId)
 
 	featureRequestDetails.value = existingFeatureRequest ?? new FeatureRequest()
 	validation.value.$model = featureRequestDetails.value
+	*/
 }
-
+/*
 function getPriorities() {
 	const prioritiesRef = firebaseRef(db, 'priorities/');
 
 	onValue(prioritiesRef, (snapshot: DataSnapshot) => {
 		priorities.value = snapshotToArray(snapshot, 'id')
 	});
+}
+*/
+
+async function getPriorities() {
+	const querySnapshot = await getDocs(collection(db, "priorities"));
+	priorities.value = querySnapshotToArray(querySnapshot, "id")
 }
 
 function saveFeatureRequest() {

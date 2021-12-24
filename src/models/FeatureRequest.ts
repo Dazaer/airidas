@@ -1,7 +1,7 @@
 import Priority from "./Priority";
 
 export default class FeatureRequest {
-  public id: number = 0;
+  public id: string = "";
 	public title: string = ""
 	public description: string = ""
 	public priority: Priority = new Priority()
