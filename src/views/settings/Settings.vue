@@ -37,7 +37,7 @@
 import { onMounted, reactive, ref } from "vue";
 import useVuelidate from "@vuelidate/core";
 import { email, required } from '@vuelidate/validators'
-import firebaseApp from "@/utilities/firebase";
+import firebaseApp from "@/utilities/firebase/firebase";
 import { getAuth, onAuthStateChanged, sendPasswordResetEmail } from "firebase/auth";
 import { useToast } from "primevue/usetoast";
 

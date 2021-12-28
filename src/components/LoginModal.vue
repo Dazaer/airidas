@@ -67,7 +67,7 @@
 </template>
 
 <script setup lang="ts">
-import firebaseApp from "@/utilities/firebase";
+import firebaseApp from "@/utilities/firebase/firebase";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth"
 import { withDefaults, defineProps, defineEmits, computed, ref, reactive } from 'vue'
 import { required } from '@vuelidate/validators'
