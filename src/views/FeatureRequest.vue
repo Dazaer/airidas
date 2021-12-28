@@ -4,9 +4,13 @@
 			<h1 class="col-12">Feature Request</h1>
 
 			<p class="col-12">
-				Add, edit and delete features that you wish to be implemented in a future release.<br />
-				One or more features may be implemented depending on their complexity and priority!
-				<br /><br /><span class="text--mini">Upon a feature being confirmed, please contact the developer if you do not wish to have the feature implemented anymore, as its development might already be in progress.</span>
+				Add, edit and delete features that you wish to be implemented in a future release.
+				<br />One or more features may be implemented depending on their complexity and priority!
+				<br />
+				<br />
+				<span
+					class="text--mini"
+				>Upon a feature being confirmed, please contact the developer if you do not wish to have the feature implemented anymore, as its development might already be in progress.</span>
 			</p>
 		</section>
 
@@ -24,7 +28,7 @@
 
 				<!-- <template #end>
 					<p-button label="Delete" icon="pi pi-trash" class="p-button-danger"></p-button>
-				</template> -->
+				</template>-->
 			</p-toolbar>
 
 			<p-data-table
@@ -44,11 +48,6 @@
 				-->
 
 				<p-column field="title" header="Title" style="width: 70%;">
-					<template #header>
-						<!-- <div class="text-secondary center w-full">
-						Title
-						</div>-->
-					</template>
 					<template #body="slotProps">
 						<div class="pl-2 text-center md:pl-0 md:text-left w-full">{{ slotProps.data.title }}</div>
 					</template>
@@ -75,11 +74,15 @@
 					</template>
 				</p-column>
 
-				<!-- <p-column :rowEditor="true" style="width: 5%"></p-column> -->
 				<p-column :exportable="false" style="width: 15%; justify-content: end;" body-class="text-center">
 					<template #body="slotProps">
 						<p-button icon="pi pi-pencil" class="p-button-rounded p-button-primary m-1" @click="openDetailsModal(slotProps.data.id)" />
-						<p-button :disabled="true" icon="pi pi-trash" class="p-button-rounded p-button-danger m-1" @click="alert(`delete ${slotProps.data}`)" />
+						<p-button
+							:disabled="true"
+							icon="pi pi-trash"
+							class="p-button-rounded p-button-danger m-1"
+							@click="alert(`delete ${slotProps.data}`)"
+						/>
 					</template>
 					<!-- :disabled="slotProps.data.isConfirmed" -->
 				</p-column>
@@ -101,41 +104,22 @@
 
 <script lang="ts" setup>
 import { onMounted, Ref, ref } from "vue";
-import { DataSnapshot, getDatabase, onValue, ref as firebaseRef } from "firebase/database";
-import { getFirestore, collection, getDocs, doc, getDoc } from "firebase/firestore"
 import FeatureRequestDetailsModal from "@/components/modals/FeatureRequestDetailsModal.vue";
-import Priority from "@/models/Priority";
-import snapshotToArray from "@/utilities/snapshotToArray";
 import FeatureRequest from "@/models/FeatureRequest";
-import querySnapshotToArray from "@/utilities/querySnapshotToArray";
+import FeatureRequestController from "@/controllers/FeatureRequestController";
 
 /* ------------------- Properties ----------------- */
-const db = getFirestore();
+const featureRequestController = new FeatureRequestController()
 
 const isDetailsOpen = ref(false)
 const selectedFeatureRequestId: Ref<string> = ref("")
 
-//const editingRows = ref([]); //for row editing, probably to remove because we're editing in popup modal
 const featureRequests: Ref<FeatureRequest[]> = ref([])
 
 /* ------------------- Methods ----------------- */
 
 async function getFeatureRequests() {
-	const querySnapshot = await getDocs(collection(db, "feature-requests"));
-	featureRequests.value = querySnapshotToArray(querySnapshot, "id")
-
-const prios = doc(db, "priorities", "3");
-const priosSnap = await getDoc(prios);
-console.log(priosSnap)
-let prioData = priosSnap.data() as Priority;
-let priority = new Priority(prioData)
-priority.id = priosSnap.id
-
-featureRequests.value = featureRequests.value.map(fr => {
-	fr.priority = priority
-	return fr
-})
-
+	return featureRequestController.includePriority().getAll()
 }
 
 function openDetailsModal(featureId: string = "") {
@@ -167,7 +151,7 @@ function saveRowEdit(event: { newData: any; index: any; }) {
 /* ------------------- Lifecycle ----------------- */
 onMounted(async () => {
 	//const auth = getAuth(firebaseApp);
-	await getFeatureRequests()
+	featureRequests.value = await getFeatureRequests()
 });
 
 </script>

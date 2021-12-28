@@ -16,7 +16,21 @@ const firebaseConfig = {
   measurementId: "G-20P448HHLG"
 };
 
-const firebaseApp = initializeApp(firebaseConfig);
+const devFirebaseConfig = {
+  apiKey: "AIzaSyAxTiw5Fuo2OMeivlrqJ9mA5VDNYA4FMwY",
+  projectId: "airidas-site-dev",
+  authDomain: "airidas-site-dev.firebaseapp.com",
+	//databaseURL: "https://airidas-site-default-rtdb.europe-west1.firebasedatabase.app",
+  storageBucket: "airidas-site-dev.appspot.com",
+  messagingSenderId: "332466504796",
+  appId: "1:332466504796:web:0ac1b47acba09dfb969299",
+  //measurementId: "G-20P448HHLG"
+};
+
+
+//const firebaseApp = initializeApp(firebaseConfig);
+const firebaseApp = initializeApp(devFirebaseConfig);
+
 export default firebaseApp;
 
 /*

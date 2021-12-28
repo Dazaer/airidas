@@ -1,4 +1,12 @@
 <template>
+
+		<!-- CURRENTLY NOT BEING USED -->
+
+
+
+
+
+
 	<div class="grid grid-nogutter col-12 md:col-8 md:col-offset-2 lg:col-4 lg:col-offset-4">
 		<h3 class="col-12 center">Confirm password reset</h3>
 
@@ -55,7 +63,7 @@
 import { reactive, ref } from "vue";
 import useVuelidate from "@vuelidate/core";
 import { required } from '@vuelidate/validators'
-import firebaseApp from "@/utilities/firebase";
+import firebaseApp from "@/utilities/firebase/firebase";
 import { confirmPasswordReset, getAuth } from "firebase/auth";
 import { useToast } from "primevue/usetoast";
 

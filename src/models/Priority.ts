@@ -6,4 +6,11 @@ export default class Priority {
   constructor(data?: Partial<Priority>) {
     Object.assign(this, data);
   }
+
+}
+
+export enum PriorityEnum {
+	Low = "1",
+	Medium = "2",
+	High = "3",
 }
