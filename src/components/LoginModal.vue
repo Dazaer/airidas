@@ -137,7 +137,7 @@ async function login() {
 			return toast.add({ severity: 'error', summary: 'Invalid login credentials', detail: "The email and password do not match an existing user." });
 		}
 
-		return toast.add({ severity: 'error', summary: 'Error logging in', detail: `${userCredentials.code}`, life: 3000 });
+		return toast.add({ severity: 'error', summary: 'Error logging in', detail: `${userCredentials.code}`});
 	}
 
 	console.log("Successfully signed in: " + userCredentials.user.email)

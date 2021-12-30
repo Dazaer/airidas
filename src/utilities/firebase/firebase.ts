@@ -28,8 +28,8 @@ const devFirebaseConfig = {
 };
 
 
-//const firebaseApp = initializeApp(firebaseConfig);
-const firebaseApp = initializeApp(devFirebaseConfig);
+const firebaseApp = initializeApp(firebaseConfig);
+//const firebaseApp = initializeApp(devFirebaseConfig);
 
 export default firebaseApp;
 

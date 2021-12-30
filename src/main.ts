@@ -4,6 +4,7 @@ import router from "./router";
 import { FontAwesomeIcon } from "./libraries/font-awesome";
 
 /* PRIME VUE */
+import ConfirmationService from 'primevue/confirmationservice';
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
 import 'primeflex/primeflex.css'; //IMPORTANT: p-col and p-p-3 (grid, flex, spacing) has had the prefix of "p" removed: col and p-3  || jc == justify-content
@@ -12,6 +13,7 @@ import "primeicons/primeicons.css"                           //icons -- using fo
 import "./assets/_theme.scss"
 import Button from 'primevue/button';
 import Column from 'primevue/column';
+import ConfirmPopup from 'primevue/confirmpopup';
 import DataTable from 'primevue/datatable';
 import Dialog from 'primevue/dialog'
 import Dropdown from 'primevue/dropdown';
@@ -26,10 +28,12 @@ import Toolbar from 'primevue/toolbar';
 
 export const vueApp = createApp(App)
 .use(PrimeVue)
+.use(ConfirmationService)
 .use(ToastService)
 .use(router)
 .component("p-button", Button)
 .component("p-column", Column)
+.component("p-confirm-popup", ConfirmPopup)
 .component("p-data-table", DataTable)
 .component("p-dialog", Dialog)
 .component("p-dropdown", Dropdown)
