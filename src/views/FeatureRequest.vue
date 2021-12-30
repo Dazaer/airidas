@@ -93,6 +93,7 @@
 			:is-open="isDetailsOpen"
 			:feature-request-id="selectedFeatureRequestId"
 			@change-open-state="changeDetailsModalState"
+			@saved="loadData"
 		></FeatureRequestDetailsModal>
 
 		<!--
@@ -118,8 +119,12 @@ const featureRequests: Ref<FeatureRequest[]> = ref([])
 
 /* ------------------- Methods ----------------- */
 
+async function loadData() {
+	featureRequests.value = await getFeatureRequests()
+}
+
 async function getFeatureRequests() {
-	return featureRequestController.includePriority().getAll()
+	return featureRequestController.getAll()
 }
 
 function openDetailsModal(featureId: string = "") {
@@ -151,7 +156,7 @@ function saveRowEdit(event: { newData: any; index: any; }) {
 /* ------------------- Lifecycle ----------------- */
 onMounted(async () => {
 	//const auth = getAuth(firebaseApp);
-	featureRequests.value = await getFeatureRequests()
+	loadData()
 });
 
 </script>
