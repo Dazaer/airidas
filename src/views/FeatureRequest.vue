@@ -34,6 +34,7 @@
 			<p-data-table
 				:value="featureRequests"
 				data-key="id"
+				removableSort 
 				stripedRows
 				sortMode="multiple"
 				@row-edit-save="saveRowEdit"
@@ -59,7 +60,7 @@
 					</template>
 				</p-column>-->
 
-				<p-column field="priority" header="Priority" sortable style="width: 5%">
+				<p-column field="priority" header="Priority" sortable sort-field="priority.id" style="width: 5%">
 					<template #body="slotProps">
 						<div class="center">{{ slotProps.data.priority.label }}</div>
 					</template>
