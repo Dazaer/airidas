@@ -1,6 +1,6 @@
 import FeatureRequest from "@/models/FeatureRequest";
 import { documentSnapshotToModel, querySnapshotToModelArray } from "@/utilities/firebase/firestoreModelConverter";
-import { addDoc, collection, doc, DocumentData, DocumentSnapshot, getDoc, getDocs, getFirestore, onSnapshot, query, setDoc, Unsubscribe, where } from "firebase/firestore"
+import { addDoc, collection, deleteDoc, doc, DocumentData, DocumentSnapshot, getDoc, getDocs, getFirestore, onSnapshot, query, setDoc, Unsubscribe, where } from "firebase/firestore"
 import PriorityController from "./PriorityController";
 
 export default class FeatureRequestController {
@@ -105,6 +105,10 @@ export default class FeatureRequestController {
 		return setDoc(docRef, featureRequest);
 	}
 
+	async delete(featureRequestId: string): Promise<any> {
+		const docRef = doc(this.db, this.COLLECTION_PATH, featureRequestId);
+		return deleteDoc(docRef);
+	}
 
 }
 

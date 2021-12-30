@@ -34,7 +34,7 @@
 			<p-data-table
 				:value="featureRequests"
 				data-key="id"
-				removableSort 
+				removableSort
 				stripedRows
 				sortMode="multiple"
 				@row-edit-save="saveRowEdit"
@@ -79,24 +79,24 @@
 					<template #body="slotProps">
 						<p-button icon="pi pi-pencil" class="p-button-rounded p-button-primary m-1" @click="openDetailsModal(slotProps.data.id)" />
 						<p-button
-							:disabled="true"
+							:disabled="slotProps.data.isConfirmed"
 							icon="pi pi-trash"
 							class="p-button-rounded p-button-danger m-1"
-							@click="alert(`delete ${slotProps.data}`)"
+							@click="deleteFeatureRequest($event, slotProps.data)"
 						/>
 					</template>
-					<!-- :disabled="slotProps.data.isConfirmed" -->
 				</p-column>
 			</p-data-table>
 		</main>
 
 		<FeatureRequestDetailsModal
 			:is-open="isDetailsOpen"
-			:feature-request-id="selectedFeatureRequestId"
+			:feature-request-id="editFeatureRequestId"
 			@change-open-state="changeDetailsModalState"
 			@saved="loadData"
 		></FeatureRequestDetailsModal>
 
+		<p-confirm-popup></p-confirm-popup>
 		<!--
 			HELP
 			Hold meta key (Ctrl) to sort by multiple columns
@@ -106,15 +106,20 @@
 
 <script lang="ts" setup>
 import { onMounted, Ref, ref } from "vue";
+import { useConfirm } from "primevue/useconfirm";
 import FeatureRequestDetailsModal from "@/components/modals/FeatureRequestDetailsModal.vue";
 import FeatureRequest from "@/models/FeatureRequest";
 import FeatureRequestController from "@/controllers/FeatureRequestController";
+import { useToast } from "primevue/usetoast";
 
 /* ------------------- Properties ----------------- */
+const toast = useToast();
+const confirm = useConfirm();
+
 const featureRequestController = new FeatureRequestController()
 
 const isDetailsOpen = ref(false)
-const selectedFeatureRequestId: Ref<string> = ref("")
+const editFeatureRequestId: Ref<string> = ref("")
 
 const featureRequests: Ref<FeatureRequest[]> = ref([])
 
@@ -129,12 +134,29 @@ async function getFeatureRequests() {
 }
 
 function openDetailsModal(featureId: string = "") {
-	selectedFeatureRequestId.value = featureId
+	editFeatureRequestId.value = featureId
 	changeDetailsModalState(true)
 }
 
 function changeDetailsModalState(isOpening: boolean) {
 	isDetailsOpen.value = isOpening
+}
+
+function deleteFeatureRequest(event: any, featureRequest: FeatureRequest) {
+	confirm.require({
+		target: event.currentTarget,
+		message: `Are you sure you want to delete "${featureRequest.title}"?`,
+		icon: 'pi pi-exclamation-triangle',
+		acceptClass: 'p-button-danger',
+		accept: async () => {
+			await featureRequestController.delete(featureRequest.id)
+			loadData()
+			return toast.add({ severity: 'success', summary: "Success", detail: `Successfully deleted "${featureRequest.title}"`, life: 3000 });
+		},
+		reject: () => {
+			return
+		}
+	});
 }
 
 /*
