@@ -4,7 +4,7 @@
 		:visible="isOpen"
 		@show="loadFeatureRequestModal"
 		@update:visible="changeOpenState"
-		position="top"
+		position="center"
 		:displayPosition="true"
 		:modal="true"
 		:dismissableMask="true"
@@ -110,16 +110,15 @@ const props = withDefaults(defineProps<propsInterface>(), {
 
 const emit = defineEmits<{
 	(event: 'change-open-state', isOpen: boolean): void,
+	(event: 'saved', featureRequest: FeatureRequest): string,
 }>();
 
 
 /* ------------------- Properties ----------------- */
 
 const toast = useToast();
-const auth = getAuth(firebaseApp)
 const featureRequestController = new FeatureRequestController()
 const priorityController = new PriorityController()
-
 
 const isVisible = computed({
 	get() {
@@ -165,11 +164,54 @@ async function getFeatureRequest(): Promise<FeatureRequest> {
 		return new FeatureRequest()
 	}
 
-	return featureRequestController.includePriority().get(props.featureRequestId)
+	return featureRequestController.get(props.featureRequestId)
 }
 
-function saveFeatureRequest() {
-	alert("Functionality soon to be available!")
+async function saveFeatureRequest() {
+	
+	hasBeenSubmitted.value = true
+	validation.value.$validate()
+
+	if (validation.value.$error) {
+		return
+	}
+
+	const isNew: boolean = featureRequestDetails.value.id.length === 0
+	const isSaved = isNew ? await addFeatureRequest(featureRequestDetails.value) : await updateFeatureRequest(featureRequestDetails.value)
+
+	if (isSaved) {
+		changeOpenState(false)
+		
+		hasBeenSubmitted.value = false
+
+		return emit("saved", featureRequestDetails.value)
+	}
+}
+
+async function addFeatureRequest(featureRequest: FeatureRequest) {
+	return featureRequestController.add(featureRequest)
+		.then(value => {
+			toast.add({ severity: 'success', summary: "Success", detail: `Successfully added feature request`, life: 5000 });
+			return true
+		})
+		.catch(error => {
+			console.error(`code: ${error.code}\n message: ${error.message}\n stack: ${error.stack}\n`)
+			toast.add({ severity: 'error', summary: "Error adding feature request", detail: `${error}` });
+			return false
+		})
+}
+
+async function updateFeatureRequest(featureRequest: FeatureRequest) {
+	return featureRequestController.update(featureRequest)
+		.then(value => {
+			toast.add({ severity: 'success', summary: "Success", detail: `Successfully updated feature request`, life: 5000 });
+			return true
+		})
+		.catch(error => {
+			console.error(`code: ${error.code}\n message: ${error.message}\n stack: ${error.stack}\n`)
+			toast.add({ severity: 'error', summary: "Error updating feature request", detail: `${error}` });
+			return false
+		})
 }
 
 /* ------------------- Lifecycle ----------------- */

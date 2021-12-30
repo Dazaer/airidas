@@ -1,4 +1,4 @@
-import { DocumentData, DocumentSnapshot, QueryDocumentSnapshot, QuerySnapshot } from "firebase/firestore";
+import { DocumentData, DocumentSnapshot, onSnapshot, QueryDocumentSnapshot, QuerySnapshot } from "firebase/firestore";
 
 
 
@@ -19,6 +19,9 @@ export function querySnapshotToModelArray<T>(Tconstructor: new (...args: any[]) 
 
 export function documentSnapshotToModel<T>(Tconstructor: new (...args: any[]) => T, snapshot: DocumentSnapshot<DocumentData>, modelIdentifierName: string) {
 
+
+	/*
+*/
 	const item: T = new Tconstructor(snapshot.data())
 
 	if (item == null) {

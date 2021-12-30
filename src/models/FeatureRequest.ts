@@ -1,7 +1,8 @@
+import { DocumentData, DocumentSnapshot, FirestoreDataConverter } from "firebase/firestore";
 import Priority from "./Priority";
 
 export default class FeatureRequest {
-  public id: string = "";
+	public id: string = "";
 	public title: string = ""
 	public description: string = ""
 	public priorityId: string = ""
@@ -12,9 +13,31 @@ export default class FeatureRequest {
 	/* ---------------- Navigational properties ---------------- */
 	public priority: Priority = new Priority()
 
-  constructor(data?: Partial<FeatureRequest>) {
-    Object.assign(this, data);
-  }
+	public static firestoreConverter: FirestoreDataConverter<FeatureRequest> = {
+		toFirestore: (featureRequest: FeatureRequest) => {
+			return {
+				description: featureRequest.description,
+				title: featureRequest.title,
+				//priorityId: featureRequest.priority.id,
+				//priorityLabel: featureRequest.priority.label,
+				priority: {
+					id: featureRequest.priority.id,
+					label: featureRequest.priority.label,
+				},
+				isConfirmed: featureRequest.isConfirmed,
+			};
+		},
+		fromFirestore: (snapshot: DocumentSnapshot<DocumentData>) => {
+			const data = snapshot.data();
+			return new FeatureRequest(data)
+		}
+	}
+
+	constructor(data?: Partial<FeatureRequest>) {
+		Object.assign(this, data);
+	}
+
+	/* ---------------- Methods ---------------- */
 
 	populateNestedProperties(withPriority: boolean) {
 
@@ -28,7 +51,9 @@ export default class FeatureRequest {
 			this.priority = priority
 
 		}
-		
+
 		return this
 	}
+
+
 }
