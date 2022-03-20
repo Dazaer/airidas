@@ -35,10 +35,18 @@ const menu = ref([
 		icon: "pi pi-home",
 		to: "/"
 	},
-	*/
 	{
 		label: "About",
 		to: { name: RouteNames.About }
+	},
+		*/
+	{
+		label: "Profile",
+		items: [
+			{ label: "Settings", icon: "pi pi-fw pi-cog", to: { name: RouteNames.Settings } },
+			{ label: "Logout", icon: "pi pi-fw pi-power-off", command: logout }
+		],
+		visible: () => isLoggedIn.value,
 	},
 	{
 		label: "Feature Request",
@@ -50,14 +58,6 @@ const menu = ref([
 		label: "Login",
 		command: () => changeLoginModalState(true),
 		visible: () => !isLoggedIn.value,
-	},
-	{
-		label: "Profile",
-		items: [
-			{ label: "Settings", icon: "pi pi-fw pi-cog", to: { name: RouteNames.Settings } },
-			{ label: "Logout", icon: "pi pi-fw pi-power-off", command: logout }
-		],
-		visible: () => isLoggedIn.value,
 	},
 ])
 
