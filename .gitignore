@@ -2,6 +2,11 @@
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,windows,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,windows,node
 
+# Specific files
+assistance
+#src/utilities/api/apiKeys.json
+src/utilities/firebase/firebase.ts
+
 ### Node ###
 # Logs
 logs
@@ -150,6 +155,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# Specific files
-assistance
-#src/utilities/api/apiKeys.json
+
