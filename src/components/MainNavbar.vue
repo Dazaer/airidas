@@ -49,6 +49,11 @@ const menu = ref([
 		visible: () => isLoggedIn.value,
 	},
 	{
+		label: "Recipes",
+		to: { name: "recipes" },
+		visible: () => isLoggedIn.value,
+	},
+	{
 		label: "Feature Request",
 		to: { name: "feature-request" },
 		visible: () => isLoggedIn.value,

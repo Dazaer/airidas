@@ -6,6 +6,7 @@ export enum RouteNames {
 	Home = "home",
 	About = "about",
 	FeatureRequest = "feature-request",
+	Recipes = "recipes",
 	Settings = "settings",
 	ConfirmPasswordReset = "confirm-password-reset",
 }
@@ -28,6 +29,11 @@ const routes: Array<RouteRecordRaw> = [
 		path: "/feature-request",
 		name: RouteNames.FeatureRequest,
 		component: lazyLoad("FeatureRequest"),
+	},
+	{
+		path: "/recipes",
+		name: RouteNames.Recipes,
+		component: lazyLoad("Recipes"),
 	},
 	{
 		path: "/settings",
