@@ -4,6 +4,7 @@
 
 # Specific files 
 assistance
+private
 #src/utilities/api/apiKeys.json
 src/utilities/firebase/firebase.ts
 
