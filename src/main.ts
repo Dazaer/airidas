@@ -15,6 +15,7 @@ import Button from 'primevue/button';
 import Column from 'primevue/column';
 import ConfirmPopup from 'primevue/confirmpopup';
 import DataTable from 'primevue/datatable';
+import DataView from 'primevue/dataview';
 import Dialog from 'primevue/dialog'
 import Dropdown from 'primevue/dropdown';
 import InputText from 'primevue/inputtext';
@@ -35,6 +36,7 @@ export const vueApp = createApp(App)
 .component("p-column", Column)
 .component("p-confirm-popup", ConfirmPopup)
 .component("p-data-table", DataTable)
+.component("p-data-view", DataView)
 .component("p-dialog", Dialog)
 .component("p-dropdown", Dropdown)
 .component("p-input-text", InputText)
