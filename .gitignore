@@ -2,7 +2,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,windows,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,windows,node
 
-# Specific files
+# Specific files 
 assistance
 #src/utilities/api/apiKeys.json
 src/utilities/firebase/firebase.ts
