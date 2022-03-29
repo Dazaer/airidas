@@ -17,22 +17,29 @@
     "paths": {
       "@/*": [
         "src/*"
-      ]
+      ],
+			//"*": [ "src/types/*", "../node_modules/vue-shave/src"]
     },
     "lib": [
       "esnext",
       "dom",
       "dom.iterable",
       "scripthost"
-    ]
+    ],
+		/*
+		"typeRoots": [
+			"./src/types", 
+			"../node_modules/@types",
+			"../@types"
+		]
+		*/
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
     "tests/**/*.ts",
-    "tests/**/*.tsx"
-  ],
+    "tests/**/*.tsx" ],
   "exclude": [
     "node_modules"
   ]

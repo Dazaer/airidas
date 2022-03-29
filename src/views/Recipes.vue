@@ -22,17 +22,22 @@
 
 				<template #grid="slotProps">
 					<div class="col-12 md:col-4">
-						<div class="recipe-item product-grid-item">
-							<div class="center">
-								<h4 class="product-name">{{ slotProps.data.title }}</h4>
+						<div class="recipe-item flex flex-column">
+							<div class="recipe-item-top center">
+								<h4 class="recipe-item-top__title">{{ slotProps.data.title }}</h4>
 							</div>
 
-							<div class="col-12">
+							<!-- <div class="col-12">
 								<img class="main-image center" :src="slotProps.data.imageLink" :alt="slotProps.data.title" />
 								<p class="center">{{ slotProps.data.description }}</p>
+							</div>-->
+
+							<div class="recipe-item-content flex flex-column">
+								<img class="main-image" :src="slotProps.data.imageLink" :alt="slotProps.data.title" />
+								<p class="my-0 center">{{ slotProps.data.description }}</p>
 							</div>
 
-							<div class="col-12 center-right">
+							<div class="recipe-item-bottom center-right">
 								<p-button icon="pi pi-pencil" class="p-button-rounded p-button-primary m-1" @click="alert('edit')" />
 								<p-button icon="pi pi-trash" class="p-button-rounded p-button-danger m-1" @click="alert('deleted')" />
 							</div>
@@ -56,12 +61,12 @@ const confirm = useConfirm();
 
 const recipes: Recipe[] = [
 	new Recipe({ title: "Recipe 1", description: "Description of recipe right here", imageLink: "https://lepetiteats.com/wp-content/uploads/2016/03/Pra-Ram-Tofu-2.jpg" }),
-	new Recipe({ title: "Recipe 1", description: "Description of recipe right here", imageLink: "https://lepetiteats.com/wp-content/uploads/2016/03/Pra-Ram-Tofu-2.jpg" }),
+	new Recipe({ title: "Recipe 2 super long title here not sure what will happen to this here's some more lines just to fill it up", description: "THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now", imageLink: "https://mishkanet.com/img/251847.jpg" }),
+	new Recipe({ title: "Recipe 1", description: "Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here", imageLink: "https://lepetiteats.com/wp-content/uploads/2016/03/Pra-Ram-Tofu-2.jpg" }),
 	new Recipe({ title: "Recipe 1", description: "Description of recipe right here", imageLink: "https://lepetiteats.com/wp-content/uploads/2016/03/Pra-Ram-Tofu-2.jpg" }),
 	new Recipe({ title: "Recipe 2", description: "THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now", imageLink: "https://mishkanet.com/img/251847.jpg" }),
 	new Recipe({ title: "Recipe 1", description: "Description of recipe right here", imageLink: "https://lepetiteats.com/wp-content/uploads/2016/03/Pra-Ram-Tofu-2.jpg" }),
 	new Recipe({ title: "Recipe 2", description: "THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now", imageLink: "https://mishkanet.com/img/251847.jpg" }),
-	new Recipe({ title: "Recipe 2 super long title here not sure what will happen to this", description: "THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now", imageLink: "https://mishkanet.com/img/251847.jpg" }),
 	new Recipe({ title: "Recipe 1", description: "Description of recipe right here", imageLink: "https://lepetiteats.com/wp-content/uploads/2016/03/Pra-Ram-Tofu-2.jpg" }),
 ]
 const layout = ref('grid');
@@ -80,17 +85,45 @@ const sortField = ref();
 .recipe-item {
 	@include container-item-box;
 
-
-	max-height: 100%;
-	//height: 50%;
+	//max-height: 100%;
+	height: 80vh;
 	margin: 0.5rem;
 	border: 1px solid var(--surface-border);
+	//max-width: 40vw;
+
+	//when media under certain width, make height: auto? inherit? 100%?
 }
+
+.recipe-item-top {
+	//height: 100%;
+	//width: 100%;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+
+	.recipe-item-top__title {
+		overflow: hidden;
+	}
+}
+
+.recipe-item-content {
+	flex-grow: 1;
+	max-height: 100%;
+	max-width: 100%;
+}
+
+.recipe-item-bottom {
+	//height: 100%;
+	max-height: 100%;
+	width: 100%;
+}
+
 .main-image {
-	//height: 50vh;
+	height: 20vh;
 	max-height: 100%;
 	max-width: 100%;
 	//width: 100%;
-	margin: auto;
+	//margin: auto;
 }
 </style>
