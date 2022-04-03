@@ -16,7 +16,6 @@
 
 		<!-- Main container for feature development -->
 		<main class="grid grid-nogutter col-12 container-box">
-
 			<p-toolbar class="mb-2 col-12 p-1">
 				<template #start>
 					<p-button @click="openDetailsModal()" label="New" icon="pi pi-plus" class="p-button-success"></p-button>

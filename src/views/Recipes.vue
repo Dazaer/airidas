@@ -29,7 +29,8 @@
 
 							<div class="recipe-item-content">
 								<div class="recipe-item-content__image-container">
-									<img class="recipe-item-content__image" :src="slotProps.data.imageLink" :alt="slotProps.data.title" />
+									<img v-if="slotProps.data.imageLink.length > 0" class="recipe-item-content__image" :src="slotProps.data.imageLink" :alt="slotProps.data.title" />
+									<img v-else class="recipe-item-content__image recipe-item-content__image--default" :src="defaultImageLink" :alt="slotProps.data.title" />
 								</div>
 								<div class="recipe-item-content__description-container">
 									<p class="recipe-item-content__description">{{ slotProps.data.description }}</p>
@@ -37,14 +38,18 @@
 							</div>
 
 							<div class="recipe-item-bottom">
-								<p-button icon="pi pi-pencil" class="p-button-rounded p-button-primary m-1" @click="alert('edit')" />
-								<p-button icon="pi pi-trash" class="p-button-rounded p-button-danger m-1" @click="alert('deleted')" />
+								<p-button icon="pi pi-pencil" class="p-button-rounded p-button-primary m-1" @click="openDetailsModal(slotProps.data.id)" />
+								<p-button icon="pi pi-trash" class="p-button-rounded p-button-danger m-1" @click="deleteRecipe($event, slotProps.data)" />
 							</div>
 						</div>
 					</div>
 				</template>
 			</p-data-view>
 		</main>
+
+		<RecipeDetailsModal :is-open="isDetailsOpen" :recipe-id="editRecipeId" @change-open-state="changeDetailsModalState" @saved="loadData"></RecipeDetailsModal>
+		<p-confirm-popup></p-confirm-popup>
+
 	</div>
 </template>
 
@@ -54,6 +59,7 @@ import { useConfirm } from "primevue/useconfirm";
 import { useToast } from "primevue/usetoast";
 import Recipe from "@/models/Recipe";
 import RecipeController from "@/controllers/RecipeController";
+import RecipeDetailsModal from "@/components/modals/RecipeDetailsModal.vue";
 
 /* ------------------- Properties ----------------- */
 const toast = useToast();
@@ -65,8 +71,10 @@ const recipes: Ref<Recipe[]> = ref([])
 const editRecipeId: Ref<string> = ref("")
 const isDetailsOpen: Ref<boolean> = ref(false)
 
+const defaultImageLink: string = "https://cooking.mixedmenus.com/wp-content/uploads/2020/05/MixedMenus.png"
 
-/*
+
+/* --test sample recipes for adjusting layout
 const recipes: Recipe[] = [
 	new Recipe({ title: "IMAGE overflows.", description: "Description of recipe right here", imageLink: "https://lepetiteats.com/wp-content/uploads/2016/03/Pra-Ram-Tofu-2.jpg" }),
 	new Recipe({ title: "TITLE overflows super long title here not sure what will happen to this here's some more lines just to fill it up", description: "THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now", imageLink: "https://mishkanet.com/img/251847.jpg" }),
@@ -84,10 +92,10 @@ const sortOrder = ref();
 const sortField = ref();
 /* ------------------- Methods ----------------- */
 async function loadData() {
-	recipes.value = await getFeatureRequests()
+	recipes.value = await getRecipes()
 }
 
-async function getFeatureRequests() {
+async function getRecipes() {
 	return recipeController.getAll()
 }
 
@@ -98,6 +106,23 @@ function openDetailsModal(recipeId: string = "") {
 
 function changeDetailsModalState(isOpening: boolean) {
 	isDetailsOpen.value = isOpening
+}
+
+function deleteRecipe(event: any, recipe: Recipe) {
+	confirm.require({
+		target: event.currentTarget,
+		message: `Are you sure you want to delete "${recipe.title}"?`,
+		icon: 'pi pi-exclamation-triangle',
+		acceptClass: 'p-button-danger',
+		accept: async () => {
+			await recipeController.delete(recipe.id)
+			loadData()
+			return toast.add({ severity: 'success', summary: "Success", detail: `Successfully deleted "${recipe.title}"`, life: 3000 });
+		},
+		reject: () => {
+			return
+		}
+	});
 }
 
 /* ------------------- Lifecycle ----------------- */
@@ -146,6 +171,10 @@ onMounted(async () => {
 		object-fit: contain;
 		width: 100%;
 	}
+
+.recipe-item-content__image--default {
+	background-color: rgba(255, 255, 255, 0.44);
+}
 
 	.recipe-item-content__description-container {
 		display: flex;
