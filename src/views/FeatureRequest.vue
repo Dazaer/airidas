@@ -17,11 +17,6 @@
 		<!-- Main container for feature development -->
 		<main class="grid grid-nogutter col-12 container-box">
 
-			<!-- <div class="col-12 center p-1">
-				<fa :icon="['fas', 'spinner']" size="2x" spin class="m-1"></fa>
-				<p class="font-italic">In development</p>
-			</div> -->
-
 			<p-toolbar class="mb-2 col-12 p-1">
 				<template #start>
 					<p-button @click="openDetailsModal()" label="New" icon="pi pi-plus" class="p-button-success"></p-button>

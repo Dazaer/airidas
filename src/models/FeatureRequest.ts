@@ -13,6 +13,12 @@ export default class FeatureRequest {
 	/* ---------------- Navigational properties ---------------- */
 	public priority: Priority = new Priority()
 
+	constructor(data?: Partial<FeatureRequest>) {
+		Object.assign(this, data);
+	}
+
+	/* ---------------- Firestore ---------------- */
+
 	public static firestoreConverter: FirestoreDataConverter<FeatureRequest> = {
 		toFirestore: (featureRequest: FeatureRequest) => {
 			return {
@@ -31,10 +37,6 @@ export default class FeatureRequest {
 			const data = snapshot.data();
 			return new FeatureRequest(data)
 		}
-	}
-
-	constructor(data?: Partial<FeatureRequest>) {
-		Object.assign(this, data);
 	}
 
 	/* ---------------- Methods ---------------- */

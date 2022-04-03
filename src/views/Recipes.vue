@@ -11,7 +11,7 @@
 				<template #header>
 					<p-toolbar class="mb-2 col-12 p-1">
 						<template #start>
-							<p-button label="New" icon="pi pi-plus" class="p-button-success"></p-button>
+							<p-button @click="openDetailsModal()" label="New" icon="pi pi-plus" class="p-button-success"></p-button>
 						</template>
 
 						<!-- <div class="col-6" style="text-align: left">
@@ -23,7 +23,7 @@
 				<template #grid="slotProps">
 					<div class="col-12 md:col-4">
 						<div class="recipe-item">
-							<div class="recipe-item-top">
+							<div class="recipe-item-top center">
 								<h4 class="recipe-item-top__title">{{ slotProps.data.title }}</h4>
 							</div>
 
@@ -37,8 +37,8 @@
 							</div>
 
 							<div class="recipe-item-bottom">
-								<p-button icon="pi pi-pencil" class="recipe-item-bottom__button p-button-rounded p-button-primary m-1" @click="alert('edit')" />
-								<p-button icon="pi pi-trash" class="recipe-item-bottom__button p-button-rounded p-button-danger m-1" @click="alert('deleted')" />
+								<p-button icon="pi pi-pencil" class="p-button-rounded p-button-primary m-1" @click="alert('edit')" />
+								<p-button icon="pi pi-trash" class="p-button-rounded p-button-danger m-1" @click="alert('deleted')" />
 							</div>
 						</div>
 					</div>
@@ -53,11 +53,20 @@ import { onMounted, Ref, ref } from "vue";
 import { useConfirm } from "primevue/useconfirm";
 import { useToast } from "primevue/usetoast";
 import Recipe from "@/models/Recipe";
+import RecipeController from "@/controllers/RecipeController";
 
 /* ------------------- Properties ----------------- */
 const toast = useToast();
 const confirm = useConfirm();
 
+const recipeController = new RecipeController();
+
+const recipes: Ref<Recipe[]> = ref([])
+const editRecipeId: Ref<string> = ref("")
+const isDetailsOpen: Ref<boolean> = ref(false)
+
+
+/*
 const recipes: Recipe[] = [
 	new Recipe({ title: "IMAGE overflows.", description: "Description of recipe right here", imageLink: "https://lepetiteats.com/wp-content/uploads/2016/03/Pra-Ram-Tofu-2.jpg" }),
 	new Recipe({ title: "TITLE overflows super long title here not sure what will happen to this here's some more lines just to fill it up", description: "THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now", imageLink: "https://mishkanet.com/img/251847.jpg" }),
@@ -68,15 +77,33 @@ const recipes: Recipe[] = [
 	new Recipe({ title: "Recipe 2", description: "THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now", imageLink: "https://mishkanet.com/img/251847.jpg" }),
 	new Recipe({ title: "Recipe 1", description: "Description of recipe right here", imageLink: "https://lepetiteats.com/wp-content/uploads/2016/03/Pra-Ram-Tofu-2.jpg" }),
 ]
+*/
+
 const layout = ref('grid');
 const sortOrder = ref();
 const sortField = ref();
 /* ------------------- Methods ----------------- */
+async function loadData() {
+	recipes.value = await getFeatureRequests()
+}
 
+async function getFeatureRequests() {
+	return recipeController.getAll()
+}
 
+function openDetailsModal(recipeId: string = "") {
+	editRecipeId.value = recipeId
+	changeDetailsModalState(true)
+}
+
+function changeDetailsModalState(isOpening: boolean) {
+	isDetailsOpen.value = isOpening
+}
 
 /* ------------------- Lifecycle ----------------- */
-
+onMounted(async () => {
+	loadData()
+});
 
 </script>
 
@@ -138,8 +165,5 @@ const sortField = ref();
 	align-items: flex-end;
 	align-self: flex-end;
 	flex: 1 1 auto;
-
-	.recipe-item-bottom__button {
-	}
 }
 </style>
