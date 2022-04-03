@@ -22,24 +22,23 @@
 
 				<template #grid="slotProps">
 					<div class="col-12 md:col-4">
-						<div class="recipe-item flex flex-column">
-							<div class="recipe-item-top center">
+						<div class="recipe-item">
+							<div class="recipe-item-top">
 								<h4 class="recipe-item-top__title">{{ slotProps.data.title }}</h4>
 							</div>
 
-							<!-- <div class="col-12">
-								<img class="main-image center" :src="slotProps.data.imageLink" :alt="slotProps.data.title" />
-								<p class="center">{{ slotProps.data.description }}</p>
-							</div>-->
-
-							<div class="recipe-item-content flex flex-column">
-								<img class="main-image" :src="slotProps.data.imageLink" :alt="slotProps.data.title" />
-								<p class="my-0 center">{{ slotProps.data.description }}</p>
+							<div class="recipe-item-content">
+								<div class="recipe-item-content__image-container">
+									<img class="recipe-item-content__image" :src="slotProps.data.imageLink" :alt="slotProps.data.title" />
+								</div>
+								<div class="recipe-item-content__description-container">
+									<p class="recipe-item-content__description">{{ slotProps.data.description }}</p>
+								</div>
 							</div>
 
-							<div class="recipe-item-bottom center-right">
-								<p-button icon="pi pi-pencil" class="p-button-rounded p-button-primary m-1" @click="alert('edit')" />
-								<p-button icon="pi pi-trash" class="p-button-rounded p-button-danger m-1" @click="alert('deleted')" />
+							<div class="recipe-item-bottom">
+								<p-button icon="pi pi-pencil" class="recipe-item-bottom__button p-button-rounded p-button-primary m-1" @click="alert('edit')" />
+								<p-button icon="pi pi-trash" class="recipe-item-bottom__button p-button-rounded p-button-danger m-1" @click="alert('deleted')" />
 							</div>
 						</div>
 					</div>
@@ -60,12 +59,12 @@ const toast = useToast();
 const confirm = useConfirm();
 
 const recipes: Recipe[] = [
-	new Recipe({ title: "Recipe 1", description: "Description of recipe right here", imageLink: "https://lepetiteats.com/wp-content/uploads/2016/03/Pra-Ram-Tofu-2.jpg" }),
-	new Recipe({ title: "Recipe 2 super long title here not sure what will happen to this here's some more lines just to fill it up", description: "THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now", imageLink: "https://mishkanet.com/img/251847.jpg" }),
-	new Recipe({ title: "Recipe 1", description: "Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here", imageLink: "https://lepetiteats.com/wp-content/uploads/2016/03/Pra-Ram-Tofu-2.jpg" }),
-	new Recipe({ title: "Recipe 1", description: "Description of recipe right here", imageLink: "https://lepetiteats.com/wp-content/uploads/2016/03/Pra-Ram-Tofu-2.jpg" }),
-	new Recipe({ title: "Recipe 2", description: "THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now", imageLink: "https://mishkanet.com/img/251847.jpg" }),
-	new Recipe({ title: "Recipe 1", description: "Description of recipe right here", imageLink: "https://lepetiteats.com/wp-content/uploads/2016/03/Pra-Ram-Tofu-2.jpg" }),
+	new Recipe({ title: "IMAGE overflows.", description: "Description of recipe right here", imageLink: "https://lepetiteats.com/wp-content/uploads/2016/03/Pra-Ram-Tofu-2.jpg" }),
+	new Recipe({ title: "TITLE overflows super long title here not sure what will happen to this here's some more lines just to fill it up", description: "THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now", imageLink: "https://mishkanet.com/img/251847.jpg" }),
+	new Recipe({ title: "ALL overflows everywhere  - super long title here not sure what asdfsdf sd fsd f sdf sd fds f ssssss will happen to this here's some more lines just to fill it up no but really this should be so long that it overflows completely", description: "Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right  Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right herehere Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here", imageLink: "https://lepetiteats.com/wp-content/uploads/2016/03/Pra-Ram-Tofu-2.jpg" }),
+	new Recipe({ title: "IMAGE none", description: "Description of recipe right here", imageLink: "" }),
+	new Recipe({ title: "DESCRIPTION overflows.", description: "THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now", imageLink: "https://mishkanet.com/img/251847.jpg" }),
+	new Recipe({ title: "An even more vertically long image", description: "Description of recipe right here", imageLink: "https://images.wine.co.za/GetWineImage.ashx?ImageSize=large&IMAGEID=268293" }),
 	new Recipe({ title: "Recipe 2", description: "THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now", imageLink: "https://mishkanet.com/img/251847.jpg" }),
 	new Recipe({ title: "Recipe 1", description: "Description of recipe right here", imageLink: "https://lepetiteats.com/wp-content/uploads/2016/03/Pra-Ram-Tofu-2.jpg" }),
 ]
@@ -84,46 +83,63 @@ const sortField = ref();
 <style scoped lang="scss">
 .recipe-item {
 	@include container-item-box;
-
-	//max-height: 100%;
+	border: 1px solid var(--surface-border);
 	height: 80vh;
 	margin: 0.5rem;
-	border: 1px solid var(--surface-border);
-	//max-width: 40vw;
 
-	//when media under certain width, make height: auto? inherit? 100%?
+	display: flex;
+	flex-direction: column;
 }
 
 .recipe-item-top {
-	//height: 100%;
-	//width: 100%;
-	display: -webkit-box;
-	-webkit-line-clamp: 3;
-	-webkit-box-orient: vertical;
-	overflow: hidden;
+	display: flex;
+	flex: 0.1 1 auto;
 
 	.recipe-item-top__title {
+		display: -webkit-box;
+		-webkit-line-clamp: 3;
+		-webkit-box-orient: vertical;
 		overflow: hidden;
 	}
 }
 
 .recipe-item-content {
-	flex-grow: 1;
-	max-height: 100%;
-	max-width: 100%;
+	display: flex;
+	flex-direction: column;
+	flex: 10 1 auto;
+	min-height: 0;
+
+	.recipe-item-content__image-container {
+		display: flex;
+		flex: 1 1 content;
+		min-height: 0;
+	}
+	.recipe-item-content__image {
+		max-height: 100%;
+		object-fit: contain;
+		width: 100%;
+	}
+
+	.recipe-item-content__description-container {
+		display: flex;
+		//flex: 1 1 content;
+	}
+
+	.recipe-item-content__description {
+		display: -webkit-box;
+		-webkit-line-clamp: 10;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
 }
 
 .recipe-item-bottom {
-	//height: 100%;
-	max-height: 100%;
-	width: 100%;
-}
+	display: flex;
+	align-items: flex-end;
+	align-self: flex-end;
+	flex: 1 1 auto;
 
-.main-image {
-	height: 20vh;
-	max-height: 100%;
-	max-width: 100%;
-	//width: 100%;
-	//margin: auto;
+	.recipe-item-bottom__button {
+	}
 }
 </style>
