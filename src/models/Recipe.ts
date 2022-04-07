@@ -6,6 +6,7 @@ export default class Recipe {
 	public description: string = "" //rename to notes
 	public imageLink: string = "" //rename to imageUrl
 	public recipeUrl: string = ""
+	public insertedByUID: string = ""
 
 
 	/* ---------------- Navigational properties ---------------- */
@@ -23,6 +24,7 @@ export default class Recipe {
 				title: recipe.title,
 				recipeUrl: recipe.recipeUrl,
 				imageLink: recipe.imageLink,
+				insertedByUID: recipe.insertedByUID,
 			};
 		},
 		fromFirestore: (snapshot: DocumentSnapshot<DocumentData>) => {

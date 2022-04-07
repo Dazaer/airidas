@@ -87,6 +87,8 @@ import useVuelidate from "@vuelidate/core";
 import { useToast } from "primevue/usetoast";
 import Recipe from "@/models/Recipe";
 import RecipeController from "@/controllers/RecipeController";
+import { getAuth } from "@firebase/auth";
+import firebaseApp from "@/utilities/firebase/firebase";
 
 /* ------------------- Props ----------------- */
 
@@ -172,6 +174,9 @@ async function saveRecipe() {
 }
 
 async function addRecipe(recipe: Recipe) {
+	const userId: string = getAuth(firebaseApp).currentUser?.uid ?? ""
+	recipe.insertedByUID = userId
+
 	return recipeController.add(recipe)
 		.then(value => {
 			toast.add({ severity: 'success', summary: "Success", detail: `Successfully added recipe`, life: 5000 });
