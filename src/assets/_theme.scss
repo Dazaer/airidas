@@ -92,6 +92,15 @@ h6 {
 	font-size: 1.1rem;
 }
 
+
+.bg-primary {
+	background-color: var(--primary-color);
+	color: var(--primary-color-text); 
+}
+.text-primary {
+	color: var(--primary-color);
+}
+
 .bg-secondary {
 	background-color: var(--secondary-color);
 	color: var(--secondary-color-text); 
