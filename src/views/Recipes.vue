@@ -29,8 +29,18 @@
 
 							<div class="recipe-item-content">
 								<div class="recipe-item-content__image-container">
-									<img v-if="slotProps.data.imageLink.length > 0" class="recipe-item-content__image" :src="slotProps.data.imageLink" :alt="slotProps.data.title" />
-									<img v-else class="recipe-item-content__image recipe-item-content__image--default" :src="defaultImageLink" :alt="slotProps.data.title" />
+									<img
+										v-if="slotProps.data.imageLink.length > 0"
+										class="recipe-item-content__image"
+										:src="slotProps.data.imageLink"
+										:alt="slotProps.data.title"
+									/>
+									<img
+										v-else
+										class="recipe-item-content__image recipe-item-content__image--default"
+										:src="defaultImageLink"
+										:alt="slotProps.data.title"
+									/>
 								</div>
 								<div class="recipe-item-content__description-container">
 									<p class="recipe-item-content__description">{{ slotProps.data.description }}</p>
@@ -38,8 +48,30 @@
 							</div>
 
 							<div class="recipe-item-bottom">
-								<p-button icon="pi pi-pencil" class="p-button-rounded p-button-primary m-1" @click="openDetailsModal(slotProps.data.id)" />
-								<p-button icon="pi pi-trash" class="p-button-rounded p-button-danger m-1" @click="deleteRecipe($event, slotProps.data)" />
+								<span v-tooltip.top="{ value: 'Open the recipe\'s page in a new tab', disabled: false }">
+									<p-button
+										@click="openRecipeUrl(slotProps.data.recipeUrl)"
+										:disabled="slotProps.data.recipeUrl.length === 0"
+										class="p-button-rounded p-button-primary m-1"
+									>
+										<fa-layers fixed-width>
+											<fa :icon="['fas', 'book-reader']" transform="grow-10"></fa>
+											<fa :icon="['fas', 'utensils']" transform="shrink-8 down-4 right-7" class="text-primary"></fa>
+										</fa-layers>
+									</p-button>
+								</span>
+
+								<span v-tooltip.top="{ value: 'Edit this recipe', disabled: false }">
+									<p-button @click="openDetailsModal(slotProps.data.id)" class="p-button-rounded p-button-primary m-1">
+										<fa :icon="['fas', 'pencil-alt']"></fa>
+									</p-button>
+								</span>
+
+								<span v-tooltip.top="{ value: 'Delete this recipe', disabled: false }">
+									<p-button @click="deleteRecipe($event, slotProps.data)" class="p-button-rounded p-button-danger m-1">
+										<fa :icon="['fas', 'trash']"></fa>
+									</p-button>
+								</span>
 							</div>
 						</div>
 					</div>
@@ -49,7 +81,6 @@
 
 		<RecipeDetailsModal :is-open="isDetailsOpen" :recipe-id="editRecipeId" @change-open-state="changeDetailsModalState" @saved="loadData"></RecipeDetailsModal>
 		<p-confirm-popup></p-confirm-popup>
-
 	</div>
 </template>
 
@@ -97,6 +128,10 @@ async function loadData() {
 
 async function getRecipes() {
 	return recipeController.getAll()
+}
+
+function openRecipeUrl(recipeUrl: string = "") {
+	window.open(recipeUrl, '_blank');
 }
 
 function openDetailsModal(recipeId: string = "") {
@@ -172,9 +207,9 @@ onMounted(async () => {
 		width: 100%;
 	}
 
-.recipe-item-content__image--default {
-	background-color: rgba(255, 255, 255, 0.44);
-}
+	.recipe-item-content__image--default {
+		background-color: rgba(255, 255, 255, 0.44);
+	}
 
 	.recipe-item-content__description-container {
 		display: flex;

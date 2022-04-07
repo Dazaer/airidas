@@ -44,6 +44,20 @@
 				</div>
 			</div>
 
+			<!-- Recipe Url Input -->
+			<div class="field col-12">
+				<div class="p-float-label">
+					<p-input-text
+						id="recipeUrl"
+						v-model="validation.recipeUrl.$model"
+						type="text"
+						:class="{ 'p-invalid': validation.recipeUrl.$invalid && hasBeenSubmitted }"
+						class="w-full"
+					/>
+					<label for="recipeUrl" :class="{ 'p-error': validation.recipeUrl.$invalid && hasBeenSubmitted }">Recipe url</label>
+				</div>
+			</div>
+
 			<!-- Image Link Input -->
 			<div class="field col-12">
 				<div class="p-float-label">
@@ -111,6 +125,7 @@ const recipeDetails: Ref<Recipe> = ref(new Recipe())
 const rules = {
 	title: { required },
 	description: {},
+	recipeUrl: {},
 	imageLink: {},
 }
 const validation = useVuelidate(rules, recipeDetails)

@@ -3,8 +3,10 @@ import { DocumentData, DocumentSnapshot, FirestoreDataConverter } from "firebase
 export default class Recipe {
 	public id: string = "";
 	public title: string = ""
-	public description: string = ""
-	public imageLink: string = ""
+	public description: string = "" //rename to notes
+	public imageLink: string = "" //rename to imageUrl
+	public recipeUrl: string = ""
+
 
 	/* ---------------- Navigational properties ---------------- */
 
@@ -19,6 +21,7 @@ export default class Recipe {
 			return {
 				description: recipe.description,
 				title: recipe.title,
+				recipeUrl: recipe.recipeUrl,
 				imageLink: recipe.imageLink,
 			};
 		},
