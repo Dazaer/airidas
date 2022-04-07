@@ -2,6 +2,7 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import { FontAwesomeIcon } from "./libraries/font-awesome";
+import { FontAwesomeLayers } from "@fortawesome/vue-fontawesome";
 
 /* PRIME VUE */
 import ConfirmationService from 'primevue/confirmationservice';
@@ -25,6 +26,7 @@ import ProgressBar from 'primevue/progressbar';
 import Textarea from 'primevue/textarea';
 import Toast from 'primevue/toast';
 import Toolbar from 'primevue/toolbar';
+import Tooltip from 'primevue/tooltip'
 /* PRIME VUE */
 
 export const vueApp = createApp(App)
@@ -47,4 +49,6 @@ export const vueApp = createApp(App)
 .component("p-toast", Toast)
 .component("p-toolbar", Toolbar)
 .component("fa", FontAwesomeIcon)
+.component("fa-layers", FontAwesomeLayers)
+.directive('tooltip', Tooltip)
 .mount("#app");
