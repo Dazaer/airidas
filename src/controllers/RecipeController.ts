@@ -36,19 +36,19 @@ export default class RecipeController {
 		return models
 	}
 
-	async add(featureRequest: Recipe): Promise<any> {
-		console.log(featureRequest)
+	async add(recipe: Recipe): Promise<any> {
+		console.log(recipe)
 		const collectionRef = collection(this.db, this.COLLECTION_PATH).withConverter(Recipe.firestoreConverter);
-		return addDoc(collectionRef, featureRequest);
+		return addDoc(collectionRef, recipe);
 	}
 
-	async update(featureRequest: Recipe): Promise<any> {
-		const docRef = doc(this.db, this.COLLECTION_PATH, featureRequest.id).withConverter(Recipe.firestoreConverter);
-		return setDoc(docRef, featureRequest);
+	async update(recipe: Recipe): Promise<any> {
+		const docRef = doc(this.db, this.COLLECTION_PATH, recipe.id).withConverter(Recipe.firestoreConverter);
+		return setDoc(docRef, recipe);
 	}
 
-	async delete(featureRequestId: string): Promise<any> {
-		const docRef = doc(this.db, this.COLLECTION_PATH, featureRequestId);
+	async delete(recipeId: string): Promise<any> {
+		const docRef = doc(this.db, this.COLLECTION_PATH, recipeId);
 		return deleteDoc(docRef);
 	}
 
