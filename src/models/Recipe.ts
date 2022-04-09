@@ -1,4 +1,5 @@
-import { DocumentData, DocumentSnapshot, FirestoreDataConverter } from "firebase/firestore";
+import dayjs from 'dayjs';
+import { DocumentData, DocumentSnapshot, FirestoreDataConverter, Timestamp, UpdateData } from "firebase/firestore";
 
 export default class Recipe {
 	public id: string = "";
@@ -7,11 +8,22 @@ export default class Recipe {
 	public imageLink: string = "" //rename to imageUrl
 	public recipeUrl: string = ""
 	public insertedByUID: string = ""
+	public insertedOnTimestamp: Timestamp = Timestamp.now()
+	public updatedOnTimestamp: Timestamp = Timestamp.now()
 
+	/* ---------------- ViewModel properties ---------------- */
 
-	/* ---------------- Navigational properties ---------------- */
+	public insertedOnFormattedDate: string = ""
+	public updatedOnFormattedDate: string = ""
+
 
 	constructor(data?: Partial<Recipe>) {
+		if (data == null) {
+			return Object.assign(this, data);
+		}
+
+		data.insertedOnFormattedDate = data.insertedOnTimestamp ? dayjs(data.insertedOnTimestamp.toDate()).format("DD/MM/YYYY") : "No inserted date"
+		data.updatedOnFormattedDate = data.updatedOnTimestamp ? dayjs(data.updatedOnTimestamp.toDate()).format("DD/MM/YYYY") : "No updated date"
 		Object.assign(this, data);
 	}
 
@@ -25,17 +37,26 @@ export default class Recipe {
 				recipeUrl: recipe.recipeUrl,
 				imageLink: recipe.imageLink,
 				insertedByUID: recipe.insertedByUID,
+				insertedOnTimestamp: Timestamp.now(),
+				updatedOnTimestamp: Timestamp.now(),
 			};
 		},
 		fromFirestore: (snapshot: DocumentSnapshot<DocumentData>) => {
-			const data = snapshot.data();
+			const data = snapshot.data() as Recipe
 			return new Recipe(data)
 		}
 	}
 
+	public static updateToFirestore(recipe: Recipe): UpdateData<Recipe> {
+		const updatedProperties: UpdateData<Recipe> = {
+			"title": recipe.title,
+			"description": recipe.description,
+			"recipeUrl": recipe.recipeUrl,
+			"imageLink": recipe.imageLink,
+			"updatedOnTimestamp": Timestamp.now(),
+		}
 
-	/* ---------------- Methods ---------------- */
-
-
+		return updatedProperties
+	}
 
 }

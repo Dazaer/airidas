@@ -126,7 +126,7 @@ async function loadData() {
 	recipes.value = await getRecipes()
 }
 
-async function getRecipes() {
+async function getRecipes(): Promise<Recipe[]> {
 	return recipeController.getAll()
 }
 

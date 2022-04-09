@@ -4,6 +4,14 @@ import router from "./router";
 import { FontAwesomeIcon } from "./libraries/font-awesome";
 import { FontAwesomeLayers } from "@fortawesome/vue-fontawesome";
 
+/* Dayjs */
+/*
+import dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc'
+dayjs.extend(utc);
+*/
+/* Dayjs */
+
 /* PRIME VUE */
 import ConfirmationService from 'primevue/confirmationservice';
 import PrimeVue from 'primevue/config';

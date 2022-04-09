@@ -5,6 +5,7 @@ import {collection, getFirestore, QueryDocumentSnapshot} from "firebase/firestor
  * Currently not being used. Is this something that could be useful?
  */
 
+/*
 	const firestore = getFirestore();
 
 	const converter = <T>() => ({
@@ -22,3 +23,4 @@ import {collection, getFirestore, QueryDocumentSnapshot} from "firebase/firestor
 	
 	export { firestoreConverter }
 	export default firestoreConverter
+	*/
