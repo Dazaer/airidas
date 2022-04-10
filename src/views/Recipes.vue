@@ -7,7 +7,7 @@
 		</section>
 
 		<main class="grid grid-nogutter col-12 container-box">
-			<p-data-view :value="recipes" :layout="layout" :paginator="true" :rows="9" :sortOrder="sortOrder" :sortField="sortField">
+			<p-data-view class="data-view" :value="recipes" :layout="layout" :paginator="true" :rows="9" :sortOrder="sortOrder" :sortField="sortField">
 				<template #header>
 					<p-toolbar class="mb-2 col-12 p-1">
 						<template #start>
@@ -127,7 +127,7 @@ async function loadData() {
 }
 
 async function getRecipes(): Promise<Recipe[]> {
-	return recipeController.getAll()
+	return recipeController.orderBy("updatedOnTimestamp").getAll()
 }
 
 function openRecipeUrl(recipeUrl: string = "") {
@@ -168,6 +168,10 @@ onMounted(async () => {
 </script>
 
 <style scoped lang="scss">
+
+.data-view {
+	width: 100%
+}
 .recipe-item {
 	@include container-item-box;
 	border: 1px solid var(--surface-border);
