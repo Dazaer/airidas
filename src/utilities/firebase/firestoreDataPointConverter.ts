@@ -3,6 +3,7 @@ import {collection, getFirestore, QueryDocumentSnapshot} from "firebase/firestor
 //https://medium.com/swlh/using-firestore-with-typescript-65bd2a602945
 /**
  * Currently not being used. Is this something that could be useful?
+ * Probably to be considered when implementing a GenericController class that will have the firestoreConverter
  */
 
 /*
