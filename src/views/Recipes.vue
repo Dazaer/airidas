@@ -6,8 +6,22 @@
 			<p class="col-12">View and add recipes!</p>
 		</section>
 
+		<!-- Enable to update a field value. Will eventually move to a separate page.
+			<p-button @click="updateField()" class="p-button-rounded p-button-warning m-1">
+			<fa :icon="['fas', 'check']"></fa>
+		</p-button> 
+		-->
+
 		<main class="grid grid-nogutter col-12 container-box">
-			<p-data-view class="data-view" :value="recipes" :layout="layout" :paginator="true" :rows="9" :sortOrder="sortOrder" :sortField="sortField">
+			<p-data-view
+				class="data-view"
+				:value="recipes"
+				:layout="layout"
+				:paginator="true"
+				:rows="9"
+				:sortOrder="sortOrder"
+				:sortField="sortField"
+			>
 				<template #header>
 					<p-toolbar class="mb-2 col-12 p-1">
 						<template #start>
@@ -127,7 +141,7 @@ async function loadData() {
 }
 
 async function getRecipes(): Promise<Recipe[]> {
-	return recipeController.orderBy("updatedOnTimestamp").getAll()
+	return recipeController.orderBy("updatedOnTimestamp", "desc").getAll()
 }
 
 function openRecipeUrl(recipeUrl: string = "") {
@@ -160,6 +174,12 @@ function deleteRecipe(event: any, recipe: Recipe) {
 	});
 }
 
+/*
+function updateField() {
+	recipeController.updateField("insertedOnTimestamp", Timestamp.now())
+}
+/*
+
 /* ------------------- Lifecycle ----------------- */
 onMounted(async () => {
 	loadData()
@@ -168,9 +188,8 @@ onMounted(async () => {
 </script>
 
 <style scoped lang="scss">
-
 .data-view {
-	width: 100%
+	width: 100%;
 }
 .recipe-item {
 	@include container-item-box;

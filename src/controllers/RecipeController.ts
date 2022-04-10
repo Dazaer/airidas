@@ -1,16 +1,19 @@
 import Recipe from "@/models/Recipe";
 import { documentSnapshotToModel, querySnapshotToModelArray } from "@/utilities/firebase/firestoreModelConverter";
-import { addDoc, collection, deleteDoc, doc, FieldPath, getDoc, getDocs, getFirestore, orderBy, query, QueryConstraint, updateDoc, where } from "firebase/firestore"
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, orderBy, OrderByDirection, query, QueryConstraint, updateDoc } from "firebase/firestore"
+import { addDefaultValueForFieldInCollection, CollectionFieldUpdateModel } from "@/utilities/firebase/firestoreFunctions";
 
 export default class RecipeController {
 
 	private readonly db = getFirestore();
 	private readonly COLLECTION_PATH = 'recipes'
 
-	private _orderByField: keyof Recipe | null = null
+	private _orderByField: OrderByField | null = null
 
-	orderBy<K extends keyof Recipe>(field: K): RecipeController {
-		this._orderByField = field;
+
+	public orderBy<K extends keyof Recipe>(field: K, directionStr?: OrderByDirection): RecipeController {
+		this._orderByField = new OrderByField({field: field})
+		this._orderByField.directionStr = directionStr ?? this._orderByField.directionStr
 		return this;
 	}
 
@@ -31,7 +34,7 @@ export default class RecipeController {
 
 		const queryConstraints: QueryConstraint[] = []
 		if (this._orderByField != null) {
-			queryConstraints.push(orderBy(this._orderByField))
+			queryConstraints.push(orderBy(this._orderByField.field, this._orderByField.directionStr))
 		}
 
 		const dbQuery = query(collectionRef, ...queryConstraints)
@@ -62,5 +65,20 @@ export default class RecipeController {
 		return deleteDoc(docRef);
 	}
 
+	updateField<K extends keyof Recipe>(field: K, value: Recipe[typeof field]) {
+		const collectionRef = collection(this.db, this.COLLECTION_PATH).withConverter(Recipe.firestoreConverter);
+		const updateFieldModel = new CollectionFieldUpdateModel(collectionRef, field, value)
+		addDefaultValueForFieldInCollection(updateFieldModel)
+	}
+
+}
+
+class OrderByField {
+	public field!: keyof Recipe
+	public directionStr?: OrderByDirection = "asc"
+
+	constructor(data?: Partial<OrderByField>) {
+		Object.assign(this, data);
+	}
 }
 
