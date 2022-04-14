@@ -7,6 +7,7 @@ export enum RouteNames {
 	About = "about",
 	FeatureRequest = "feature-request",
 	Recipes = "recipes",
+	RecipeTags = "recipe-tags",
 	Settings = "settings",
 	ConfirmPasswordReset = "confirm-password-reset",
 }
@@ -20,9 +21,6 @@ const routes: Array<RouteRecordRaw> = [
 	{
 		path: "/about",
 		name: RouteNames.About,
-		// route level code-splitting
-		// this generates a separate chunk (about.[hash].js) for this route
-		// which is lazy-loaded when the route is visited.
 		component: lazyLoad("About"),
 	},
 	{
@@ -33,7 +31,12 @@ const routes: Array<RouteRecordRaw> = [
 	{
 		path: "/recipes",
 		name: RouteNames.Recipes,
-		component: lazyLoad("Recipes"),
+		component: lazyLoad("recipes/Recipes"),
+	},
+	{
+		path: "/recipe-tags",
+		name: RouteNames.RecipeTags,
+		component: lazyLoad("recipes/RecipeTags"),
 	},
 	{
 		path: "/settings",
@@ -77,6 +80,13 @@ router.beforeEach((to, from, next) => {
 });
 */
 
+/**
+ * route level code-splitting
+	 this generates a separate chunk (about.[hash].js) for this route
+	 which is lazy-loaded when the route is visited.
+ * @param viewPath 
+ * @returns 
+ */
 function lazyLoad(viewPath: string) {
 	return () => import(`@/views/${viewPath}.vue`)
 }

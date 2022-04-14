@@ -7,6 +7,24 @@
 				</router-link>
 			</template>
 
+			<!-- This is not complete, but could be expanded on if we ever need to use the exact structure of the MenuModel, but very customized.
+			<template #item="{ item }">
+				<div v-if="!hasFullyLoaded"></div>
+
+				<span v-else-if="item.to == null">
+					<a @click="item.command" role="menuitem" class="p-menuitem-link">
+						<span class="p-menuitem-text">{{ item.label }}</span>
+					</a>
+				</span>
+
+				<router-link v-else :to="item.to ? item.to : null" custom v-slot="{ href, navigate }">
+					<a :href="href" @click="navigate" role="menuitem" class="p-menuitem-link">
+						<span class="p-menuitem-text">{{ item.label }}</span>
+					</a>
+				</router-link>
+			</template> 
+			-->
+
 			<template v-if="!hasFullyLoaded" #item></template>
 
 			<template v-if="isLoggedIn" #end>
@@ -31,15 +49,10 @@ import { RouteNames } from "@/router";
 const menu = ref([
 	/*
 	{
-		label: 'Home',
-		icon: "pi pi-home",
-		to: "/"
-	},
-	{
 		label: "About",
 		to: { name: RouteNames.About }
 	},
-		*/
+	*/
 	{
 		label: "Profile",
 		items: [
@@ -48,11 +61,23 @@ const menu = ref([
 		],
 		visible: () => isLoggedIn.value,
 	},
+	/*
 	{
 		label: "Recipes",
-		to: { name: "recipes" },
+		to: { name: RouteNames.Recipes },
 		visible: () => isLoggedIn.value,
 	},
+	*/
+
+	{
+		label: "Recipes",
+		items: [
+			{ label: "Recipes List", icon: "fas fa-utensils", to: { name: RouteNames.Recipes } },
+			{ label: "Tags", icon: "fas fa-tags", to: { name: RouteNames.RecipeTags } }
+		],
+		visible: () => isLoggedIn.value,
+	},
+
 	{
 		label: "Feature Request",
 		to: { name: "feature-request" },
