@@ -21,6 +21,7 @@ import "primevue/resources/primevue.min.css"                 //core css
 import "primeicons/primeicons.css"                           //icons -- using font-awesome but still need these icons for primevue to work
 import "./assets/_theme.scss"
 import Button from 'primevue/button';
+import Chip from 'primevue/chip';
 import Column from 'primevue/column';
 import ConfirmPopup from 'primevue/confirmpopup';
 import DataTable from 'primevue/datatable';
@@ -43,6 +44,7 @@ export const vueApp = createApp(App)
 .use(ToastService)
 .use(router)
 .component("p-button", Button)
+.component("p-chip", Chip)
 .component("p-column", Column)
 .component("p-confirm-popup", ConfirmPopup)
 .component("p-data-table", DataTable)

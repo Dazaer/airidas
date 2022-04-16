@@ -22,6 +22,10 @@ export default class RecipeController {
 		const documentSnapshot = await getDoc(docRef)
 		let model = documentSnapshotToModel<Recipe>(Recipe, documentSnapshot, "id")
 
+		/*
+		This is where we would get the extra info about each recipeTag from the collection
+		*/
+
 		if (model == null) {
 			model = new Recipe()
 		}
@@ -50,7 +54,6 @@ export default class RecipeController {
 	}
 
 	async add(recipe: Recipe): Promise<any> {
-		console.log(recipe)
 		const collectionRef = collection(this.db, this.COLLECTION_PATH).withConverter(Recipe.firestoreConverter);
 		return addDoc(collectionRef, recipe);
 	}

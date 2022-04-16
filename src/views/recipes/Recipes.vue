@@ -20,12 +20,12 @@
 				:paginator="true"
 				:rows="9"
 				:sortOrder="sortOrder"
-				:sortField="sortField"
-			>
+				:sortField="sortField">
 				<template #header>
 					<p-toolbar class="mb-2 col-12 p-1">
 						<template #start>
-							<p-button @click="openDetailsModal()" label="New" icon="pi pi-plus" class="p-button-success"></p-button>
+							<p-button @click="openDetailsModal()" label="New" icon="pi pi-plus"
+								class="p-button-success"></p-button>
 						</template>
 
 						<!-- <div class="col-6" style="text-align: left">
@@ -47,42 +47,53 @@
 										v-if="slotProps.data.imageLink.length > 0"
 										class="recipe-item-content__image"
 										:src="slotProps.data.imageLink"
-										:alt="slotProps.data.title"
-									/>
+										:alt="slotProps.data.title" />
 									<img
 										v-else
 										class="recipe-item-content__image recipe-item-content__image--default"
 										:src="defaultImageLink"
-										:alt="slotProps.data.title"
-									/>
+										:alt="slotProps.data.title" />
 								</div>
+
 								<div class="recipe-item-content__description-container">
 									<p class="recipe-item-content__description">{{ slotProps.data.description }}</p>
+								</div>
+
+								<div class="recipe-item-content__tags-container flex-none">
+									<p-chip class="flex-none mr-1 mb-1" v-bind:key="tag.id"
+										v-for="tag in slotProps.data.tags" :label="tag.title">
+									</p-chip>
 								</div>
 							</div>
 
 							<div class="recipe-item-bottom">
-								<span v-tooltip.top="{ value: 'Open the recipe\'s page in a new tab', disabled: false }">
+								<span
+									v-tooltip.top="{ value: 'Open the recipe\'s page in a new tab', disabled: false }">
 									<p-button
 										@click="openRecipeUrl(slotProps.data.recipeUrl)"
 										:disabled="slotProps.data.recipeUrl.length === 0"
-										class="p-button-rounded p-button-primary m-1"
-									>
+										class="p-button-rounded p-button-primary m-1">
 										<fa-layers fixed-width>
 											<fa :icon="['fas', 'book-reader']" transform="grow-10"></fa>
-											<fa :icon="['fas', 'utensils']" transform="shrink-8 down-4 right-7" class="text-primary"></fa>
+											<fa
+												:icon="['fas', 'utensils']"
+												transform="shrink-8 down-4 right-7"
+												class="text-primary">
+											</fa>
 										</fa-layers>
 									</p-button>
 								</span>
 
 								<span v-tooltip.top="{ value: 'Edit this recipe', disabled: false }">
-									<p-button @click="openDetailsModal(slotProps.data.id)" class="p-button-rounded p-button-primary m-1">
+									<p-button @click="openDetailsModal(slotProps.data.id)"
+										class="p-button-rounded p-button-primary m-1">
 										<fa :icon="['fas', 'pencil-alt']"></fa>
 									</p-button>
 								</span>
 
 								<span v-tooltip.top="{ value: 'Delete this recipe', disabled: false }">
-									<p-button @click="deleteRecipe($event, slotProps.data)" class="p-button-rounded p-button-danger m-1">
+									<p-button @click="deleteRecipe($event, slotProps.data)"
+										class="p-button-rounded p-button-danger m-1">
 										<fa :icon="['fas', 'trash']"></fa>
 									</p-button>
 								</span>
@@ -93,7 +104,12 @@
 			</p-data-view>
 		</main>
 
-		<RecipeDetailsModal :is-open="isDetailsOpen" :recipe-id="editRecipeId" @change-open-state="changeDetailsModalState" @saved="loadData"></RecipeDetailsModal>
+		<RecipeDetailsModal
+			:is-open="isDetailsOpen"
+			:recipe-id="editRecipeId"
+			@change-open-state="changeDetailsModalState"
+			@saved="loadData">
+		</RecipeDetailsModal>
 		<p-confirm-popup></p-confirm-popup>
 	</div>
 </template>
@@ -105,6 +121,7 @@ import { useToast } from "primevue/usetoast";
 import Recipe from "@/models/Recipe";
 import RecipeController from "@/controllers/RecipeController";
 import RecipeDetailsModal from "@/components/modals/RecipeDetailsModal.vue";
+import RecipeTag from "@/models/RecipeTag";
 
 /* ------------------- Properties ----------------- */
 const toast = useToast();
@@ -120,17 +137,17 @@ const defaultImageLink: string = "https://cooking.mixedmenus.com/wp-content/uplo
 
 
 /* --test sample recipes for adjusting layout
-const recipes: Recipe[] = [
-	new Recipe({ title: "IMAGE overflows.", description: "Description of recipe right here", imageLink: "https://lepetiteats.com/wp-content/uploads/2016/03/Pra-Ram-Tofu-2.jpg" }),
-	new Recipe({ title: "TITLE overflows super long title here not sure what will happen to this here's some more lines just to fill it up", description: "THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now", imageLink: "https://mishkanet.com/img/251847.jpg" }),
-	new Recipe({ title: "ALL overflows everywhere  - super long title here not sure what asdfsdf sd fsd f sdf sd fds f ssssss will happen to this here's some more lines just to fill it up no but really this should be so long that it overflows completely", description: "Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right  Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right herehere Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here", imageLink: "https://lepetiteats.com/wp-content/uploads/2016/03/Pra-Ram-Tofu-2.jpg" }),
+const recipes: Ref<Recipe[]> = ref([
+	new Recipe({ title: "IMAGE overflows.", tags: [new RecipeTag({ title: "Test1" }), new RecipeTag({ title: "Test2 longer tag" }), new RecipeTag({ title: "Test2" })], description: "Description of recipe right here", imageLink: "https://lepetiteats.com/wp-content/uploads/2016/03/Pra-Ram-Tofu-2.jpg" }),
+	new Recipe({ title: "TITLE overflows super long title here not sure what will happen to this here's some more lines just to fill it up", tags: [new RecipeTag({ title: "Test1" }), new RecipeTag({ title: "Test2 longer tag" }), new RecipeTag({ title: "Test2" })], description: "THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now", imageLink: "https://mishkanet.com/img/251847.jpg" }),
+	new Recipe({ title: "ALL overflows everywhere  - super long title here not sure what asdfsdf sd fsd f sdf sd fds f ssssss will happen to this here's some more lines just to fill it up no but really this should be so long that it overflows completely", tags: [new RecipeTag({ title: "Test1" }), new RecipeTag({ title: "Test2 longer tag" }), new RecipeTag({ title: "Test2" }), new RecipeTag({ title: "Test3" }), new RecipeTag({ title: "Test4" }), new RecipeTag({ title: "Test5" })], description: "Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right  Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right herehere Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here Description of recipe right here", imageLink: "https://lepetiteats.com/wp-content/uploads/2016/03/Pra-Ram-Tofu-2.jpg" }),
 	new Recipe({ title: "IMAGE none", description: "Description of recipe right here", imageLink: "" }),
 	new Recipe({ title: "DESCRIPTION overflows.", description: "THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now", imageLink: "https://mishkanet.com/img/251847.jpg" }),
 	new Recipe({ title: "An even more vertically long image", description: "Description of recipe right here", imageLink: "https://images.wine.co.za/GetWineImage.ashx?ImageSize=large&IMAGEID=268293" }),
 	new Recipe({ title: "Recipe 2", description: "THIS is another recipe that i just got from somewhrer and omg it's awesome look at it right now", imageLink: "https://mishkanet.com/img/251847.jpg" }),
 	new Recipe({ title: "Recipe 1", description: "Description of recipe right here", imageLink: "https://lepetiteats.com/wp-content/uploads/2016/03/Pra-Ram-Tofu-2.jpg" }),
-]
-*/
+])
+	*/
 
 const layout = ref('grid');
 const sortOrder = ref();
@@ -191,6 +208,7 @@ onMounted(async () => {
 .data-view {
 	width: 100%;
 }
+
 .recipe-item {
 	@include container-item-box;
 	border: 1px solid var(--surface-border);
@@ -224,6 +242,7 @@ onMounted(async () => {
 		flex: 1 1 content;
 		min-height: 0;
 	}
+
 	.recipe-item-content__image {
 		max-height: 100%;
 		object-fit: contain;
@@ -236,7 +255,12 @@ onMounted(async () => {
 
 	.recipe-item-content__description-container {
 		display: flex;
-		//flex: 1 1 content;
+	}
+
+	.recipe-item-content__tags-container {
+		display: flex;
+		overflow-x: auto;
+		scrollbar-width: thin;
 	}
 
 	.recipe-item-content__description {
@@ -245,6 +269,7 @@ onMounted(async () => {
 		-webkit-box-orient: vertical;
 		overflow: hidden;
 	}
+
 }
 
 .recipe-item-bottom {

@@ -1,3 +1,4 @@
+import RecipeTag from '@/models/RecipeTag';
 import dayjs from 'dayjs';
 import { DocumentData, DocumentSnapshot, FirestoreDataConverter, Timestamp, UpdateData } from "firebase/firestore";
 
@@ -7,6 +8,7 @@ export default class Recipe {
 	public description: string = "" //rename to notes
 	public imageLink: string = "" //rename to imageUrl
 	public recipeUrl: string = ""
+	public tags: RecipeTag[] = []
 	public insertedByUID: string = ""
 	public insertedOnTimestamp: Timestamp = Timestamp.now()
 	public updatedOnTimestamp: Timestamp = Timestamp.now()
@@ -15,7 +17,6 @@ export default class Recipe {
 
 	public insertedOnFormattedDate: string = ""
 	public updatedOnFormattedDate: string = ""
-
 
 	constructor(data?: Partial<Recipe>) {
 		if (data == null) {
