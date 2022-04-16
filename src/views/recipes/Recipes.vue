@@ -37,36 +37,36 @@
 				<template #grid="slotProps">
 					<div class="col-12 md:col-4">
 						<div class="recipe-item">
-							<div class="recipe-item-top center">
-								<h4 class="recipe-item-top__title">{{ slotProps.data.title }}</h4>
+							<div class="recipe-item__top-container center">
+								<h4 class="recipe-item__title">{{ slotProps.data.title }}</h4>
 							</div>
 
-							<div class="recipe-item-content">
-								<div class="recipe-item-content__image-container">
+							<div class="recipe-item__content">
+								<div class="recipe-item__image-container">
 									<img
 										v-if="slotProps.data.imageLink.length > 0"
-										class="recipe-item-content__image"
+										class="recipe-item__image"
 										:src="slotProps.data.imageLink"
 										:alt="slotProps.data.title" />
 									<img
 										v-else
-										class="recipe-item-content__image recipe-item-content__image--default"
+										class="recipe-item__image recipe-item__image--default"
 										:src="defaultImageLink"
 										:alt="slotProps.data.title" />
 								</div>
 
-								<div class="recipe-item-content__description-container">
-									<p class="recipe-item-content__description">{{ slotProps.data.description }}</p>
+								<div class="flex">
+									<p class="recipe-item__description">{{ slotProps.data.description }}</p>
 								</div>
 
-								<div class="recipe-item-content__tags-container flex-none">
+								<div class="recipe-item__tags-container flex-none">
 									<p-chip class="flex-none mr-1 mb-1" v-bind:key="tag.id"
 										v-for="tag in slotProps.data.tags" :label="tag.title">
 									</p-chip>
 								</div>
 							</div>
 
-							<div class="recipe-item-bottom">
+							<div class="recipe-item__bottom-container">
 								<span
 									v-tooltip.top="{ value: 'Open the recipe\'s page in a new tab', disabled: false }">
 									<p-button
@@ -217,65 +217,61 @@ onMounted(async () => {
 
 	display: flex;
 	flex-direction: column;
-}
 
-.recipe-item-top {
-	display: flex;
-	flex: 0.1 1 auto;
+	.recipe-item__top-container {
+		display: flex;
+		flex: 0.1 1 auto;
+	}
 
-	.recipe-item-top__title {
+	.recipe-item__title {
 		display: -webkit-box;
 		-webkit-line-clamp: 3;
 		-webkit-box-orient: vertical;
 		overflow: hidden;
 	}
-}
 
-.recipe-item-content {
-	display: flex;
-	flex-direction: column;
-	flex: 10 1 auto;
-	min-height: 0;
+	.recipe-item__content {
+		display: flex;
+		flex-direction: column;
+		flex: 10 1 auto;
+		min-height: 0;
+	}
 
-	.recipe-item-content__image-container {
+	.recipe-item__image-container {
 		display: flex;
 		flex: 1 1 content;
 		min-height: 0;
 	}
 
-	.recipe-item-content__image {
+	.recipe-item__image {
 		max-height: 100%;
 		object-fit: contain;
 		width: 100%;
 	}
 
-	.recipe-item-content__image--default {
+	.recipe-item__image--default {
 		background-color: rgba(255, 255, 255, 0.44);
 	}
 
-	.recipe-item-content__description-container {
-		display: flex;
-	}
-
-	.recipe-item-content__tags-container {
-		display: flex;
-		overflow-x: auto;
-		scrollbar-width: thin;
-	}
-
-	.recipe-item-content__description {
+	.recipe-item__description {
 		display: -webkit-box;
 		-webkit-line-clamp: 10;
 		-webkit-box-orient: vertical;
 		overflow: hidden;
 	}
 
-}
+	.recipe-item__tags-container {
+		display: flex;
+		overflow-x: auto;
+		scrollbar-width: thin;
+	}
 
-.recipe-item-bottom {
-	display: flex;
-	align-items: flex-end;
-	align-self: flex-end;
-	flex: 1 1 auto;
+	.recipe-item__bottom-container {
+		display: flex;
+		align-items: flex-end;
+		align-self: flex-end;
+		flex: 1 1 auto;
+	}
+
 }
 </style>
