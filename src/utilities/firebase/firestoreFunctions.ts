@@ -1,4 +1,4 @@
-import { CollectionReference, DocumentReference, getDocs, limit, query, QueryConstraint, QueryDocumentSnapshot, startAfter, UpdateData, updateDoc } from "firebase/firestore";
+import { CollectionReference, DocumentData, DocumentReference, Firestore, getDocs, limit, Query, query, QueryConstraint, QueryDocumentSnapshot, startAfter, UpdateData, updateDoc, writeBatch } from "firebase/firestore";
 
 export class CollectionFieldUpdateModel<T> {
 	public collectionRef!: CollectionReference<T>
@@ -108,4 +108,28 @@ export async function addDefaultValueForFieldInCollection<T>(model: CollectionFi
   console.log("Errors by reported code:", errorCountByCode);
 
   return results;
+}
+
+export async function deleteQueryBatch(db: Firestore, query:Query<DocumentData>, resolve:any) {
+	const snapshot = await getDocs(query);
+
+	const batchSize = snapshot.size;
+	if (batchSize === 0) {
+		// When there are no documents left, we are done
+		resolve();
+		return;
+	}
+
+	// Delete documents in a batch
+	const batch = writeBatch(db);
+	snapshot.docs.forEach((doc) => {
+		batch.delete(doc.ref);
+	});
+	await batch.commit();
+
+	// Recurse on the next process tick, to avoid
+	// exploding the stack.
+	(process as any).nextTick(() => {
+		deleteQueryBatch(db, query, resolve);
+	});
 }
