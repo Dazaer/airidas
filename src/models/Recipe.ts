@@ -40,6 +40,7 @@ export default class Recipe {
 				insertedByUID: recipe.insertedByUID,
 				insertedOnTimestamp: Timestamp.now(),
 				updatedOnTimestamp: Timestamp.now(),
+				tags: recipe.tags.map(tag => RecipeTag.firestoreConverter.toFirestore(tag))
 			};
 		},
 		fromFirestore: (snapshot: DocumentSnapshot<DocumentData>) => {
@@ -55,6 +56,7 @@ export default class Recipe {
 			"recipeUrl": recipe.recipeUrl,
 			"imageLink": recipe.imageLink,
 			"updatedOnTimestamp": Timestamp.now(),
+			"tags": recipe.tags.map(tag => RecipeTag.firestoreConverter.toFirestore(tag))
 		}
 
 		return updatedProperties

@@ -13,8 +13,7 @@
 		:auto-z-index="true"
 		:base-z-index="100"
 		:breakpoints="{ '1080px': '75vw', '640px': '100vw' }"
-		class="container-modal"
-	>
+		class="container-modal">
 		<article class="p-fluid pt-3">
 			<!-- Title Input -->
 			<div class="field col-12">
@@ -25,15 +24,13 @@
 						type="text"
 						:autofocus="props.recipeId == ''"
 						:class="{ 'p-invalid': validation.title.$invalid && hasBeenSubmitted }"
-						class="w-full"
-					/>
+						class="w-full" />
 					<label for="recipeTitle" :class="{ 'p-error': validation.title.$invalid && hasBeenSubmitted }">Title</label>
 				</div>
 
 				<small
 					v-if="validation.title.$invalid && hasBeenSubmitted"
-					class="p-error"
-				>{{ validation.title.required.$message.replace('Value', 'Title') }}</small>
+					class="p-error">{{ validation.title.required.$message.replace('Value', 'Title') }}</small>
 			</div>
 
 			<!-- Description Input -->
@@ -52,8 +49,7 @@
 						v-model="validation.recipeUrl.$model"
 						type="text"
 						:class="{ 'p-invalid': validation.recipeUrl.$invalid && hasBeenSubmitted }"
-						class="w-full"
-					/>
+						class="w-full" />
 					<label for="recipeUrl" :class="{ 'p-error': validation.recipeUrl.$invalid && hasBeenSubmitted }">Recipe url</label>
 				</div>
 			</div>
@@ -66,9 +62,28 @@
 						v-model="validation.imageLink.$model"
 						type="text"
 						:class="{ 'p-invalid': validation.imageLink.$invalid && hasBeenSubmitted }"
-						class="w-full"
-					/>
+						class="w-full" />
 					<label for="imageLink" :class="{ 'p-error': validation.imageLink.$invalid && hasBeenSubmitted }">Image url</label>
+				</div>
+			</div>
+
+			<!-- Tags selection Input -->
+			<div class="field col-12">
+				<div class="p-float-label">
+					<p-auto-complete
+						id="tags"
+						v-model="recipeDetails.tags"
+						:suggestions="filteredRecipeTags"
+						field="title"
+						@complete="searchTags($event)"
+						multiple
+						dropdown
+						forceSelection>
+						<template #chip="{ value }">
+							<div v-tooltip.bottom="{ value: value.description, disabled: value.description.length === 0}">{{ value.title }}</div>
+						</template>
+					</p-auto-complete>
+					<label for="tags">Tags</label>
 				</div>
 			</div>
 		</article>
@@ -89,6 +104,9 @@ import Recipe from "@/models/Recipe";
 import RecipeController from "@/controllers/RecipeController";
 import { getAuth } from "@firebase/auth";
 import firebaseApp from "@/utilities/firebase/firebase";
+import RecipeTag from "@/models/RecipeTag";
+import RecipeTagController from "@/controllers/RecipeTagController";
+import { AutoCompleteCompleteEvent } from "primevue/autocomplete";
 
 /* ------------------- Props ----------------- */
 
@@ -110,6 +128,7 @@ const emit = defineEmits<{
 
 const toast = useToast();
 const recipeController = new RecipeController()
+const recipeTagController = new RecipeTagController()
 
 const isVisible = computed({
 	get() {
@@ -121,6 +140,8 @@ const isVisible = computed({
 })
 
 const recipeDetails: Ref<Recipe> = ref(new Recipe())
+const recipeTags: Ref<RecipeTag[]> = ref([])
+const filteredRecipeTags: Ref<RecipeTag[]> = ref([])
 
 /* ------------------- Validation ----------------- */
 
@@ -140,6 +161,7 @@ function changeOpenState(isOpen: boolean) {
 }
 
 async function loadRecipeModal() {
+	recipeTags.value = await getRecipeTags()
 	recipeDetails.value = await getRecipe()
 }
 
@@ -150,6 +172,10 @@ async function getRecipe(): Promise<Recipe> {
 	}
 
 	return recipeController.get(props.recipeId)
+}
+
+async function getRecipeTags(): Promise<RecipeTag[]> {
+	return recipeTagController.getAll()
 }
 
 async function saveRecipe() {
@@ -200,6 +226,18 @@ async function updateRecipe(recipe: Recipe) {
 			toast.add({ severity: 'error', summary: "Error updating recipe", detail: `${error}` });
 			return false
 		})
+}
+
+function searchTags(event: AutoCompleteCompleteEvent) {
+	setTimeout(() => {
+		if (!event.query.trim().length) {
+			return filteredRecipeTags.value = [...recipeTags.value];
+		}
+
+		filteredRecipeTags.value = recipeTags.value.filter((tag) => {
+			return tag.title.toLowerCase().startsWith(event.query.toLowerCase());
+		});
+	}, 100);
 }
 
 /* ------------------- Lifecycle ----------------- */

@@ -58,8 +58,8 @@ export default class RecipeController {
 	async add(recipe: Recipe): Promise<any> {
 		const collectionRef = collection(this.db, RecipeController.COLLECTION_PATH).withConverter(Recipe.firestoreConverter);
 
-		const recipeRecipeTagController = new RecipeRecipeTagController(recipe.id);
-		await addDoc(collectionRef, recipe);
+		const addedDoc = await addDoc(collectionRef, recipe);
+		const recipeRecipeTagController = new RecipeRecipeTagController(addedDoc.id);
 
 		const promises:Promise<any>[] = []
 		recipe.tags.forEach(tag => {
@@ -73,12 +73,19 @@ export default class RecipeController {
 		const docRef = doc(this.db, RecipeController.COLLECTION_PATH, recipe.id).withConverter(Recipe.firestoreConverter);
 		const recipeRecipeTagController = new RecipeRecipeTagController(recipe.id);
 
-		const updatePromises:Promise<any>[] = []
-		recipe.tags.forEach(tag => {
-			updatePromises.push(recipeRecipeTagController.update(tag))
-		})
+		const existingRecipeRecipeTags = await recipeRecipeTagController.getAll()
+		const deletedTags = existingRecipeRecipeTags.filter(existingTag => recipe.tags.every(tag => existingTag.id !== tag.id))
+		const newTags = recipe.tags.filter(tag => existingRecipeRecipeTags.every(existingTag => existingTag.id !== tag.id))
 
-		await Promise.all(updatePromises)
+		const promises:Promise<any>[] = []
+		newTags.forEach(tag => {
+			promises.push(recipeRecipeTagController.add(tag))
+		})
+		deletedTags.forEach(tag => {
+			promises.push(recipeRecipeTagController.delete(tag.id))
+		})
+		
+		await Promise.all(promises)
 		return updateDoc(docRef, Recipe.updateToFirestore(recipe))
 	}
 
