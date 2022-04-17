@@ -69,7 +69,7 @@ export default class RecipeRecipeTagController {
 	async deleteAll() {
 		const batchSize:number = 50
 		const collectionRef = collection(this.db, this.collectionPath);
-		const queryConstraints: QueryConstraint[] = [orderBy(this.modelIdentifierName), limit(batchSize)]
+		const queryConstraints: QueryConstraint[] = [limit(batchSize)]
 		const dbQuery = query(collectionRef, ...queryConstraints)
 	
 		return new Promise((resolve, reject) => {
