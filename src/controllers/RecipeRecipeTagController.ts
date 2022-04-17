@@ -1,6 +1,6 @@
 import { documentSnapshotToModel, querySnapshotToModelArray } from "@/utilities/firebase/firestoreModelConverter";
-import { addDoc, collection, deleteDoc, doc, DocumentData, getDoc, getDocs, getFirestore, limit, orderBy, Query, query, QueryConstraint, updateDoc, writeBatch } from "firebase/firestore"
-import RecipeTag from "@/models/RecipeTag";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, limit, orderBy, Query, query, QueryConstraint, updateDoc } from "firebase/firestore"
+import RecipeRecipeTag from "@/models/recipe/RecipeRecipeTag";
 import RecipeController from "./RecipeController";
 import { deleteQueryBatch } from "@/utilities/firebase/firestoreFunctions";
 
@@ -11,7 +11,7 @@ import { deleteQueryBatch } from "@/utilities/firebase/firestoreFunctions";
 export default class RecipeRecipeTagController {
 
 	private readonly db = getFirestore();
-	public static readonly COLLECTION_PATH = 'recipe-tags'
+	public static readonly COLLECTION_PATH = 'recipe-recipe-tags'
 	private readonly modelIdentifierName = "id"
 	private recipeId: string = ""
 	
@@ -23,26 +23,26 @@ export default class RecipeRecipeTagController {
 		this.recipeId = recipeId;
 	}
 
-	async get(id: string): Promise<RecipeTag> {
-		const docRef = doc(this.db, this.collectionPath, id).withConverter(RecipeTag.firestoreConverter);
+	async get(id: string): Promise<RecipeRecipeTag> {
+		const docRef = doc(this.db, this.collectionPath, id).withConverter(RecipeRecipeTag.firestoreConverter);
 		const documentSnapshot = await getDoc(docRef)
-		let model = documentSnapshotToModel<RecipeTag>(RecipeTag, documentSnapshot, "id")
+		let model = documentSnapshotToModel<RecipeRecipeTag>(RecipeRecipeTag, documentSnapshot, "id")
 
 		if (model == null) {
-			model = new RecipeTag()
+			model = new RecipeRecipeTag()
 		}
 
 		return model
 	}
 
-	async getAll(): Promise<RecipeTag[]> {
-		const collectionRef = collection(this.db, this.collectionPath).withConverter(RecipeTag.firestoreConverter)
+	async getAll(): Promise<RecipeRecipeTag[]> {
+		const collectionRef = collection(this.db, this.collectionPath).withConverter(RecipeRecipeTag.firestoreConverter)
 		const queryConstraints: QueryConstraint[] = []
 
 		const dbQuery = query(collectionRef, ...queryConstraints)
 		const querySnapshot = await getDocs(dbQuery)
 
-		const models = querySnapshotToModelArray<RecipeTag>(RecipeTag, querySnapshot, this.modelIdentifierName)
+		const models = querySnapshotToModelArray<RecipeRecipeTag>(RecipeRecipeTag, querySnapshot, this.modelIdentifierName)
 
 		models.map(model => {
 			return model;
@@ -51,14 +51,9 @@ export default class RecipeRecipeTagController {
 		return models
 	}
 
-	async add(recipeTag: RecipeTag): Promise<any> {
-		const collectionRef = collection(this.db, this.collectionPath).withConverter(RecipeTag.firestoreConverter);
+	async add(recipeTag: RecipeRecipeTag): Promise<any> {
+		const collectionRef = collection(this.db, this.collectionPath).withConverter(RecipeRecipeTag.firestoreConverter);
 		return addDoc(collectionRef, recipeTag);
-	}
-
-	async update(recipeTag: RecipeTag): Promise<any> {
-		const docRef = doc(this.db, this.collectionPath, recipeTag.id).withConverter(RecipeTag.firestoreConverter);
-		return updateDoc(docRef, RecipeTag.updateToFirestore(recipeTag))
 	}
 
 	async delete(recipeTagId: string): Promise<any> {

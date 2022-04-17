@@ -28,9 +28,24 @@
 								class="p-button-success"></p-button>
 						</template>
 
-						<!-- <div class="col-6" style="text-align: left">
-						<Dropdown v-model="sortKey" :options="sortOptions" optionLabel="label" placeholder="Sort By Price" @change="onSortChange($event)" />
-						</div>-->
+						<template #end>
+							<div class="my-1">
+								<p-dropdown
+									v-model="recipesFilter.tag"
+									:options="recipeTags"
+									optionLabel="title"
+									:filter="true"
+									placeholder="Select a tag"
+									:showClear="true"
+									class="mr-1">
+								</p-dropdown>
+								<p-button @click="loadData()" class="p-button-primary">
+									<fa :icon="['fas', 'search']"></fa>
+									<span class="ml-1">Search</span>
+								</p-button>
+							</div>
+						</template>
+
 					</p-toolbar>
 				</template>
 
@@ -115,21 +130,26 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, Ref, ref } from "vue";
+import { onMounted, reactive, Ref, ref } from "vue";
 import { useConfirm } from "primevue/useconfirm";
 import { useToast } from "primevue/usetoast";
 import Recipe from "@/models/Recipe";
 import RecipeController from "@/controllers/RecipeController";
 import RecipeDetailsModal from "@/components/modals/RecipeDetailsModal.vue";
 import RecipeTag from "@/models/RecipeTag";
+import { RecipesFilter } from "@/models/recipe/virtual/RecipesFilter";
+import RecipeTagController from "@/controllers/RecipeTagController";
+import Debugger from "@/utilities/debugger";
 
 /* ------------------- Properties ----------------- */
 const toast = useToast();
 const confirm = useConfirm();
 
 const recipeController = new RecipeController();
+const recipeTagController = new RecipeTagController();
 
 const recipes: Ref<Recipe[]> = ref([])
+const recipeTags: Ref<RecipeTag[]> = ref([])
 const editRecipeId: Ref<string> = ref("")
 const isDetailsOpen: Ref<boolean> = ref(false)
 
@@ -149,16 +169,33 @@ const recipes: Ref<Recipe[]> = ref([
 ])
 	*/
 
+
+/* ------------------- Querying & Filtering ----------------- */
+
 const layout = ref('grid');
 const sortOrder = ref();
 const sortField = ref();
+const recipesFilter = reactive(new RecipesFilter())
+
 /* ------------------- Methods ----------------- */
 async function loadData() {
 	recipes.value = await getRecipes()
+	recipeTags.value = await getRecipeTags()
 }
 
 async function getRecipes(): Promise<Recipe[]> {
-	return recipeController.orderBy("updatedOnTimestamp", "desc").getAll()
+	let controller = new RecipeController()
+	Debugger.Log(recipesFilter.tag)
+
+	if (recipesFilter.tag != null) {
+		Debugger.Log(recipesFilter.tag)
+		controller = controller.filterBy("tags", [recipesFilter.tag])
+	}
+	return controller.orderBy("updatedOnTimestamp", "desc").getAll()
+}
+
+async function getRecipeTags(): Promise<RecipeTag[]> {
+	return recipeTagController.getAll()
 }
 
 function openRecipeUrl(recipeUrl: string = "") {

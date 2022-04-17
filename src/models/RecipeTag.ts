@@ -1,3 +1,4 @@
+import RecipeRecipeTag from '@/models/recipe/RecipeRecipeTag';
 import { DocumentData, DocumentSnapshot, FirestoreDataConverter, UpdateData } from "firebase/firestore";
 
 export default class RecipeTag {
@@ -8,6 +9,14 @@ export default class RecipeTag {
 
 	constructor(data?: Partial<RecipeTag>) {
 		Object.assign(this, data);
+	}
+
+	public toRecipeRecipeTag(): RecipeRecipeTag {
+		return new RecipeRecipeTag({
+			recipeTagId: this.id,
+			title: this.title,
+			description: this.description,
+		})
 	}
 
 	/* ---------------- Firestore ---------------- */
@@ -25,13 +34,20 @@ export default class RecipeTag {
 		}
 	}
 
-	public static updateToFirestore(recipe: RecipeTag): UpdateData<RecipeTag> {
+	public static updateToFirestore(recipeTag: RecipeTag): UpdateData<RecipeTag> {
 		const updatedProperties: UpdateData<RecipeTag> = {
-			"title": recipe.title,
-			"description": recipe.description,
+			"title": recipeTag.title,
+			"description": recipeTag.description,
 		}
 
 		return updatedProperties
+	}
+
+	public toFirestoreFlat() {
+		return {
+			id: this.id,
+			title: this.title
+		}
 	}
 
 }

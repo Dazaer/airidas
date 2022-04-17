@@ -1,4 +1,5 @@
 import RecipeTag from '@/models/RecipeTag';
+import Debugger from "@/utilities/debugger";
 import dayjs from 'dayjs';
 import { DocumentData, DocumentSnapshot, FirestoreDataConverter, Timestamp, UpdateData } from "firebase/firestore";
 
@@ -32,6 +33,7 @@ export default class Recipe {
 
 	public static firestoreConverter: FirestoreDataConverter<Recipe> = {
 		toFirestore: (recipe: Recipe) => {
+			Debugger.Log(recipe.tags)
 			return {
 				description: recipe.description,
 				title: recipe.title,
@@ -40,7 +42,7 @@ export default class Recipe {
 				insertedByUID: recipe.insertedByUID,
 				insertedOnTimestamp: Timestamp.now(),
 				updatedOnTimestamp: Timestamp.now(),
-				tags: recipe.tags.map(tag => RecipeTag.firestoreConverter.toFirestore(tag))
+				tags: recipe.tags.map(tag => tag.toFirestoreFlat())
 			};
 		},
 		fromFirestore: (snapshot: DocumentSnapshot<DocumentData>) => {
@@ -56,7 +58,7 @@ export default class Recipe {
 			"recipeUrl": recipe.recipeUrl,
 			"imageLink": recipe.imageLink,
 			"updatedOnTimestamp": Timestamp.now(),
-			"tags": recipe.tags.map(tag => RecipeTag.firestoreConverter.toFirestore(tag))
+			"tags": recipe.tags.map(tag => tag.toFirestoreFlat())
 		}
 
 		return updatedProperties
