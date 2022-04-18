@@ -98,20 +98,32 @@
 										</fa-layers>
 									</p-button>
 								</span>
+								
 
-								<span v-tooltip.top="{ value: 'Edit this recipe', disabled: false }">
-									<p-button @click="openDetailsModal(slotProps.data.id)"
-										class="p-button-rounded p-button-primary m-1">
-										<fa :icon="['fas', 'pencil-alt']"></fa>
-									</p-button>
+								<span class="flex" v-if="currentUserId === slotProps.data.insertedByUID">
+									<div v-tooltip.top="{ value: 'Edit this recipe', disabled: false }">
+										<p-button @click="openDetailsModal(slotProps.data.id)"
+											class="p-button-rounded p-button-primary m-1">
+											<fa :icon="['fas', 'pencil-alt']"></fa>
+										</p-button>
+									</div>
+
+									<div v-tooltip.top="{ value: 'Delete this recipe', disabled: false }">
+										<p-button @click="deleteRecipe($event, slotProps.data)"
+											class="p-button-rounded p-button-danger m-1">
+											<fa :icon="['fas', 'trash']"></fa>
+										</p-button>
+									</div>
+								</span>
+								<span class="flex" v-else>
+									<div v-tooltip.top="{ value: 'View recipe details' }">
+										<p-button @click="openDetailsModal(slotProps.data.id)"
+											class="p-button-rounded p-button-primary m-1">
+											<fa :icon="['fas', 'eye']"></fa>
+										</p-button>
+									</div>
 								</span>
 
-								<span v-tooltip.top="{ value: 'Delete this recipe', disabled: false }">
-									<p-button @click="deleteRecipe($event, slotProps.data)"
-										class="p-button-rounded p-button-danger m-1">
-										<fa :icon="['fas', 'trash']"></fa>
-									</p-button>
-								</span>
 							</div>
 						</div>
 					</div>
@@ -140,6 +152,8 @@ import RecipeTag from "@/models/RecipeTag";
 import { RecipesFilter } from "@/models/recipe/virtual/RecipesFilter";
 import RecipeTagController from "@/controllers/RecipeTagController";
 import Debugger from "@/utilities/debugger";
+import firebaseApp from "@/utilities/firebase/firebase";
+import { getAuth, onAuthStateChanged } from "@firebase/auth";
 
 /* ------------------- Properties ----------------- */
 const toast = useToast();
@@ -152,6 +166,7 @@ const recipes: Ref<Recipe[]> = ref([])
 const recipeTags: Ref<RecipeTag[]> = ref([])
 const editRecipeId: Ref<string> = ref("")
 const isDetailsOpen: Ref<boolean> = ref(false)
+const currentUserId: Ref<string> = ref("")
 
 const defaultImageLink: string = "https://cooking.mixedmenus.com/wp-content/uploads/2020/05/MixedMenus.png"
 
@@ -236,6 +251,17 @@ function updateField() {
 
 /* ------------------- Lifecycle ----------------- */
 onMounted(async () => {
+	const auth = getAuth(firebaseApp);
+
+	onAuthStateChanged(auth, (user) => {
+		// User is signed in
+		if (!user) {
+			return;
+		}
+
+		currentUserId.value = user.uid
+	});
+
 	loadData()
 });
 
