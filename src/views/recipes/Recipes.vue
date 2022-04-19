@@ -57,18 +57,7 @@
 							</div>
 
 							<div class="recipe-item__content">
-								<div class="recipe-item__image-container">
-									<img
-										v-if="slotProps.data.imageLink.length > 0"
-										class="recipe-item__image"
-										:src="slotProps.data.imageLink"
-										:alt="slotProps.data.title" />
-									<img
-										v-else
-										class="recipe-item__image recipe-item__image--default"
-										:src="defaultImageLink"
-										:alt="slotProps.data.title" />
-								</div>
+								<Image id="imageLink" :url="slotProps.data.imageLink" :default-url="defaultImageUrl" alt="Recipe image"></Image>
 
 								<div class="flex">
 									<p class="recipe-item__description">{{ slotProps.data.description }}</p>
@@ -154,6 +143,7 @@ import RecipeTagController from "@/controllers/RecipeTagController";
 import Debugger from "@/utilities/debugger";
 import firebaseApp from "@/utilities/firebase/firebase";
 import { getAuth, onAuthStateChanged } from "@firebase/auth";
+import Image from "@/components/form/Image.vue";
 
 /* ------------------- Properties ----------------- */
 const toast = useToast();
@@ -167,8 +157,7 @@ const recipeTags: Ref<RecipeTag[]> = ref([])
 const editRecipeId: Ref<string> = ref("")
 const isDetailsOpen: Ref<boolean> = ref(false)
 const currentUserId: Ref<string> = ref("")
-
-const defaultImageLink: string = "https://cooking.mixedmenus.com/wp-content/uploads/2020/05/MixedMenus.png"
+const defaultImageUrl: Ref<string> = ref("")
 
 
 /* --test sample recipes for adjusting layout
@@ -196,6 +185,7 @@ const recipesFilter = reactive(new RecipesFilter())
 async function loadData() {
 	recipes.value = await getRecipes()
 	recipeTags.value = await getRecipeTags()
+	defaultImageUrl.value = recipeController.getDefaultImageUrl()
 }
 
 async function getRecipes(): Promise<Recipe[]> {
@@ -298,22 +288,6 @@ onMounted(async () => {
 		flex-direction: column;
 		flex: 10 1 auto;
 		min-height: 0;
-	}
-
-	.recipe-item__image-container {
-		display: flex;
-		flex: 1 1 content;
-		min-height: 0;
-	}
-
-	.recipe-item__image {
-		max-height: 100%;
-		object-fit: contain;
-		width: 100%;
-	}
-
-	.recipe-item__image--default {
-		background-color: rgba(255, 255, 255, 0.44);
 	}
 
 	.recipe-item__description {

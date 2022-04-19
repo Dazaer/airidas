@@ -85,6 +85,10 @@ export default class RecipeController {
 		return models
 	}
 
+	getDefaultImageUrl(): string {
+		return "https://cooking.mixedmenus.com/wp-content/uploads/2020/05/MixedMenus.png"
+	}
+
 	async add(recipe: Recipe): Promise<any> {
 		const collectionRef = collection(this.db, RecipeController.COLLECTION_PATH).withConverter(Recipe.firestoreConverter);
 

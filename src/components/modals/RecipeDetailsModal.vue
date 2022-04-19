@@ -1,6 +1,6 @@
 <template>
 	<p-dialog
-		header="Recipe details"
+		header="Recipe Details"
 		:visible="isOpen"
 		@show="loadRecipeModal"
 		@update:visible="changeOpenState"
@@ -17,32 +17,43 @@
 		<article class="p-fluid pt-3">
 			<!-- Title Input -->
 			<div class="field col-12">
-				<div class="p-float-label">
-					<p-input-text
-						id="recipeTitle"
-						v-model="validation.title.$model"
-						type="text"
-						:autofocus="props.recipeId == ''"
-						:class="{ 'p-invalid': validation.title.$invalid && hasBeenSubmitted }"
-						class="w-full" />
-					<label for="recipeTitle" :class="{ 'p-error': validation.title.$invalid && hasBeenSubmitted }">Title</label>
-				</div>
+				<div v-if="canEdit">
+					<div class="p-float-label">
+						<p-input-text
+							id="recipeTitle"
+							v-model="validation.title.$model"
+							type="text"
+							:autofocus="props.recipeId == ''"
+							:class="{ 'p-invalid': validation.title.$invalid && hasBeenSubmitted }"
+							class="w-full" />
+						<label for="recipeTitle" :class="{ 'p-error': validation.title.$invalid && hasBeenSubmitted }">Title</label>
+					</div>
 
-				<small
-					v-if="validation.title.$invalid && hasBeenSubmitted"
-					class="p-error">{{ validation.title.required.$message.replace('Value', 'Title') }}</small>
+					<small
+						v-if="validation.title.$invalid && hasBeenSubmitted"
+						class="p-error">{{ validation.title.required.$message.replace('Value', 'Title') }}
+					</small>
+				</div>
+				<div v-else>
+					<label for="recipeTitle" class="text--mini text--darker">Title</label>
+					<p id="recipeTitle">{{ validation.title.$model }}</p>
+				</div>
 			</div>
 
 			<!-- Description Input -->
 			<div class="field col-12">
-				<div class="p-float-label">
+				<div v-if="canEdit" class="p-float-label">
 					<p-textarea id="recipeDescription" v-model="validation.description.$model" :autoResize="true" rows="5" cols="30" />
 					<label for="recipeDescription" :class="{ 'p-error': validation.description.$invalid && hasBeenSubmitted }">Description</label>
+				</div>
+				<div v-else>
+					<label for="recipeDescription" class="text--mini text--darker">Description</label>
+					<p id="recipeDescription">{{ validation.description.$model }}</p>
 				</div>
 			</div>
 
 			<!-- Recipe Url Input -->
-			<div class="field col-12">
+			<div v-if="canEdit" class="field col-12">
 				<div class="p-float-label">
 					<p-input-text
 						id="recipeUrl"
@@ -56,7 +67,7 @@
 
 			<!-- Image Link Input -->
 			<div class="field col-12">
-				<div class="p-float-label">
+				<div v-if="canEdit" class="p-float-label">
 					<p-input-text
 						id="imageLink"
 						v-model="validation.imageLink.$model"
@@ -65,11 +76,16 @@
 						class="w-full" />
 					<label for="imageLink" :class="{ 'p-error': validation.imageLink.$invalid && hasBeenSubmitted }">Image url</label>
 				</div>
+				<div v-else>
+					<label for="imageLink" class="text--mini text--darker">Image url</label>
+					<Image id="imageLink" :url="recipeDetails.imageLink" :default-url="defaultImageUrl" alt="Recipe image" size="md" class="pt-1"></Image>
+				</div>
 			</div>
 
 			<!-- Tags selection Input -->
 			<div class="field col-12">
-				<div class="p-float-label">
+
+				<div v-if="canEdit" class="p-float-label">
 					<p-auto-complete
 						id="tags"
 						v-model="recipeDetails.tags"
@@ -80,15 +96,28 @@
 						dropdown
 						forceSelection>
 						<template #chip="{ value }">
-							<div v-tooltip.bottom="{ value: value.description, disabled: value.description.length === 0}">{{ value.title }}</div>
+							<div v-tooltip.bottom="{ value: value.description, disabled: value.description.length === 0 }">{{ value.title }}</div>
 						</template>
 					</p-auto-complete>
 					<label for="tags">Tags</label>
 				</div>
+
+				<div v-else>
+					<label for="recipeTags" class="text--mini text--darker">Tags</label>
+					<div id="recipeTags" class="mt-2">
+						<p-chip
+							v-for="tag in recipeDetails.tags"
+							:label="tag.title"
+							v-bind:key="tag.id"
+							class="mr-1 mb-1">
+						</p-chip>
+					</div>
+				</div>
+
 			</div>
 		</article>
 
-		<template #footer>
+		<template v-if="canEdit" #footer>
 			<p-button label="Save" icon="pi pi-check" @click="saveRecipe()" class="p-button-success" />
 			<p-button label="Cancel" icon="pi pi-times" @click="isVisible = false" class="p-button-text" />
 		</template>
@@ -96,17 +125,19 @@
 </template>
 
 <script setup lang="ts">
-import { withDefaults, defineProps, defineEmits, computed, Ref, ref as ref } from 'vue'
+import { withDefaults, defineProps, defineEmits, computed, Ref, ref as ref, onMounted } from 'vue'
 import { required } from '@vuelidate/validators'
 import useVuelidate from "@vuelidate/core";
 import { useToast } from "primevue/usetoast";
 import Recipe from "@/models/Recipe";
 import RecipeController from "@/controllers/RecipeController";
-import { getAuth } from "@firebase/auth";
+import { getAuth, onAuthStateChanged } from "@firebase/auth";
 import firebaseApp from "@/utilities/firebase/firebase";
 import RecipeTag from "@/models/RecipeTag";
 import RecipeTagController from "@/controllers/RecipeTagController";
 import { AutoCompleteCompleteEvent } from "primevue/autocomplete";
+import Image from "@/components/form/Image.vue";
+
 
 /* ------------------- Props ----------------- */
 
@@ -139,9 +170,11 @@ const isVisible = computed({
 	}
 })
 
+const canEdit: Ref<boolean> = ref(false)
 const recipeDetails: Ref<Recipe> = ref(new Recipe())
 const recipeTags: Ref<RecipeTag[]> = ref([])
 const filteredRecipeTags: Ref<RecipeTag[]> = ref([])
+const defaultImageUrl: Ref<string> = ref("")
 
 /* ------------------- Validation ----------------- */
 
@@ -163,6 +196,18 @@ function changeOpenState(isOpen: boolean) {
 async function loadRecipeModal() {
 	recipeTags.value = await getRecipeTags()
 	recipeDetails.value = await getRecipe()
+	defaultImageUrl.value = recipeController.getDefaultImageUrl()
+
+	const auth = getAuth(firebaseApp);
+
+	onAuthStateChanged(auth, (user) => {
+		// User is signed in
+		if (!user) {
+			return;
+		}
+
+		canEdit.value = user.uid === recipeDetails.value.insertedByUID
+	});
 }
 
 async function getRecipe(): Promise<Recipe> {
@@ -246,7 +291,6 @@ onMounted(async () => {
 
 });
 */
-
 </script>
 
 <!-- Cannot use scoped here as it won't affect the modal -->
