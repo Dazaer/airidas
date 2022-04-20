@@ -2,7 +2,8 @@
 	<p-dialog
 		header="Recipe Details"
 		:visible="isOpen"
-		@show="loadRecipeModal"
+		@show="onRecipeModalOpen"
+		@hide="onRecipeModalClosed"
 		@update:visible="changeOpenState"
 		position="center"
 		:displayPosition="true"
@@ -17,7 +18,7 @@
 		<article class="p-fluid pt-3">
 			<!-- Title Input -->
 			<div class="field col-12">
-				<div v-if="canEdit">
+				<div v-if="isEditing">
 					<div class="p-float-label">
 						<p-input-text
 							id="recipeTitle"
@@ -42,7 +43,7 @@
 
 			<!-- Description Input -->
 			<div class="field col-12">
-				<div v-if="canEdit" class="p-float-label">
+				<div v-if="isEditing" class="p-float-label">
 					<p-textarea id="recipeDescription" v-model="validation.description.$model" :autoResize="true" rows="5" cols="30" />
 					<label for="recipeDescription" :class="{ 'p-error': validation.description.$invalid && hasBeenSubmitted }">Description</label>
 				</div>
@@ -53,7 +54,7 @@
 			</div>
 
 			<!-- Recipe Url Input -->
-			<div v-if="canEdit" class="field col-12">
+			<div v-if="isEditing" class="field col-12">
 				<div class="p-float-label">
 					<p-input-text
 						id="recipeUrl"
@@ -67,7 +68,7 @@
 
 			<!-- Image Link Input -->
 			<div class="field col-12">
-				<div v-if="canEdit" class="p-float-label">
+				<div v-if="isEditing" class="p-float-label">
 					<p-input-text
 						id="imageLink"
 						v-model="validation.imageLink.$model"
@@ -85,7 +86,7 @@
 			<!-- Tags selection Input -->
 			<div class="field col-12">
 
-				<div v-if="canEdit" class="p-float-label">
+				<div v-if="isEditing" class="p-float-label">
 					<p-auto-complete
 						id="tags"
 						v-model="recipeDetails.tags"
@@ -118,14 +119,37 @@
 		</article>
 
 		<template v-if="canEdit" #footer>
-			<p-button label="Save" icon="pi pi-check" @click="saveRecipe()" class="p-button-success" />
-			<p-button label="Cancel" icon="pi pi-times" @click="isVisible = false" class="p-button-text" />
+
+			<div v-if="!isEditing">
+				<p-button @click="beginEdit()" class="p-button-rounded p-button-primary m-1">
+					<fa :icon="['fas', 'pencil-alt']"></fa>
+					<span class="ml-1">Edit</span>
+				</p-button>
+
+				<p-button @click="deleteRecipe($event, recipeDetails)" class="p-button-rounded p-button-danger m-1">
+					<fa :icon="['fas', 'trash']"></fa>
+					<span class="ml-1">Delete</span>
+				</p-button>
+			</div>
+
+			<div v-else>
+				<p-button @click="saveRecipe()" class="p-button-success m-1">
+					<fa :icon="['fas', 'check']"></fa>
+					<span class="ml-1">Save</span>
+				</p-button>
+
+				<p-button @click="cancelEdit()" class="p-button-rounded p-button-text m-1">
+					<fa :icon="['fas', 'times']"></fa>
+					<span class="ml-1">Cancel</span>
+				</p-button>
+			</div>
+
 		</template>
 	</p-dialog>
 </template>
 
 <script setup lang="ts">
-import { withDefaults, defineProps, defineEmits, computed, Ref, ref as ref, onMounted } from 'vue'
+import { withDefaults, defineProps, defineEmits, computed, Ref, ref as ref, onMounted, onUnmounted, ComputedRef } from 'vue'
 import { required } from '@vuelidate/validators'
 import useVuelidate from "@vuelidate/core";
 import { useToast } from "primevue/usetoast";
@@ -137,6 +161,7 @@ import RecipeTag from "@/models/RecipeTag";
 import RecipeTagController from "@/controllers/RecipeTagController";
 import { AutoCompleteCompleteEvent } from "primevue/autocomplete";
 import Image from "@/components/form/Image.vue";
+import { useConfirm } from "primevue/useconfirm";
 
 
 /* ------------------- Props ----------------- */
@@ -151,13 +176,14 @@ const props = withDefaults(defineProps<propsInterface>(), {
 
 const emit = defineEmits<{
 	(event: 'change-open-state', isOpen: boolean): void,
-	(event: 'saved', recipe: Recipe): string,
+	(event: 'list-changed', recipe: Recipe): string,
 }>();
 
 
 /* ------------------- Properties ----------------- */
 
 const toast = useToast();
+const confirm = useConfirm();
 const recipeController = new RecipeController()
 const recipeTagController = new RecipeTagController()
 
@@ -170,7 +196,12 @@ const isVisible = computed({
 	}
 })
 
-const canEdit: Ref<boolean> = ref(false)
+const isNew: ComputedRef<boolean> = computed(() => recipeDetails.value.id.length === 0)
+const canEdit: ComputedRef<boolean> = computed(() => isNew.value || currentUserId.value === recipeDetails.value.insertedByUID)
+
+const currentUserId: Ref<string> = ref("")
+const isEditing: Ref<boolean> = ref(false)
+const recipeDetailsOriginal: Ref<Recipe> = ref(new Recipe())
 const recipeDetails: Ref<Recipe> = ref(new Recipe())
 const recipeTags: Ref<RecipeTag[]> = ref([])
 const filteredRecipeTags: Ref<RecipeTag[]> = ref([])
@@ -193,9 +224,22 @@ function changeOpenState(isOpen: boolean) {
 	isVisible.value = isOpen
 }
 
+async function onRecipeModalOpen() {
+	await loadRecipeModal()
+
+	if (isNew.value) {
+		beginEdit()
+	}
+}
+
+function onRecipeModalClosed() {
+	resetModalState()
+}
+
 async function loadRecipeModal() {
 	recipeTags.value = await getRecipeTags()
 	recipeDetails.value = await getRecipe()
+	recipeDetailsOriginal.value = recipeDetails.value
 	defaultImageUrl.value = recipeController.getDefaultImageUrl()
 
 	const auth = getAuth(firebaseApp);
@@ -206,8 +250,26 @@ async function loadRecipeModal() {
 			return;
 		}
 
-		canEdit.value = user.uid === recipeDetails.value.insertedByUID
+		currentUserId.value = user.uid
 	});
+}
+
+function beginEdit() {
+	isEditing.value = true
+}
+
+function cancelEdit() {
+	resetModalState()
+
+	if (isNew.value) {
+		changeOpenState(false)
+	}
+}
+
+function resetModalState() {
+	recipeDetails.value = { ...recipeDetailsOriginal.value }
+	isEditing.value = false
+	hasBeenSubmitted.value = false
 }
 
 async function getRecipe(): Promise<Recipe> {
@@ -236,11 +298,9 @@ async function saveRecipe() {
 	const isSaved = isNew ? await addRecipe(recipeDetails.value) : await updateRecipe(recipeDetails.value)
 
 	if (isSaved) {
+		emit("list-changed", recipeDetails.value)
 		changeOpenState(false)
-
-		hasBeenSubmitted.value = false
-
-		return emit("saved", recipeDetails.value)
+		return resetModalState()
 	}
 }
 
@@ -273,6 +333,26 @@ async function updateRecipe(recipe: Recipe) {
 		})
 }
 
+function deleteRecipe(event: any, recipe: Recipe) {
+	confirm.require({
+		target: event.currentTarget,
+		message: `Are you sure you want to delete "${recipe.title}"?`,
+		icon: 'pi pi-exclamation-triangle',
+		acceptClass: 'p-button-danger',
+		accept: async () => {
+			await recipeController.delete(recipe.id)
+			toast.add({ severity: 'success', summary: "Success", detail: `Successfully deleted "${recipe.title}"`, life: 3000 });
+
+			emit("list-changed", recipeDetails.value)
+			changeOpenState(false)
+			return resetModalState()
+		},
+		reject: () => {
+			return
+		}
+	});
+}
+
 function searchTags(event: AutoCompleteCompleteEvent) {
 	setTimeout(() => {
 		if (!event.query.trim().length) {
@@ -286,11 +366,16 @@ function searchTags(event: AutoCompleteCompleteEvent) {
 }
 
 /* ------------------- Lifecycle ----------------- */
-/*
+/* https://lifesaver.codes/answer/unmount-modal-on-close
+// Check this if decide to move from changing state to mounted/unmounted
 onMounted(async () => {
 
 });
-*/
+
+onUnmounted(() => {
+	isEditing.value = false
+})
+	*/
 </script>
 
 <!-- Cannot use scoped here as it won't affect the modal -->

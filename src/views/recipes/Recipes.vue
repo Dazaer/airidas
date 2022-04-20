@@ -52,6 +52,7 @@
 				<template #grid="slotProps">
 					<div class="col-12 md:col-4">
 						<div class="recipe-item">
+
 							<div class="recipe-item__top-container center">
 								<h4 class="recipe-item__title">{{ slotProps.data.title }}</h4>
 							</div>
@@ -87,33 +88,18 @@
 										</fa-layers>
 									</p-button>
 								</span>
-								
 
-								<span class="flex" v-if="currentUserId === slotProps.data.insertedByUID">
-									<div v-tooltip.top="{ value: 'Edit this recipe', disabled: false }">
-										<p-button @click="openDetailsModal(slotProps.data.id)"
-											class="p-button-rounded p-button-primary m-1">
-											<fa :icon="['fas', 'pencil-alt']"></fa>
-										</p-button>
-									</div>
-
-									<div v-tooltip.top="{ value: 'Delete this recipe', disabled: false }">
-										<p-button @click="deleteRecipe($event, slotProps.data)"
-											class="p-button-rounded p-button-danger m-1">
-											<fa :icon="['fas', 'trash']"></fa>
-										</p-button>
-									</div>
-								</span>
-								<span class="flex" v-else>
+								<span class="flex">
 									<div v-tooltip.top="{ value: 'View recipe details' }">
 										<p-button @click="openDetailsModal(slotProps.data.id)"
-											class="p-button-rounded p-button-primary m-1">
+											:class="currentUserId === slotProps.data.insertedByUID ? 'p-button-warning' : 'p-button-primary'"
+											class="p-button-rounded m-1">
 											<fa :icon="['fas', 'eye']"></fa>
 										</p-button>
 									</div>
 								</span>
-
 							</div>
+
 						</div>
 					</div>
 				</template>
@@ -124,7 +110,7 @@
 			:is-open="isDetailsOpen"
 			:recipe-id="editRecipeId"
 			@change-open-state="changeDetailsModalState"
-			@saved="loadData">
+			@list-changed="loadData">
 		</RecipeDetailsModal>
 		<p-confirm-popup></p-confirm-popup>
 	</div>
@@ -146,9 +132,6 @@ import { getAuth, onAuthStateChanged } from "@firebase/auth";
 import Image from "@/components/form/Image.vue";
 
 /* ------------------- Properties ----------------- */
-const toast = useToast();
-const confirm = useConfirm();
-
 const recipeController = new RecipeController();
 const recipeTagController = new RecipeTagController();
 
@@ -214,23 +197,6 @@ function openDetailsModal(recipeId: string = "") {
 
 function changeDetailsModalState(isOpening: boolean) {
 	isDetailsOpen.value = isOpening
-}
-
-function deleteRecipe(event: any, recipe: Recipe) {
-	confirm.require({
-		target: event.currentTarget,
-		message: `Are you sure you want to delete "${recipe.title}"?`,
-		icon: 'pi pi-exclamation-triangle',
-		acceptClass: 'p-button-danger',
-		accept: async () => {
-			await recipeController.delete(recipe.id)
-			loadData()
-			return toast.add({ severity: 'success', summary: "Success", detail: `Successfully deleted "${recipe.title}"`, life: 3000 });
-		},
-		reject: () => {
-			return
-		}
-	});
 }
 
 /*

@@ -5,7 +5,7 @@ import { dom, library } from "@fortawesome/fontawesome-svg-core";
 import {
 	faSpinner, faMusic, faQuestionCircle, faQuestion, faUtensils, faFlask,
 	faCamera, faCheck, faBook, faDesktop, faBookReader, faPencilAlt, faTrash,
-	faTags, faSearch, faEye
+	faTags, faSearch, faEye, faTimes
 } from "@fortawesome/free-solid-svg-icons";
 import { faLinkedin } from "@fortawesome/free-brands-svg-icons/faLinkedin";
 import { faFacebook } from "@fortawesome/free-brands-svg-icons/faFacebook";
@@ -26,6 +26,7 @@ library.add(
 	faSearch,
 	faSpinner,
 	faTags,
+	faTimes,
 	faTrash,
 	faUtensils,
 	//Brands (fab)
