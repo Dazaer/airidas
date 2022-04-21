@@ -40,7 +40,7 @@
 					<template #body="{ data, field }">
 						<p-input-text
 							v-if="data.id.length === 0"
-							id="recipeTagTitleBody"
+							name="recipeTagTitleBody"
 							v-model="data[field]"
 							type="text"
 							autofocus
@@ -59,7 +59,7 @@
 					<template #editor="{ data, field }">
 					<span>
 						<p-input-text
-							id="recipeTagTitleEditor"
+							name="recipeTagTitleEditor"
 							v-model="data[field]"
 							type="text"
 							placeholder="title"
@@ -152,12 +152,12 @@ const rules = {
 	description: {},
 }
 const validation = useVuelidate(rules, lastEditedTag)
+//const tagsValidations: any[] = []
 const hasBeenSubmitted = ref(false)
 
 /* ------------------- Methods ----------------- */
 
 async function loadData() {
-	//existingRecipeTags = await getRecipeTags()
 	recipeTags.value = await getRecipeTags()
 }
 
@@ -168,6 +168,11 @@ async function getRecipeTags() {
 }
 
 function addNewRecipeTag() {
+	const hasUnsavedNewRecipeTag = recipeTags.value.some(rt => rt.id.length === 0)
+	if (hasUnsavedNewRecipeTag) {
+		return
+	}
+
 	const newRecipe = new RecipeTag({})
 	lastEditedTag = newRecipe
 	recipeTags.value.push(newRecipe)
@@ -178,10 +183,12 @@ function addNewRecipeTag() {
  * @param slotProps 
  */
 async function saveNewRecipeTag(slotProps: Parameters<ColumnSlots["body"]>[0]) {
-	const recipeTag: RecipeTag = slotProps.data
-
 	hasBeenSubmitted.value = true
-	const isValid = await validation.value.$validate()
+
+	const recipeTag: RecipeTag = slotProps.data
+	const recipeTagValidation = useVuelidate(rules, recipeTag)
+
+	const isValid = await recipeTagValidation.value.$validate()
 	if (!isValid) {
 		return
 	}
@@ -192,12 +199,15 @@ async function saveNewRecipeTag(slotProps: Parameters<ColumnSlots["body"]>[0]) {
 }
 
 async function onCellEditComplete(event: DataTableCellEditCompleteEvent) {
+	hasBeenSubmitted.value = true
+
 	const recipeTag = event.newData;
 	const isNew = recipeTag.id.length === 0
+	const recipeTagValidation = useVuelidate(rules, recipeTag)
   lastEditedTag = recipeTag
+	//tagsValidations.push(recipeTagValidation)
 
-	hasBeenSubmitted.value = true
-	const isValid = await validation.value.$validate()
+	const isValid = await recipeTagValidation.value.$validate()
 	if (!isValid) {
 		return
 	}
