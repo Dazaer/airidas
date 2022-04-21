@@ -3,7 +3,6 @@
 		<img
 			v-if="imageUrl"
 			class="image"
-			:class="hasImage ? '' : 'image--default'"
 			:style="constructedStyle"
 			:src="imageUrl"
 			:alt="alt" />

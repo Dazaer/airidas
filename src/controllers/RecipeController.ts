@@ -86,7 +86,7 @@ export default class RecipeController {
 	}
 
 	getDefaultImageUrl(): string {
-		return "https://cooking.mixedmenus.com/wp-content/uploads/2020/05/MixedMenus.png"
+		return "https://i.imgur.com/umqiCCU.png"
 	}
 
 	async add(recipe: Recipe): Promise<any> {
