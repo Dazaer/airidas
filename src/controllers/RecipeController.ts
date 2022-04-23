@@ -1,15 +1,16 @@
 import RecipeTag from '@/models/RecipeTag';
 import Recipe from "@/models/Recipe";
 import { documentSnapshotToModel, querySnapshotToModelArray } from "@/utilities/firebase/firestoreModelConverter";
-import { addDoc, collection, collectionGroup, deleteDoc, doc, getDoc, getDocs, getFirestore, orderBy, OrderByDirection, query, QueryConstraint, updateDoc, where } from "firebase/firestore"
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, orderBy, OrderByDirection, query, QueryConstraint, updateDoc, where } from "firebase/firestore"
 import { addDefaultValueForFieldInCollection, CollectionFieldUpdateModel } from "@/utilities/firebase/firestoreFunctions";
 import RecipeRecipeTagController from "./RecipeRecipeTagController";
 import RecipeRecipeTag from "@/models/recipe/RecipeRecipeTag";
-import Debugger from "@/utilities/debugger";
+import RecipeTagController from "./RecipeTagController";
 
 export default class RecipeController {
 
 	private readonly db = getFirestore();
+	private readonly recipeTagController = new RecipeTagController();
 	public static readonly COLLECTION_PATH = 'recipes'
 
 	private _orderByField: OrderByField | null = null
@@ -45,7 +46,7 @@ export default class RecipeController {
 
 	async getAll(): Promise<Recipe[]> {
 		const collectionRef = collection(this.db, RecipeController.COLLECTION_PATH).withConverter(Recipe.firestoreConverter)
-		Debugger.Warn(this._filterByField)
+		//Debugger.Warn(this._filterByField)
 
 		const queryConstraints: QueryConstraint[] = []
 		if (this._orderByField != null) {
@@ -54,34 +55,17 @@ export default class RecipeController {
 
 		if (this._filterByField != null) {
 			if (this._filterByField.field === "tags") {
-				/* This is a (worse?) different way to get all the recipeTags of a certain id
-				const filterField: keyof RecipeRecipeTag = "recipeTagId"
-				const filterValue = (this._filterByField.value as RecipeTag).id
-				const rrtCollectionRef = collectionGroup(this.db, RecipeRecipeTagController.COLLECTION_PATH).withConverter(RecipeRecipeTag.firestoreConverter)
-				const groupConstraints: QueryConstraint[] = []
+				const filterValue: string = (this._filterByField.value as RecipeTag[])[0].id //currently only allowing to filter by a single tag
+				const flatRecipeTagObj = (await this.recipeTagController.get(filterValue)).toFirestoreFlat()
 
-				groupConstraints.push(where(filterField, "==", filterValue))
-				const rrtQuery = query(rrtCollectionRef, ...groupConstraints)
-				const rrtSnapshot = await getDocs(rrtQuery)
-				const models = querySnapshotToModelArray<RecipeRecipeTag>(RecipeRecipeTag, rrtSnapshot, "id")
-
-				Debugger.Log(models)
-				*/
+				queryConstraints.push(where(this._filterByField.field, "array-contains", flatRecipeTagObj))
 			}
 		}
 
 		const dbQuery = query(collectionRef, ...queryConstraints)
 		const querySnapshot = await getDocs(dbQuery)
 
-		let models = querySnapshotToModelArray<Recipe>(Recipe, querySnapshot, "id")
-
-		if (this._filterByField != null) {
-			if (this._filterByField.field === "tags") {
-				const recipeTagFilter: RecipeTag = this._filterByField.value[0]
-				models = models.filter(model => model.tags.some(tag => tag.id === recipeTagFilter.id))
-			}
-		}
-
+		const models = querySnapshotToModelArray<Recipe>(Recipe, querySnapshot, "id")
 		return models
 	}
 
