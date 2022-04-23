@@ -33,7 +33,6 @@ export default class Recipe {
 
 	public static firestoreConverter: FirestoreDataConverter<Recipe> = {
 		toFirestore: (recipe: Recipe) => {
-			Debugger.Log(recipe.tags)
 			return {
 				description: recipe.description,
 				title: recipe.title,

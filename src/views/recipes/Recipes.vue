@@ -173,10 +173,8 @@ async function loadData() {
 
 async function getRecipes(): Promise<Recipe[]> {
 	let controller = new RecipeController()
-	Debugger.Log(recipesFilter.tag)
 
 	if (recipesFilter.tag != null) {
-		Debugger.Log(recipesFilter.tag)
 		controller = controller.filterBy("tags", [recipesFilter.tag])
 	}
 	return controller.orderBy("updatedOnTimestamp", "desc").getAll()
