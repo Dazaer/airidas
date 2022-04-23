@@ -6,13 +6,14 @@ import { addDefaultValueForFieldInCollection, CollectionFieldUpdateModel } from 
 import RecipeRecipeTagController from "./RecipeRecipeTagController";
 import RecipeRecipeTag from "@/models/recipe/RecipeRecipeTag";
 import RecipeTagController from "./RecipeTagController";
+import RecipesGlobalPropertiesController from "./RecipesGlobalPropertiesController";
 
 export default class RecipeController {
 
+	public static readonly COLLECTION_PATH = 'recipes'
 	private readonly db = getFirestore();
 	private readonly recipeTagController = new RecipeTagController();
-	public static readonly COLLECTION_PATH = 'recipes'
-
+	private readonly recipesGlobalPropertiesController = new RecipesGlobalPropertiesController();
 	private _orderByField: OrderByField | null = null
 	private _filterByField: FilterByField | null = null
 
@@ -73,10 +74,16 @@ export default class RecipeController {
 		return "https://i.imgur.com/umqiCCU.png"
 	}
 
+	async getTotalRecipesCount(): Promise<number> {
+		return (await this.recipesGlobalPropertiesController.get()).recipesCount
+	}
+
 	async add(recipe: Recipe): Promise<any> {
 		const collectionRef = collection(this.db, RecipeController.COLLECTION_PATH).withConverter(Recipe.firestoreConverter);
 
 		const addedDoc = await addDoc(collectionRef, recipe);
+		await this.recipesGlobalPropertiesController.incrementRecipesCount(1)
+
 		const recipeRecipeTagController = new RecipeRecipeTagController(addedDoc.id);
 
 		const promises: Promise<any>[] = []
@@ -112,7 +119,8 @@ export default class RecipeController {
 		const recipeRecipeTagController = new RecipeRecipeTagController(recipeId);
 
 		recipeRecipeTagController.deleteAll()
-		return deleteDoc(docRef);
+		await deleteDoc(docRef);
+		return this.recipesGlobalPropertiesController.incrementRecipesCount(-1)
 	}
 
 	updateField<K extends keyof Recipe>(field: K, value: Recipe[typeof field]) {
