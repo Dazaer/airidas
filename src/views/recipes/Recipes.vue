@@ -16,9 +16,8 @@
 			<p-data-view
 				class="data-view"
 				:value="recipes"
-				:layout="layout"
-				:paginator="true"
-				:rows="9"
+				layout="grid"
+				:rows="amountOfRecipesPerPage"
 				:sortOrder="sortOrder"
 				:sortField="sortField">
 				<template #header>
@@ -103,7 +102,28 @@
 						</div>
 					</div>
 				</template>
+
+				<template #empty>
+					<div class="col-12">
+						<p v-if="hasRecipesForFilter" class="center">No more recipes found.</p>
+						<p v-else class="center">No recipes found for this filter. Be the first to add one!</p>
+					</div>
+				</template>
+
+				<template #footer>
+					<Paginator
+						v-if="amountOfRecipesPerPage > 0"
+						@interface="getPaginatorMethods"
+						@next="goToNextPage"
+						@previous="goToPreviousPage"
+						:data="recipes"
+						:total-amount="totalRecipesAmount"
+						:fallback-doc-id="previousPageLastRecipeId"
+						:show-count="!hasFilter">
+					</Paginator>
+				</template>
 			</p-data-view>
+
 		</main>
 
 		<RecipeDetailsModal
@@ -117,9 +137,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, Ref, ref } from "vue";
-import { useConfirm } from "primevue/useconfirm";
-import { useToast } from "primevue/usetoast";
+import { computed, ComputedRef, onMounted, reactive, Ref, ref } from "vue";
 import Recipe from "@/models/Recipe";
 import RecipeController from "@/controllers/RecipeController";
 import RecipeDetailsModal from "@/components/modals/RecipeDetailsModal.vue";
@@ -130,17 +148,22 @@ import Debugger from "@/utilities/debugger";
 import firebaseApp from "@/utilities/firebase/firebase";
 import { getAuth, onAuthStateChanged } from "@firebase/auth";
 import Image from "@/components/form/Image.vue";
+import Paginator, { PaginatorMethods } from "@/components/form/Paginator.vue";
 
 /* ------------------- Properties ----------------- */
 const recipeController = new RecipeController();
 const recipeTagController = new RecipeTagController();
+let paginatorMethods: PaginatorMethods
 
 const recipes: Ref<Recipe[]> = ref([])
 const recipeTags: Ref<RecipeTag[]> = ref([])
-const editRecipeId: Ref<string> = ref("")
-const isDetailsOpen: Ref<boolean> = ref(false)
-const currentUserId: Ref<string> = ref("")
 const defaultImageUrl: Ref<string> = ref("")
+const totalRecipesAmount: Ref<number> = ref(0)
+const amountOfRecipesPerPage: Ref<number> = ref(0)
+const previousPageLastRecipeId: Ref<string> = ref("")
+const isDetailsOpen: Ref<boolean> = ref(false)
+const editRecipeId: Ref<string> = ref("")
+const currentUserId: Ref<string> = ref("")
 
 
 /* --test sample recipes for adjusting layout
@@ -159,25 +182,32 @@ const recipes: Ref<Recipe[]> = ref([
 
 /* ------------------- Querying & Filtering ----------------- */
 
-const layout = ref('grid');
 const sortOrder = ref();
 const sortField = ref();
-const recipesFilter = reactive(new RecipesFilter())
+const recipesFilter: RecipesFilter = reactive(new RecipesFilter())
+const hasFilter: ComputedRef<boolean> = computed(() => recipesFilter?.tag?.id?.length > 0)
+const hasRecipesForFilter: ComputedRef<boolean> = computed(() => previousPageLastRecipeId.value.length > 0)
 
 /* ------------------- Methods ----------------- */
 async function loadData() {
 	recipes.value = await getRecipes()
 	recipeTags.value = await getRecipeTags()
+	totalRecipesAmount.value = await recipeController.getTotalRecipesCount()
 	defaultImageUrl.value = recipeController.getDefaultImageUrl()
+	amountOfRecipesPerPage.value = recipeController.getRecipesPerPageCount()
+
+	previousPageLastRecipeId.value = recipes.value[recipes.value.length - 1]?.id
+	paginatorMethods?.reset()
 }
 
-async function getRecipes(): Promise<Recipe[]> {
-	let controller = new RecipeController()
+async function getRecipes(recipeController?: RecipeController): Promise<Recipe[]> {
+	let controller = recipeController ?? new RecipeController()
 
-	if (recipesFilter.tag != null) {
+	if (hasFilter.value) {
 		controller = controller.filterBy("tags", [recipesFilter.tag])
 	}
-	return controller.orderBy("updatedOnTimestamp", "desc").getAll()
+	window.scrollTo(0, 0);
+	return controller.limitTo().orderBy("updatedOnTimestamp", "desc").getAll()
 }
 
 async function getRecipeTags(): Promise<RecipeTag[]> {
@@ -196,6 +226,61 @@ function openDetailsModal(recipeId: string = "") {
 function changeDetailsModalState(isOpening: boolean) {
 	isDetailsOpen.value = isOpening
 }
+
+/* Paginator ----------------- */
+function getPaginatorMethods(methods: PaginatorMethods) {
+	paginatorMethods = methods
+}
+
+async function goToNextPage(startAfterDocId: string) {
+	const recipeController = new RecipeController().startAfter(startAfterDocId)
+	const nextPageRecipes = await getNextPageRecipes(recipeController)
+	const currentPageLastRecipeId = getCurrentPageLastRecipeId(nextPageRecipes)
+
+	recipes.value = nextPageRecipes
+	previousPageLastRecipeId.value = currentPageLastRecipeId
+}
+
+/**
+ * When there's only a single page of content and we press NextPage, we get an empty page.
+ * When we press PreviousPage from that empty page there's no previous recipe to fallback to, so we do a fresh reload.
+ * @param nextPageRecipeController 
+ */
+async function getNextPageRecipes(nextPageRecipeController: RecipeController): Promise<Recipe[]> {
+	const nextPageRecipes = await getRecipes(nextPageRecipeController)
+	const hasCurrentPageRecipes = recipes.value.length > 0
+	const hasNextPageRecipes = nextPageRecipes.length > 0
+
+	const shouldDoFreshLoad = !hasNextPageRecipes && !hasCurrentPageRecipes
+	if (shouldDoFreshLoad) {
+		return recipes.value = await getRecipes()
+	}
+
+	return nextPageRecipes
+}
+
+/**
+ * Will only get a new recipeId if the current page is not the last, otherwise it will remain the same.
+ * @param nextPageRecipes 
+ */
+function getCurrentPageLastRecipeId(nextPageRecipes: Recipe[]): string {
+	const hasRecipesInCurrentPage = recipes.value.length > 0
+	const isLastPage = nextPageRecipes.length === 0
+	let currentPageLastRecipeId = previousPageLastRecipeId.value
+
+	if (hasRecipesInCurrentPage && !isLastPage) {
+		currentPageLastRecipeId = recipes.value[recipes.value.length - 1]?.id
+	}
+
+	return currentPageLastRecipeId
+}
+
+async function goToPreviousPage(lastDocId: string) {
+	let previousPageRecipeController = new RecipeController().endBefore(lastDocId)
+	recipes.value = await getRecipes(previousPageRecipeController)
+}
+/* Paginator END----------------- */
+
 
 /*
 function updateField() {
@@ -216,7 +301,7 @@ onMounted(async () => {
 		currentUserId.value = user.uid
 	});
 
-	loadData()
+	await loadData()
 });
 
 </script>

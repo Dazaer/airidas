@@ -1,12 +1,13 @@
 import RecipeTag from '@/models/RecipeTag';
 import Recipe from "@/models/Recipe";
 import { documentSnapshotToModel, querySnapshotToModelArray } from "@/utilities/firebase/firestoreModelConverter";
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, orderBy, OrderByDirection, query, QueryConstraint, updateDoc, where } from "firebase/firestore"
+import { addDoc, collection, deleteDoc, doc, endBefore, getDoc, getDocs, getFirestore, limit, limitToLast, orderBy, OrderByDirection, query, QueryConstraint, startAfter, updateDoc, where } from "firebase/firestore"
 import { addDefaultValueForFieldInCollection, CollectionFieldUpdateModel } from "@/utilities/firebase/firestoreFunctions";
 import RecipeRecipeTagController from "./RecipeRecipeTagController";
 import RecipeRecipeTag from "@/models/recipe/RecipeRecipeTag";
 import RecipeTagController from "./RecipeTagController";
 import RecipesGlobalPropertiesController from "./RecipesGlobalPropertiesController";
+import Debugger from "@/utilities/debugger";
 
 export default class RecipeController {
 
@@ -14,18 +15,44 @@ export default class RecipeController {
 	private readonly db = getFirestore();
 	private readonly recipeTagController = new RecipeTagController();
 	private readonly recipesGlobalPropertiesController = new RecipesGlobalPropertiesController();
-	private _orderByField: OrderByField | null = null
-	private _filterByField: FilterByField | null = null
+	private _orderByField: OrderByField = new OrderByField()
+	private _filterByField: FilterByField = new FilterByField()
+	private _limitTo: LimitTo = new LimitTo()
+	private _startAfter: StartAfter = new StartAfter()
+	private _endBefore: EndBefore = new EndBefore()
 
 
 	public orderBy<K extends keyof Recipe>(field: K, directionStr?: OrderByDirection): RecipeController {
-		this._orderByField = new OrderByField({ field: field })
+		this._orderByField.field = field
 		this._orderByField.directionStr = directionStr ?? this._orderByField.directionStr
+		this._filterByField.isActive = true
 		return this;
 	}
 
 	public filterBy<K extends keyof Recipe>(field: K, value: Recipe[typeof field]): RecipeController {
-		this._filterByField = new FilterByField({ field: field, value: value })
+		this._filterByField.field = field
+		this._filterByField.value = value
+		this._filterByField.isActive = true
+		return this
+	}
+
+	public limitTo(value?: number): RecipeController {
+		this._limitTo.value = value ?? this._limitTo.value
+		this._limitTo.isActive = true
+		return this
+	}
+
+	public startAfter(lastDocumentId?: string): RecipeController {
+		this._startAfter.lastDocumentId = lastDocumentId ?? this._startAfter.lastDocumentId
+		this._startAfter.isActive = true
+		this._endBefore.isActive = false
+		return this
+	}
+
+	public endBefore(lastDocumentId?: string): RecipeController {
+		this._endBefore.lastDocumentId = lastDocumentId ?? this._endBefore.lastDocumentId
+		this._endBefore.isActive = true
+		this._startAfter.isActive = false
 		return this
 	}
 
@@ -47,21 +74,8 @@ export default class RecipeController {
 
 	async getAll(): Promise<Recipe[]> {
 		const collectionRef = collection(this.db, RecipeController.COLLECTION_PATH).withConverter(Recipe.firestoreConverter)
-		//Debugger.Warn(this._filterByField)
 
-		const queryConstraints: QueryConstraint[] = []
-		if (this._orderByField != null) {
-			queryConstraints.push(orderBy(this._orderByField.field, this._orderByField.directionStr))
-		}
-
-		if (this._filterByField != null) {
-			if (this._filterByField.field === "tags") {
-				const filterValue: string = (this._filterByField.value as RecipeTag[])[0].id //currently only allowing to filter by a single tag
-				const flatRecipeTagObj = (await this.recipeTagController.get(filterValue)).toFirestoreFlat()
-
-				queryConstraints.push(where(this._filterByField.field, "array-contains", flatRecipeTagObj))
-			}
-		}
+		const queryConstraints: QueryConstraint[] = await this.getQueryConstraints()
 
 		const dbQuery = query(collectionRef, ...queryConstraints)
 		const querySnapshot = await getDocs(dbQuery)
@@ -72,6 +86,10 @@ export default class RecipeController {
 
 	getDefaultImageUrl(): string {
 		return "https://i.imgur.com/umqiCCU.png"
+	}
+
+	getRecipesPerPageCount(): number {
+		return this._limitTo.value
 	}
 
 	async getTotalRecipesCount(): Promise<number> {
@@ -129,11 +147,51 @@ export default class RecipeController {
 		addDefaultValueForFieldInCollection(updateFieldModel)
 	}
 
+
+	private async getQueryConstraints(): Promise<QueryConstraint[]> {
+		const queryConstraints: QueryConstraint[] = []
+
+		if (this._orderByField.isActive) {
+			queryConstraints.push(orderBy(this._orderByField.field, this._orderByField.directionStr))
+		}
+
+		if (this._filterByField != null) {
+			if (this._filterByField.field === "tags") {
+				const filterValue: string = (this._filterByField.value as RecipeTag[])[0].id //currently only allowing to filter by a single tag
+				const flatRecipeTagObj = (await this.recipeTagController.get(filterValue)).toFirestoreFlat()
+
+				queryConstraints.push(where(this._filterByField.field, "array-contains", flatRecipeTagObj))
+			}
+		}
+
+		if (this._limitTo.isActive) {
+			const limitConstraint = this._endBefore.isActive ? limitToLast(this._limitTo.value) : limit(this._limitTo.value)
+			queryConstraints.push(limitConstraint)
+		}
+
+		if (this._startAfter.isActive) {
+			const lastDocRef = doc(this.db, RecipeController.COLLECTION_PATH, this._startAfter.lastDocumentId).withConverter(Recipe.firestoreConverter);
+			const documentSnapshot = await getDoc(lastDocRef)
+
+			queryConstraints.push(startAfter(documentSnapshot))
+		}
+
+		if (this._endBefore.isActive) {
+			const lastDocRef = doc(this.db, RecipeController.COLLECTION_PATH, this._endBefore.lastDocumentId).withConverter(Recipe.firestoreConverter);
+			const documentSnapshot = await getDoc(lastDocRef)
+
+			queryConstraints.push(endBefore(documentSnapshot))
+		}
+
+		return queryConstraints
+	}
+
 }
 
 class OrderByField {
-	public field!: keyof Recipe
+	public field: keyof Recipe = "updatedOnTimestamp"
 	public directionStr?: OrderByDirection = "asc"
+	public isActive: boolean = true
 
 	constructor(data?: Partial<OrderByField>) {
 		Object.assign(this, data);
@@ -143,8 +201,36 @@ class OrderByField {
 class FilterByField {
 	public field!: keyof Recipe
 	public value: any = null
+	public isActive: boolean = false
 
 	constructor(data?: Partial<FilterByField>) {
+		Object.assign(this, data);
+	}
+}
+
+class LimitTo {
+	public value: number = 9
+	public isActive: boolean = false
+
+	constructor(data?: Partial<LimitTo>) {
+		Object.assign(this, data);
+	}
+}
+
+class StartAfter {
+	public lastDocumentId: string = ""
+	public isActive: boolean = false
+
+	constructor(data?: Partial<StartAfter>) {
+		Object.assign(this, data);
+	}
+}
+
+class EndBefore {
+	public lastDocumentId: string = ""
+	public isActive: boolean = false
+
+	constructor(data?: Partial<EndBefore>) {
 		Object.assign(this, data);
 	}
 }
