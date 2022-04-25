@@ -61,14 +61,13 @@ const menu = ref([
 		],
 		visible: () => isLoggedIn.value,
 	},
-	/*
+
 	{
 		label: "Recipes",
 		to: { name: RouteNames.Recipes },
 		visible: () => isLoggedIn.value,
 	},
-	*/
-
+	/*
 	{
 		label: "Recipes",
 		items: [
@@ -77,6 +76,7 @@ const menu = ref([
 		],
 		visible: () => isLoggedIn.value,
 	},
+	*/
 
 	{
 		label: "Feature Request",
