@@ -3,10 +3,8 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,windows,node
 
 # Specific files 
-assistance
 private
-#src/utilities/api/apiKeys.json
-src/utilities/firebase/firebase.ts
+#src/utilities/firebase/firebase.ts
 
 ### Node ###
 # Logs
