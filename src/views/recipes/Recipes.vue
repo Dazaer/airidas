@@ -70,33 +70,38 @@
 								</div>
 							</div>
 
-							<div class="recipe-item__bottom-container">
-								<span
-									v-tooltip.top="{ value: 'Open the recipe\'s page in a new tab', disabled: false }">
-									<p-button
-										@click="openRecipeUrl(slotProps.data.recipeUrl)"
-										:disabled="slotProps.data.recipeUrl.length === 0"
-										class="p-button-rounded p-button-primary m-1">
-										<fa-layers fixed-width>
-											<fa :icon="['fas', 'book-reader']" transform="grow-10"></fa>
-											<fa
-												:icon="['fas', 'utensils']"
-												transform="shrink-8 down-4 right-7"
-												class="text-primary">
-											</fa>
-										</fa-layers>
-									</p-button>
-								</span>
+							<div class="flex flex-1">
+								<p class="align-self-end flex flex-auto text--mini text--darker">by: {{ slotProps.data.insertedByEmail }}</p>
 
-								<span class="flex">
-									<div v-tooltip.top="{ value: 'View recipe details' }">
-										<p-button @click="openDetailsModal(slotProps.data.id)"
-											:class="currentUserId === slotProps.data.insertedByUID ? 'p-button-warning' : 'p-button-primary'"
-											class="p-button-rounded m-1">
-											<fa :icon="['fas', 'eye']"></fa>
+								<div class="recipe-item__bottom-container">
+									<span
+										v-tooltip.top="{ value: 'Open the recipe\'s page in a new tab', disabled: false }">
+										<p-button
+											@click="openRecipeUrl(slotProps.data.recipeUrl)"
+											:disabled="slotProps.data.recipeUrl.length === 0"
+											class="p-button-rounded p-button-primary m-1">
+											<fa-layers fixed-width>
+												<fa :icon="['fas', 'book-reader']" transform="grow-10"></fa>
+												<fa
+													:icon="['fas', 'utensils']"
+													transform="shrink-8 down-4 right-7"
+													class="text-primary">
+												</fa>
+											</fa-layers>
 										</p-button>
-									</div>
-								</span>
+									</span>
+
+									<span class="flex">
+										<div v-tooltip.top="{ value: 'View recipe details' }">
+											<p-button @click="openDetailsModal(slotProps.data.id)"
+												:class="currentUserId === slotProps.data.insertedByUID ? 'p-button-warning' : 'p-button-primary'"
+												class="p-button-rounded m-1">
+												<fa :icon="['fas', 'eye']"></fa>
+											</p-button>
+										</div>
+									</span>
+								</div>
+
 							</div>
 
 						</div>
@@ -186,7 +191,7 @@ const sortOrder = ref();
 const sortField = ref();
 const recipesFilter: RecipesFilter = reactive(new RecipesFilter())
 const hasFilter: ComputedRef<boolean> = computed(() => recipesFilter?.tag?.id?.length > 0)
-const hasRecipesForFilter: ComputedRef<boolean> = computed(() => previousPageLastRecipeId.value.length > 0)
+const hasRecipesForFilter: ComputedRef<boolean> = computed(() => previousPageLastRecipeId?.value.length > 0)
 
 /* ------------------- Methods ----------------- */
 async function loadData() {
@@ -196,7 +201,7 @@ async function loadData() {
 	defaultImageUrl.value = recipeController.getDefaultImageUrl()
 	amountOfRecipesPerPage.value = recipeController.getRecipesPerPageCount()
 
-	previousPageLastRecipeId.value = recipes.value[recipes.value.length - 1]?.id
+	previousPageLastRecipeId.value = recipes.value[recipes.value.length - 1]?.id ?? previousPageLastRecipeId.value
 	paginatorMethods?.reset()
 }
 
@@ -356,7 +361,7 @@ onMounted(async () => {
 		display: flex;
 		align-items: flex-end;
 		align-self: flex-end;
-		flex: 1 1 auto;
+		//flex: 1 1 auto;
 	}
 
 }

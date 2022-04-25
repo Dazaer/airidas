@@ -11,6 +11,7 @@ export default class Recipe {
 	public recipeUrl: string = ""
 	public tags: RecipeTag[] = []
 	public insertedByUID: string = ""
+	public insertedByEmail: string = ""
 	public insertedOnTimestamp: Timestamp = Timestamp.now()
 	public updatedOnTimestamp: Timestamp = Timestamp.now()
 
@@ -39,6 +40,7 @@ export default class Recipe {
 				recipeUrl: recipe.recipeUrl,
 				imageLink: recipe.imageLink,
 				insertedByUID: recipe.insertedByUID,
+				insertedByEmail: recipe.insertedByEmail,
 				insertedOnTimestamp: Timestamp.now(),
 				updatedOnTimestamp: Timestamp.now(),
 				tags: recipe.tags.map(tag => tag.toFirestoreFlat())

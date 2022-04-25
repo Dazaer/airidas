@@ -305,8 +305,9 @@ async function saveRecipe() {
 }
 
 async function addRecipe(recipe: Recipe) {
-	const userId: string = getAuth(firebaseApp).currentUser?.uid ?? ""
-	recipe.insertedByUID = userId
+	const currentUser = getAuth(firebaseApp).currentUser
+	recipe.insertedByUID = currentUser?.uid ?? ""
+	recipe.insertedByEmail = currentUser?.email ?? ""
 
 	return recipeController.add(recipe)
 		.then(value => {
