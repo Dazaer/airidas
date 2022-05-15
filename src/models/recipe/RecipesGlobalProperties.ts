@@ -1,7 +1,10 @@
+import { IBaseModel } from './../BaseModel';
 import { DocumentData, DocumentSnapshot, FirestoreDataConverter, increment, UpdateData } from "firebase/firestore";
 
-export default class RecipesGlobalProperties {
+export default class RecipesGlobalProperties implements IBaseModel{
+	public id: string = ""
 	public recipesCount: number = 0
+	public recipesAdded: number = 0
 
 	constructor(data?: Partial<RecipesGlobalProperties>) {
 		Object.assign(this, data);
@@ -21,9 +24,9 @@ export default class RecipesGlobalProperties {
 		}
 	}
 
-	public static updateToFirestore(value: number): UpdateData<RecipesGlobalProperties> {
+	public static updateToFirestore(model: RecipesGlobalProperties): UpdateData<RecipesGlobalProperties> {
 		const updatedProperties: UpdateData<RecipesGlobalProperties> = {
-			"recipesCount": increment(value),
+			"recipesCount": increment(model.recipesAdded),
 		}
 
 		return updatedProperties

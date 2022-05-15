@@ -1,28 +1,26 @@
 import RecipesGlobalProperties from '@/models/recipe/RecipesGlobalProperties';
-import { documentSnapshotToModel } from "@/utilities/firebase/firestoreModelConverter";
-import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore"
+import { doc, updateDoc } from "firebase/firestore"
+import BaseController from "../BaseController";
 import GlobalPropertiesController from "../GlobalPropertiesController";
 
-export default class RecipesGlobalPropertiesController extends GlobalPropertiesController {
+export default class RecipesGlobalPropertiesController extends BaseController<RecipesGlobalProperties>{
 
-	private readonly db = getFirestore();
 	private readonly DOCUMENT_ID = "recipes-properties"
 
+	constructor() {
+		super(RecipesGlobalProperties, GlobalPropertiesController.COLLECTION_PATH)
+	}
+
 	async get(): Promise<RecipesGlobalProperties> {
-		const docRef = doc(this.db, GlobalPropertiesController.COLLECTION_PATH, this.DOCUMENT_ID).withConverter(RecipesGlobalProperties.firestoreConverter);
-		const documentSnapshot = await getDoc(docRef)
-		let model = documentSnapshotToModel<RecipesGlobalProperties>(RecipesGlobalProperties, documentSnapshot)
-
-		if (model == null) {
-			model = new RecipesGlobalProperties()
-		}
-
-		return model
+		return super.get(this.DOCUMENT_ID)
 	}
 
 	async incrementRecipesCount(value: number) {
 		const docRef = doc(this.db, GlobalPropertiesController.COLLECTION_PATH, this.DOCUMENT_ID).withConverter(RecipesGlobalProperties.firestoreConverter);
 
-		return updateDoc(docRef, RecipesGlobalProperties.updateToFirestore(value))
+		const recipeGlobalProperties = new RecipesGlobalProperties()
+		recipeGlobalProperties.recipesAdded = value;
+
+		return updateDoc(docRef, RecipesGlobalProperties.updateToFirestore(recipeGlobalProperties))
 	}
 }
