@@ -34,16 +34,16 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from "vue";
-import useVuelidate from "@vuelidate/core";
-import { email, required } from '@vuelidate/validators'
-import firebaseApp from "@/utilities/firebase/firebase";
-import { getAuth, onAuthStateChanged, sendPasswordResetEmail } from "firebase/auth";
-import { useToast } from "primevue/usetoast";
+import { onMounted, reactive, ref } from "vue"
+import useVuelidate from "@vuelidate/core"
+import { email, required } from "@vuelidate/validators"
+import firebaseApp from "@/utilities/firebase/firebase"
+import { getAuth, onAuthStateChanged, sendPasswordResetEmail } from "firebase/auth"
+import { useToast } from "primevue/usetoast"
 
 /* Lifecycle */
 onMounted(async () => {
-	const auth = getAuth(firebaseApp);
+	const auth = getAuth(firebaseApp)
 
 	onAuthStateChanged(auth, (user) => {
 
@@ -56,13 +56,13 @@ onMounted(async () => {
 			isLoggedIn.value = false
 		}
 
-	});
+	})
 
-});
+})
 
 /* ------------------- Properties ----------------- */
 const auth = getAuth(firebaseApp)
-const toast = useToast();
+const toast = useToast()
 const isLoggedIn = ref(false)
 
 
@@ -88,15 +88,15 @@ function resetPassword() {
 
 	sendPasswordResetEmail(auth, profileForm.email)
 		.then(() => {
-			return toast.add({ severity: 'success', summary: "Email sent", detail: `A password reset confirmation email has been sent to ${profileForm.email}`, life: 5000 });
+			return toast.add({ severity: "success", summary: "Email sent", detail: `A password reset confirmation email has been sent to ${profileForm.email}`, life: 5000 })
 		})
 		.catch((error) => {
 			if (error.code == "auth/user-not-found") {
-				return toast.add({ severity: 'error', summary: "User doesn't exist", detail: "The email is not registered within our platform", life: 5000 });
+				return toast.add({ severity: "error", summary: "User doesn't exist", detail: "The email is not registered within our platform", life: 5000 })
 			}
 
-			return toast.add({ severity: 'error', summary: error.code, detail: error.message, life: 5000 });
-		});
+			return toast.add({ severity: "error", summary: error.code, detail: error.message, life: 5000 })
+		})
 }
 
 </script>

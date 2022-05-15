@@ -1,21 +1,20 @@
-import RecipeTag from '@/models/recipe/RecipeTag';
-import Recipe from "@/models/recipe/Recipe";
-import { collection, doc, endBefore, getDoc, limit, limitToLast, orderBy, OrderByDirection, QueryConstraint, startAfter, updateDoc, where } from "firebase/firestore"
-import { addDefaultValueForFieldInCollection, CollectionFieldUpdateModel } from "@/utilities/firebase/firestoreFunctions";
-import RecipeRecipeTagController from "@/controllers/recipes/RecipeRecipeTagController";
-import RecipeRecipeTag from "@/models/recipe/RecipeRecipeTag";
-import RecipeTagController from "@/controllers/recipes/RecipeTagController";
-import RecipesGlobalPropertiesController from "@/controllers/recipes/RecipesGlobalPropertiesController";
-import Debugger from "@/utilities/debugger";
-import BaseController from "@/controllers/BaseController";
+import RecipeTag from "@/models/recipe/RecipeTag"
+import Recipe from "@/models/recipe/Recipe"
+import { collection, doc, DocumentReference, endBefore, getDoc, limit, limitToLast, orderBy, OrderByDirection, QueryConstraint, startAfter, updateDoc, where } from "firebase/firestore"
+import { addDefaultValueForFieldInCollection, CollectionFieldUpdateModel } from "@/utilities/firebase/firestoreFunctions"
+import RecipeRecipeTagController from "@/controllers/recipes/RecipeRecipeTagController"
+import RecipeRecipeTag from "@/models/recipe/RecipeRecipeTag"
+import RecipeTagController from "@/controllers/recipes/RecipeTagController"
+import RecipesGlobalPropertiesController from "@/controllers/recipes/RecipesGlobalPropertiesController"
+import BaseController from "@/controllers/BaseController"
 
 export default class RecipeController extends BaseController<Recipe>{
 
-	public static readonly COLLECTION_PATH = 'recipes'
+	public static readonly COLLECTION_PATH = "recipes"
 	private readonly recipeTagController = new RecipeTagController();
 	private readonly recipesGlobalPropertiesController = new RecipesGlobalPropertiesController();
 	private _orderByField: OrderByField = new OrderByField()
-	private _filterByField: FilterByField = new FilterByField()
+	private _filterByField: FilterByField<keyof Recipe> | undefined
 	private _limitTo: LimitTo = new LimitTo()
 	private _startAfter: StartAfter = new StartAfter()
 	private _endBefore: EndBefore = new EndBefore()
@@ -28,14 +27,17 @@ export default class RecipeController extends BaseController<Recipe>{
 	public orderBy<K extends keyof Recipe>(field: K, directionStr?: OrderByDirection): RecipeController {
 		this._orderByField.field = field
 		this._orderByField.directionStr = directionStr ?? this._orderByField.directionStr
-		this._filterByField.isActive = true
-		return this;
+		this._orderByField.isActive = true
+		return this
 	}
 
 	public filterBy<K extends keyof Recipe>(field: K, value: Recipe[typeof field]): RecipeController {
-		this._filterByField.field = field
-		this._filterByField.value = value
-		this._filterByField.isActive = true
+		this._filterByField = new FilterByField({
+			field: field,
+			value: value,
+			isActive: true
+		})
+
 		return this
 	}
 
@@ -62,9 +64,9 @@ export default class RecipeController extends BaseController<Recipe>{
 	async get(id: string): Promise<Recipe> {
 		const model = await super.get(id)
 
-		const recipeRecipeTagController = new RecipeRecipeTagController(id);
-		const recipeRecipeTags: RecipeRecipeTag[] = await recipeRecipeTagController.getAll();
-		model.tags = recipeRecipeTags.map(recipeRecipeTag => recipeRecipeTag.toRecipeTag());
+		const recipeRecipeTagController = new RecipeRecipeTagController(id)
+		const recipeRecipeTags: RecipeRecipeTag[] = await recipeRecipeTagController.getAll()
+		model.tags = recipeRecipeTags.map(recipeRecipeTag => recipeRecipeTag.toRecipeTag())
 
 		return model
 	}
@@ -87,29 +89,30 @@ export default class RecipeController extends BaseController<Recipe>{
 		return (await this.recipesGlobalPropertiesController.get()).recipesCount
 	}
 
-	async add(recipe: Recipe): Promise<any> {
+	async add(recipe: Recipe): Promise<DocumentReference<Recipe>> {
 		const addedDoc = await super.add(recipe)
 		await this.recipesGlobalPropertiesController.incrementRecipesCount(1)
 
-		const recipeRecipeTagController = new RecipeRecipeTagController(addedDoc.id);
+		const recipeRecipeTagController = new RecipeRecipeTagController(addedDoc.id)
 
-		const promises: Promise<any>[] = []
+		const promises: Promise<DocumentReference<RecipeRecipeTag>>[] = []
 		recipe.tags.forEach(tag => {
 			promises.push(recipeRecipeTagController.add(tag.toRecipeRecipeTag()))
 		})
 
-		return Promise.all(promises)
+		await Promise.all(promises)
+		return addedDoc
 	}
 
-	async update(recipe: Recipe): Promise<any> {
-		const docRef = doc(this.db, RecipeController.COLLECTION_PATH, recipe.id).withConverter(Recipe.firestoreConverter);
-		const recipeRecipeTagController = new RecipeRecipeTagController(recipe.id);
+	async update(recipe: Recipe): Promise<void> {
+		const docRef = doc(this.db, RecipeController.COLLECTION_PATH, recipe.id).withConverter(Recipe.firestoreConverter)
+		const recipeRecipeTagController = new RecipeRecipeTagController(recipe.id)
 
 		const existingRecipeRecipeTags = await recipeRecipeTagController.getAll()
 		const deletedTags = existingRecipeRecipeTags.filter(errt => recipe.tags.every(tag => errt.recipeTagId !== tag.id))
 		const newTags = recipe.tags.filter(tag => existingRecipeRecipeTags.every(errt => errt.recipeTagId !== tag.id))
 
-		const promises: Promise<any>[] = []
+		const promises: Promise<DocumentReference<RecipeRecipeTag> | void>[] = []
 		newTags.forEach(tag => {
 			promises.push(recipeRecipeTagController.add(tag.toRecipeRecipeTag()))
 		})
@@ -121,16 +124,16 @@ export default class RecipeController extends BaseController<Recipe>{
 		return updateDoc(docRef, Recipe.updateToFirestore(recipe))
 	}
 
-	async delete(recipeId: string): Promise<any> {
-		const recipeRecipeTagController = new RecipeRecipeTagController(recipeId);
+	async delete(recipeId: string): Promise<void> {
+		const recipeRecipeTagController = new RecipeRecipeTagController(recipeId)
 		recipeRecipeTagController.deleteAll()
 
-		await super.delete(recipeId);
+		await super.delete(recipeId)
 		return this.recipesGlobalPropertiesController.incrementRecipesCount(-1)
 	}
 
-	updateField<K extends keyof Recipe>(field: K, value: Recipe[typeof field]) {
-		const collectionRef = collection(this.db, RecipeController.COLLECTION_PATH).withConverter(Recipe.firestoreConverter);
+	updateField<K extends keyof Recipe>(field: K, value: Recipe[typeof field]): void {
+		const collectionRef = collection(this.db, RecipeController.COLLECTION_PATH).withConverter(Recipe.firestoreConverter)
 		const updateFieldModel = new CollectionFieldUpdateModel(collectionRef, field, value)
 		addDefaultValueForFieldInCollection(updateFieldModel)
 	}
@@ -158,14 +161,14 @@ export default class RecipeController extends BaseController<Recipe>{
 		}
 
 		if (this._startAfter.isActive) {
-			const lastDocRef = doc(this.db, RecipeController.COLLECTION_PATH, this._startAfter.lastDocumentId).withConverter(Recipe.firestoreConverter);
+			const lastDocRef = doc(this.db, RecipeController.COLLECTION_PATH, this._startAfter.lastDocumentId).withConverter(Recipe.firestoreConverter)
 			const documentSnapshot = await getDoc(lastDocRef)
 
 			queryConstraints.push(startAfter(documentSnapshot))
 		}
 
 		if (this._endBefore.isActive) {
-			const lastDocRef = doc(this.db, RecipeController.COLLECTION_PATH, this._endBefore.lastDocumentId).withConverter(Recipe.firestoreConverter);
+			const lastDocRef = doc(this.db, RecipeController.COLLECTION_PATH, this._endBefore.lastDocumentId).withConverter(Recipe.firestoreConverter)
 			const documentSnapshot = await getDoc(lastDocRef)
 
 			queryConstraints.push(endBefore(documentSnapshot))
@@ -182,17 +185,18 @@ class OrderByField {
 	public isActive: boolean = true
 
 	constructor(data?: Partial<OrderByField>) {
-		Object.assign(this, data);
+		Object.assign(this, data)
 	}
 }
 
-class FilterByField {
-	public field!: keyof Recipe
-	public value: any = null
+class FilterByField<K extends keyof Recipe> {
+
+	public field!: K
+	public value!: Recipe[K]
 	public isActive: boolean = false
 
-	constructor(data?: Partial<FilterByField>) {
-		Object.assign(this, data);
+	constructor(data?: Partial<FilterByField<keyof Recipe>>) {
+		Object.assign(this, data)
 	}
 }
 
@@ -201,7 +205,7 @@ class LimitTo {
 	public isActive: boolean = false
 
 	constructor(data?: Partial<LimitTo>) {
-		Object.assign(this, data);
+		Object.assign(this, data)
 	}
 }
 
@@ -210,7 +214,7 @@ class StartAfter {
 	public isActive: boolean = false
 
 	constructor(data?: Partial<StartAfter>) {
-		Object.assign(this, data);
+		Object.assign(this, data)
 	}
 }
 
@@ -219,7 +223,7 @@ class EndBefore {
 	public isActive: boolean = false
 
 	constructor(data?: Partial<EndBefore>) {
-		Object.assign(this, data);
+		Object.assign(this, data)
 	}
 }
 

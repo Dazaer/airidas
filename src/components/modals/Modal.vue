@@ -5,18 +5,18 @@
 </template>
 
 <script setup lang="ts">
-import {withDefaults, defineProps, defineEmits} from 'vue'
+import {withDefaults, defineProps, defineEmits} from "vue"
 
 interface propsInterface {
 	isOpen?: boolean;
 }
 const props = withDefaults(defineProps<propsInterface>(), {
 	isOpen: false,
-});
+})
 
 const emit = defineEmits<{
-  (event: 'change-open-state', test: string): void,
-}>();
+  (event: "change-open-state", test: string): void,
+}>()
 
 let isVisible = true
 

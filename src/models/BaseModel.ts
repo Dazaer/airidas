@@ -1,4 +1,4 @@
-import { FirestoreDataConverter, UpdateData } from "firebase/firestore";
+import { FirestoreDataConverter, UpdateData } from "firebase/firestore"
 
 export interface IBaseModel {
 	id: string;

@@ -1,10 +1,10 @@
-const path = require('path')
+const path = require("path")
 
 module.exports = {
-  chainWebpack: config => {
-    const types = ['vue-modules', 'vue', 'normal-modules', 'normal']
-    types.forEach(type => addStyleResource(config.module.rule('scss').oneOf(type)))
-  },
+	chainWebpack: config => {
+		const types = ["vue-modules", "vue", "normal-modules", "normal"]
+		types.forEach(type => addStyleResource(config.module.rule("scss").oneOf(type)))
+	},
 	configureWebpack: {
 		module: {
 			/*
@@ -17,22 +17,22 @@ module.exports = {
 			*/
 		},
 		optimization: {
-      splitChunks: {
-        minSize: 10000,
-        maxSize: 250000,
-      }
-    }
+			splitChunks: {
+				minSize: 10000,
+				maxSize: 250000,
+			}
+		}
 	}
 	/*
 	*/
 }
 
 function addStyleResource (rule) {
-  rule.use('style-resource')
-    .loader('style-resources-loader')
-    .options({
-      patterns: [
-        path.resolve(__dirname, './src/styles/base.scss'),
-      ],
-    })
+	rule.use("style-resource")
+		.loader("style-resources-loader")
+		.options({
+			patterns: [
+				path.resolve(__dirname, "./src/styles/base.scss"),
+			],
+		})
 }

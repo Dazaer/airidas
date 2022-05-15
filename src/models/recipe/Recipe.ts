@@ -1,8 +1,8 @@
-import { IBaseModel } from '@/models/BaseModel';
-import RecipeTag from '@/models/recipe/RecipeTag';
-import Debugger from "@/utilities/debugger";
-import dayjs from 'dayjs';
-import { DocumentData, DocumentSnapshot, FirestoreDataConverter, Timestamp, UpdateData } from "firebase/firestore";
+import { IBaseModel } from "@/models/BaseModel"
+import RecipeTag from "@/models/recipe/RecipeTag"
+import Debugger from "@/utilities/debugger"
+import dayjs from "dayjs"
+import { DocumentData, DocumentSnapshot, FirestoreDataConverter, Timestamp, UpdateData } from "firebase/firestore"
 
 export default class Recipe implements IBaseModel {
 	public id: string = "";
@@ -23,12 +23,12 @@ export default class Recipe implements IBaseModel {
 
 	constructor(data?: Partial<Recipe>) {
 		if (data == null) {
-			return Object.assign(this, data);
+			return Object.assign(this, data)
 		}
 
 		data.insertedOnFormattedDate = data.insertedOnTimestamp ? dayjs(data.insertedOnTimestamp.toDate()).format("DD/MM/YYYY") : "No inserted date"
 		data.updatedOnFormattedDate = data.updatedOnTimestamp ? dayjs(data.updatedOnTimestamp.toDate()).format("DD/MM/YYYY") : "No updated date"
-		Object.assign(this, data);
+		Object.assign(this, data)
 	}
 
 	/* ---------------- Firestore ---------------- */
@@ -45,7 +45,7 @@ export default class Recipe implements IBaseModel {
 				insertedOnTimestamp: Timestamp.now(),
 				updatedOnTimestamp: Timestamp.now(),
 				tags: recipe.tags.map(tag => tag.toFirestoreFlat())
-			};
+			}
 		},
 		fromFirestore: (snapshot: DocumentSnapshot<DocumentData>) => {
 			const data = snapshot.data() as Recipe

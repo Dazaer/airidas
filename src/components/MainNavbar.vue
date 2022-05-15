@@ -40,10 +40,10 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from "vue"
-import firebaseApp from "@/utilities/firebase/firebase";
+import firebaseApp from "@/utilities/firebase/firebase"
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth"
-import LoginModal from "./LoginModal.vue";
-import { RouteNames } from "@/router";
+import LoginModal from "./LoginModal.vue"
+import { RouteNames } from "@/router"
 
 
 const menu = ref([
@@ -95,7 +95,7 @@ const menu = ref([
 
 /* Lifecycle */
 onMounted(async () => {
-	const auth = getAuth(firebaseApp);
+	const auth = getAuth(firebaseApp)
 
 	onAuthStateChanged(auth, (user) => {
 
@@ -111,11 +111,11 @@ onMounted(async () => {
 		}
 
 		hasFullyLoaded.value = true
-	});
+	})
 
 	//This happens before the onAuthStateChanged
 	//console.log("mounted")
-});
+})
 
 
 /* Properties */
@@ -131,13 +131,14 @@ function changeLoginModalState(isOpening: boolean) {
 }
 
 function logout() {
-	const auth = getAuth();
+	const auth = getAuth()
 
 	signOut(auth).then(() => {
 		console.log("Successfully signed out")
 	}).catch((error) => {
+		console.error(error)
 		console.error("Error signing out")
-	});
+	})
 }
 
 </script>

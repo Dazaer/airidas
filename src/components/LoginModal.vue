@@ -67,15 +67,15 @@
 </template>
 
 <script setup lang="ts">
-import firebaseApp from "@/utilities/firebase/firebase";
+import firebaseApp from "@/utilities/firebase/firebase"
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth"
-import { withDefaults, defineProps, defineEmits, computed, ref, reactive } from 'vue'
-import { required } from '@vuelidate/validators'
-import useVuelidate from "@vuelidate/core";
-import { FirebaseError } from "firebase/app";
-import { useToast } from "primevue/usetoast";
-import { useRouter } from "vue-router";
-import { RouteNames } from "@/router";
+import { withDefaults, defineProps, defineEmits, computed, ref, reactive } from "vue"
+import { required } from "@vuelidate/validators"
+import useVuelidate from "@vuelidate/core"
+import { FirebaseError } from "firebase/app"
+import { useToast } from "primevue/usetoast"
+import { useRouter } from "vue-router"
+import { RouteNames } from "@/router"
 
 /* Props */
 interface propsInterface {
@@ -83,15 +83,15 @@ interface propsInterface {
 }
 const props = withDefaults(defineProps<propsInterface>(), {
 	isOpen: false,
-});
+})
 
 const emit = defineEmits<{
-	(event: 'change-open-state', isOpen: boolean): void,
-}>();
+	(event: "change-open-state", isOpen: boolean): void,
+}>()
 
 
 /* Properties */
-const toast = useToast();
+const toast = useToast()
 const auth = getAuth(firebaseApp)
 const router = useRouter()
 
@@ -122,7 +122,7 @@ async function login() {
 	validation.value.$validate()
 
 	if (validation.value.$errors.length > 0) {
-		return toast.add({ severity: 'error', summary: 'Form error', detail: "Please correct the invalid fields", life: 3000 });
+		return toast.add({ severity: "error", summary: "Form error", detail: "Please correct the invalid fields", life: 3000 })
 	}
 
 	const userCredentials = await signInWithEmailAndPassword(auth, loginForm.email, loginForm.password)
@@ -133,11 +133,11 @@ async function login() {
 
 	if (userCredentials instanceof FirebaseError) {
 		console.warn("code: " + userCredentials.code + "message: " + userCredentials.message + "name: " + userCredentials.name + "customData: " + userCredentials.customData)
-		if (userCredentials.code == 'auth/invalid-email') {
-			return toast.add({ severity: 'error', summary: 'Invalid login credentials', detail: "The email and password do not match an existing user." });
+		if (userCredentials.code == "auth/invalid-email") {
+			return toast.add({ severity: "error", summary: "Invalid login credentials", detail: "The email and password do not match an existing user." })
 		}
 
-		return toast.add({ severity: 'error', summary: 'Error logging in', detail: `${userCredentials.code}`});
+		return toast.add({ severity: "error", summary: "Error logging in", detail: `${userCredentials.code}`})
 	}
 
 	console.log("Successfully signed in: " + userCredentials.user.email)

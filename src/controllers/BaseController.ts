@@ -1,6 +1,6 @@
-import { IBaseModel, IBaseModelBuilder } from '@/models/BaseModel';
-import { documentSnapshotToModel, querySnapshotToModelArray } from "@/utilities/firebase/firestoreModelConverter";
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, query, QueryConstraint, updateDoc } from "firebase/firestore"
+import { IBaseModel, IBaseModelBuilder } from "@/models/BaseModel"
+import { documentSnapshotToModel, querySnapshotToModelArray } from "@/utilities/firebase/firestoreModelConverter"
+import { addDoc, collection, deleteDoc, doc, DocumentReference, getDoc, getDocs, getFirestore, query, QueryConstraint, updateDoc } from "firebase/firestore"
 
 export default class BaseController<T extends IBaseModel> {
 
@@ -10,11 +10,11 @@ export default class BaseController<T extends IBaseModel> {
 
 	constructor(model: IBaseModelBuilder<T>, collectionPath: string) {
 		this.collectionPath = collectionPath
-		this.Model = model;
-}
+		this.Model = model
+	}
 
 	async get(id: string): Promise<T> {
-		const docRef = doc(this.db, this.collectionPath, id).withConverter(this.Model.firestoreConverter);
+		const docRef = doc(this.db, this.collectionPath, id).withConverter(this.Model.firestoreConverter)
 		const documentSnapshot = await getDoc(docRef)
 		let model = documentSnapshotToModel<T>(this.Model, documentSnapshot, "id")
 
@@ -35,19 +35,19 @@ export default class BaseController<T extends IBaseModel> {
 		return models
 	}
 
-	async add(model: T): Promise<any> {
-		const collectionRef = collection(this.db, this.collectionPath).withConverter(this.Model.firestoreConverter);
-		return addDoc(collectionRef, model);
+	async add(model: T): Promise<DocumentReference<T>> {
+		const collectionRef = collection(this.db, this.collectionPath).withConverter(this.Model.firestoreConverter)
+		return addDoc(collectionRef, model)
 	}
 
-	async update(model: T): Promise<any> {
-		const docRef = doc(this.db, this.collectionPath, model.id).withConverter(this.Model.firestoreConverter);
+	async update(model: T): Promise<void> {
+		const docRef = doc(this.db, this.collectionPath, model.id).withConverter(this.Model.firestoreConverter)
 		return updateDoc(docRef, this.Model.updateToFirestore(model))
 	}
 
-	async delete(modelId: string): Promise<any> {
-		const docRef = doc(this.db, this.collectionPath, modelId);
-		return deleteDoc(docRef);
+	async delete(modelId: string): Promise<void> {
+		const docRef = doc(this.db, this.collectionPath, modelId)
+		return deleteDoc(docRef)
 	}
 
 }

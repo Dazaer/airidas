@@ -24,31 +24,32 @@
 </template>
 
 <script setup lang="ts">
-import Debugger from "@/utilities/debugger";
-import { withDefaults, defineProps, computed, ComputedRef, Ref, ref, defineEmits, onMounted } from 'vue'
+import { IBaseModel } from "@/models/BaseModel"
+import Debugger from "@/utilities/debugger"
+import { withDefaults, defineProps, computed, ComputedRef, Ref, ref, defineEmits, onMounted } from "vue"
 
 /* ------------------- Props ----------------- */
 export interface PaginatorMethods {
-	reset(): any;
+	reset(): void;
 }
 
 interface PropsInterface {
-	data: any[]
-	totalAmount: number;
-	showCount?: boolean;
+	data: IBaseModel[]
+	totalAmount: number
+	showCount?: boolean
 	fallbackDocId?: string
 }
 
 const props = withDefaults(defineProps<PropsInterface>(), {
 	showCount: true,
 	fallbackDocId: ""
-});
+})
 
 const emit = defineEmits<{
-	(event: 'interface', methods: PaginatorMethods): void,
-	(event: 'next', docIdStartAt: string): void,
-	(event: 'previous', docIdEndAt: string): void,
-}>();
+	(event: "interface", methods: PaginatorMethods): void,
+	(event: "next", docIdStartAt: string): void,
+	(event: "previous", docIdEndAt: string): void,
+}>()
 
 /* ------------------- Properties ----------------- */
 
@@ -63,7 +64,7 @@ const isNextDisabled: ComputedRef<boolean> = computed(() => totalItemsLoadedCoun
 /* ------------------- Methods ----------------- */
 
 function onPreviousClicked() {
-	Debugger.Warn(`Previous clicked!`)
+	Debugger.Warn("Previous clicked!")
 	totalItemsLoadedCount.value -= itemsPerPageCount.value
 
 	const hasItemsOnPage = props.data.length > 0
@@ -79,7 +80,7 @@ function onPreviousClicked() {
 }
 
 function onNextClicked() {
-	Debugger.Warn(`Next clicked!`)
+	Debugger.Warn("Next clicked!")
 	totalItemsLoadedCount.value += itemsPerPageCount.value
 
 	const documentId = props.data[props.data.length - 1].id

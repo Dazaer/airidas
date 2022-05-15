@@ -57,15 +57,15 @@
 					</template>
 
 					<template #editor="{ data, field }">
-					<span>
-						<p-input-text
-							name="recipeTagTitleEditor"
-							v-model="data[field]"
-							type="text"
-							placeholder="title"
-							:class="{ 'p-invalid': validation.title.$invalid && hasBeenSubmitted }"
-							class="w-full" />
-					</span>
+						<span>
+							<p-input-text
+								name="recipeTagTitleEditor"
+								v-model="data[field]"
+								type="text"
+								placeholder="title"
+								:class="{ 'p-invalid': validation.title.$invalid && hasBeenSubmitted }"
+								class="w-full" />
+						</span>
 					</template>
 				</p-column>
 
@@ -125,22 +125,22 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, Ref, ref } from "vue";
-import { useConfirm } from "primevue/useconfirm";
-import { useToast } from "primevue/usetoast";
-import RecipeTag from "@/models/recipe/RecipeTag";
-import { required } from '@vuelidate/validators'
-import useVuelidate from "@vuelidate/core";
-import { DataTableCellEditCompleteEvent } from "primevue/datatable";
-import { UnwrapNestedRefs } from "@vue/reactivity";
-import { ColumnSlots } from "primevue/column";
-import RecipeTagController from "@/controllers/recipes/RecipeTagController";
+import { onMounted, reactive, Ref, ref } from "vue"
+import { useConfirm } from "primevue/useconfirm"
+import { useToast } from "primevue/usetoast"
+import RecipeTag from "@/models/recipe/RecipeTag"
+import { required } from "@vuelidate/validators"
+import useVuelidate from "@vuelidate/core"
+import { DataTableCellEditCompleteEvent } from "primevue/datatable"
+import { UnwrapNestedRefs } from "@vue/reactivity"
+import { ColumnSlots } from "primevue/column"
+import RecipeTagController from "@/controllers/recipes/RecipeTagController"
 
 
 /* ------------------- Properties ----------------- */
-const toast = useToast();
-const confirm = useConfirm();
-const recipeTagController = new RecipeTagController();
+const toast = useToast()
+const confirm = useConfirm()
+const recipeTagController = new RecipeTagController()
 
 let recipeTags: Ref<RecipeTag[]> = ref([])
 let lastEditedTag: UnwrapNestedRefs<RecipeTag> = reactive(new RecipeTag())
@@ -164,7 +164,7 @@ async function loadData() {
 async function getRecipeTags() {
 	const virtualNewRecipeTags = recipeTags.value.filter(rt => rt.id.length === 0)
 	const databaseRecipeTags = await recipeTagController.getAll()
-	return databaseRecipeTags.concat(virtualNewRecipeTags);
+	return databaseRecipeTags.concat(virtualNewRecipeTags)
 }
 
 function addNewRecipeTag() {
@@ -201,10 +201,10 @@ async function saveNewRecipeTag(slotProps: Parameters<ColumnSlots["body"]>[0]) {
 async function onCellEditComplete(event: DataTableCellEditCompleteEvent) {
 	hasBeenSubmitted.value = true
 
-	const recipeTag = event.newData;
+	const recipeTag = event.newData
 	const isNew = recipeTag.id.length === 0
 	const recipeTagValidation = useVuelidate(rules, recipeTag)
-  lastEditedTag = recipeTag
+	lastEditedTag = recipeTag
 	//tagsValidations.push(recipeTagValidation)
 
 	const isValid = await recipeTagValidation.value.$validate()
@@ -213,7 +213,7 @@ async function onCellEditComplete(event: DataTableCellEditCompleteEvent) {
 	}
 
 	if (isNew) {
-		return recipeTags.value[event.index] = event.newData;
+		return recipeTags.value[event.index] = event.newData
 	}
 
 	return updateRecipeTag(recipeTag)
@@ -235,23 +235,23 @@ function deleteRecipeTag(event: Event, slotProps: Parameters<ColumnSlots["body"]
 	confirm.require({
 		target: event.currentTarget as HTMLElement,
 		message: `Are you sure you want to delete "${recipeTag.title}"?`,
-		icon: 'pi pi-exclamation-triangle',
-		acceptClass: 'p-button-danger',
+		icon: "pi pi-exclamation-triangle",
+		acceptClass: "p-button-danger",
 		accept: async () => {
 			await recipeTagController.delete(recipeTag.id)
 			loadData()
-			return toast.add({ severity: 'success', summary: "Success", detail: `Successfully deleted "${recipeTag.title}"`, life: 3000 });
+			return toast.add({ severity: "success", summary: "Success", detail: `Successfully deleted "${recipeTag.title}"`, life: 3000 })
 		},
 		reject: () => {
-			return toast.add({ severity: 'error', summary: "Error", detail: `Error deleting "${recipeTag.title}"`, life: 3000 });
+			return toast.add({ severity: "error", summary: "Error", detail: `Error deleting "${recipeTag.title}"`, life: 3000 })
 		}
-	});
+	})
 }
 
 /* ------------------- Lifecycle ----------------- */
 onMounted(async () => {
 	await loadData()
-});
+})
 
 </script>
 

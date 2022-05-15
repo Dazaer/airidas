@@ -100,16 +100,17 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, Ref, ref } from "vue";
-import { useConfirm } from "primevue/useconfirm";
-import FeatureRequestDetailsModal from "@/components/modals/FeatureRequestDetailsModal.vue";
-import FeatureRequest from "@/models/feature-requests/FeatureRequest";
-import FeatureRequestController from "@/controllers/feature-requests/FeatureRequestController";
-import { useToast } from "primevue/usetoast";
+import { onMounted, Ref, ref } from "vue"
+import { useConfirm } from "primevue/useconfirm"
+import FeatureRequestDetailsModal from "@/components/modals/FeatureRequestDetailsModal.vue"
+import FeatureRequest from "@/models/feature-requests/FeatureRequest"
+import FeatureRequestController from "@/controllers/feature-requests/FeatureRequestController"
+import { useToast } from "primevue/usetoast"
+import { DataTableRowEditSaveEvent } from "primevue/datatable"
 
 /* ------------------- Properties ----------------- */
-const toast = useToast();
-const confirm = useConfirm();
+const toast = useToast()
+const confirm = useConfirm()
 
 const featureRequestController = new FeatureRequestController()
 
@@ -137,21 +138,21 @@ function changeDetailsModalState(isOpening: boolean) {
 	isDetailsOpen.value = isOpening
 }
 
-function deleteFeatureRequest(event: any, featureRequest: FeatureRequest) {
+function deleteFeatureRequest(event: Event, featureRequest: FeatureRequest) {
 	confirm.require({
-		target: event.currentTarget,
+		target: event.currentTarget as HTMLElement,
 		message: `Are you sure you want to delete "${featureRequest.title}"?`,
-		icon: 'pi pi-exclamation-triangle',
-		acceptClass: 'p-button-danger',
+		icon: "pi pi-exclamation-triangle",
+		acceptClass: "p-button-danger",
 		accept: async () => {
 			await featureRequestController.delete(featureRequest.id)
 			loadData()
-			return toast.add({ severity: 'success', summary: "Success", detail: `Successfully deleted "${featureRequest.title}"`, life: 3000 });
+			return toast.add({ severity: "success", summary: "Success", detail: `Successfully deleted "${featureRequest.title}"`, life: 3000 })
 		},
 		reject: () => {
 			return
 		}
-	});
+	})
 }
 
 /*
@@ -167,15 +168,15 @@ function getRowClass(data: any) {
 }
 */
 
-function saveRowEdit(event: { newData: any; index: any; }) {
-	featureRequests.value[event.index] = event.newData;
+function saveRowEdit(event: DataTableRowEditSaveEvent) {
+	featureRequests.value[event.index] = event.newData
 }
 
 /* ------------------- Lifecycle ----------------- */
 onMounted(async () => {
 	//const auth = getAuth(firebaseApp);
 	loadData()
-});
+})
 
 </script>
 

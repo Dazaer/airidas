@@ -1,4 +1,4 @@
-import { ProjectConfig } from './../../project.config';
+import { ProjectConfig } from "./../../project.config"
 export default class Debugger {
 	static readonly isEnabled: boolean = ProjectConfig.isDebugging && !ProjectConfig.isProductionEnv
 

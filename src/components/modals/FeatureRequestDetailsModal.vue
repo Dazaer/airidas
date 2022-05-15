@@ -87,14 +87,14 @@
 </template>
 
 <script setup lang="ts">
-import { withDefaults, defineProps, defineEmits, computed, Ref, ref as ref } from 'vue'
-import { required } from '@vuelidate/validators'
-import useVuelidate from "@vuelidate/core";
-import { useToast } from "primevue/usetoast";
-import FeatureRequest from "@/models/feature-requests/FeatureRequest";
-import Priority from "@/models/feature-requests/Priority";
-import PriorityController from "@/controllers/feature-requests/PriorityController";
-import FeatureRequestController from "@/controllers/feature-requests/FeatureRequestController";
+import { withDefaults, defineProps, defineEmits, computed, Ref, ref as ref } from "vue"
+import { required } from "@vuelidate/validators"
+import useVuelidate from "@vuelidate/core"
+import { useToast } from "primevue/usetoast"
+import FeatureRequest from "@/models/feature-requests/FeatureRequest"
+import Priority from "@/models/feature-requests/Priority"
+import PriorityController from "@/controllers/feature-requests/PriorityController"
+import FeatureRequestController from "@/controllers/feature-requests/FeatureRequestController"
 
 /* ------------------- Props ----------------- */
 
@@ -104,17 +104,17 @@ interface propsInterface {
 }
 const props = withDefaults(defineProps<propsInterface>(), {
 	isOpen: false,
-});
+})
 
 const emit = defineEmits<{
-	(event: 'change-open-state', isOpen: boolean): void,
-	(event: 'saved', featureRequest: FeatureRequest): string,
-}>();
+	(event: "change-open-state", isOpen: boolean): void,
+	(event: "saved", featureRequest: FeatureRequest): string,
+}>()
 
 
 /* ------------------- Properties ----------------- */
 
-const toast = useToast();
+const toast = useToast()
 const featureRequestController = new FeatureRequestController()
 const priorityController = new PriorityController()
 
@@ -127,7 +127,7 @@ const isVisible = computed({
 	}
 })
 
-const priorities: Ref<Priority[]> = ref([]);
+const priorities: Ref<Priority[]> = ref([])
 const featureRequestDetails: Ref<FeatureRequest> = ref(new FeatureRequest())
 
 /* ------------------- Validation ----------------- */
@@ -188,26 +188,26 @@ async function saveFeatureRequest() {
 
 async function addFeatureRequest(featureRequest: FeatureRequest) {
 	return featureRequestController.add(featureRequest)
-		.then(value => {
-			toast.add({ severity: 'success', summary: "Success", detail: `Successfully added feature request`, life: 5000 });
+		.then(() => {
+			toast.add({ severity: "success", summary: "Success", detail: "Successfully added feature request", life: 5000 })
 			return true
 		})
 		.catch(error => {
 			console.error(`code: ${error.code}\n message: ${error.message}\n stack: ${error.stack}\n`)
-			toast.add({ severity: 'error', summary: "Error adding feature request", detail: `${error}` });
+			toast.add({ severity: "error", summary: "Error adding feature request", detail: `${error}` })
 			return false
 		})
 }
 
 async function updateFeatureRequest(featureRequest: FeatureRequest) {
 	return featureRequestController.update(featureRequest)
-		.then(value => {
-			toast.add({ severity: 'success', summary: "Success", detail: `Successfully updated feature request`, life: 5000 });
+		.then(() => {
+			toast.add({ severity: "success", summary: "Success", detail: "Successfully updated feature request", life: 5000 })
 			return true
 		})
 		.catch(error => {
 			console.error(`code: ${error.code}\n message: ${error.message}\n stack: ${error.stack}\n`)
-			toast.add({ severity: 'error', summary: "Error updating feature request", detail: `${error}` });
+			toast.add({ severity: "error", summary: "Error updating feature request", detail: `${error}` })
 			return false
 		})
 }

@@ -149,19 +149,19 @@
 </template>
 
 <script setup lang="ts">
-import { withDefaults, defineProps, defineEmits, computed, Ref, ref as ref, onMounted, onUnmounted, ComputedRef } from 'vue'
-import { required } from '@vuelidate/validators'
-import useVuelidate from "@vuelidate/core";
-import { useToast } from "primevue/usetoast";
-import Recipe from "@/models/recipe/Recipe";
-import RecipeController from "@/controllers/recipes/RecipeController";
-import { getAuth, onAuthStateChanged } from "@firebase/auth";
-import firebaseApp from "@/utilities/firebase/firebase";
-import RecipeTag from "@/models/recipe/RecipeTag";
-import RecipeTagController from "@/controllers/recipes/RecipeTagController";
-import { AutoCompleteCompleteEvent } from "primevue/autocomplete";
-import Image from "@/components/form/Image.vue";
-import { useConfirm } from "primevue/useconfirm";
+import { withDefaults, defineProps, defineEmits, computed, Ref, ref as ref, ComputedRef } from "vue"
+import { required } from "@vuelidate/validators"
+import useVuelidate from "@vuelidate/core"
+import { useToast } from "primevue/usetoast"
+import Recipe from "@/models/recipe/Recipe"
+import RecipeController from "@/controllers/recipes/RecipeController"
+import { getAuth, onAuthStateChanged } from "@firebase/auth"
+import firebaseApp from "@/utilities/firebase/firebase"
+import RecipeTag from "@/models/recipe/RecipeTag"
+import RecipeTagController from "@/controllers/recipes/RecipeTagController"
+import { AutoCompleteCompleteEvent } from "primevue/autocomplete"
+import Image from "@/components/form/Image.vue"
+import { useConfirm } from "primevue/useconfirm"
 
 
 /* ------------------- Props ----------------- */
@@ -172,18 +172,18 @@ interface propsInterface {
 }
 const props = withDefaults(defineProps<propsInterface>(), {
 	isOpen: false,
-});
+})
 
 const emit = defineEmits<{
-	(event: 'change-open-state', isOpen: boolean): void,
-	(event: 'list-changed', recipe: Recipe): string,
-}>();
+	(event: "change-open-state", isOpen: boolean): void,
+	(event: "list-changed", recipe: Recipe): string,
+}>()
 
 
 /* ------------------- Properties ----------------- */
 
-const toast = useToast();
-const confirm = useConfirm();
+const toast = useToast()
+const confirm = useConfirm()
 const recipeController = new RecipeController()
 const recipeTagController = new RecipeTagController()
 
@@ -242,16 +242,16 @@ async function loadRecipeModal() {
 	recipeDetailsOriginal.value = recipeDetails.value
 	defaultImageUrl.value = recipeController.getDefaultImageUrl()
 
-	const auth = getAuth(firebaseApp);
+	const auth = getAuth(firebaseApp)
 
 	onAuthStateChanged(auth, (user) => {
 		// User is signed in
 		if (!user) {
-			return;
+			return
 		}
 
 		currentUserId.value = user.uid
-	});
+	})
 }
 
 function beginEdit() {
@@ -310,39 +310,39 @@ async function addRecipe(recipe: Recipe) {
 	recipe.insertedByEmail = currentUser?.email ?? ""
 
 	return recipeController.add(recipe)
-		.then(value => {
-			toast.add({ severity: 'success', summary: "Success", detail: `Successfully added recipe`, life: 5000 });
+		.then(() => {
+			toast.add({ severity: "success", summary: "Success", detail: "Successfully added recipe", life: 5000 })
 			return true
 		})
 		.catch(error => {
 			console.error(`code: ${error.code}\n message: ${error.message}\n stack: ${error.stack}\n`)
-			toast.add({ severity: 'error', summary: "Error adding recipe", detail: `${error}` });
+			toast.add({ severity: "error", summary: "Error adding recipe", detail: `${error}` })
 			return false
 		})
 }
 
 async function updateRecipe(recipe: Recipe) {
 	return recipeController.update(recipe)
-		.then(value => {
-			toast.add({ severity: 'success', summary: "Success", detail: `Successfully updated recipe`, life: 5000 });
+		.then(() => {
+			toast.add({ severity: "success", summary: "Success", detail: "Successfully updated recipe", life: 5000 })
 			return true
 		})
 		.catch(error => {
 			console.error(`code: ${error.code}\n message: ${error.message}\n stack: ${error.stack}\n`)
-			toast.add({ severity: 'error', summary: "Error updating recipe", detail: `${error}` });
+			toast.add({ severity: "error", summary: "Error updating recipe", detail: `${error}` })
 			return false
 		})
 }
 
-function deleteRecipe(event: any, recipe: Recipe) {
+function deleteRecipe(event: Event, recipe: Recipe) {
 	confirm.require({
-		target: event.currentTarget,
+		target: event.currentTarget as HTMLElement,
 		message: `Are you sure you want to delete "${recipe.title}"?`,
-		icon: 'pi pi-exclamation-triangle',
-		acceptClass: 'p-button-danger',
+		icon: "pi pi-exclamation-triangle",
+		acceptClass: "p-button-danger",
 		accept: async () => {
 			await recipeController.delete(recipe.id)
-			toast.add({ severity: 'success', summary: "Success", detail: `Successfully deleted "${recipe.title}"`, life: 3000 });
+			toast.add({ severity: "success", summary: "Success", detail: `Successfully deleted "${recipe.title}"`, life: 3000 })
 
 			emit("list-changed", recipeDetails.value)
 			changeOpenState(false)
@@ -351,19 +351,19 @@ function deleteRecipe(event: any, recipe: Recipe) {
 		reject: () => {
 			return
 		}
-	});
+	})
 }
 
 function searchTags(event: AutoCompleteCompleteEvent) {
 	setTimeout(() => {
 		if (!event.query.trim().length) {
-			return filteredRecipeTags.value = [...recipeTags.value];
+			return filteredRecipeTags.value = [...recipeTags.value]
 		}
 
 		filteredRecipeTags.value = recipeTags.value.filter((tag) => {
-			return tag.title.toLowerCase().startsWith(event.query.toLowerCase());
-		});
-	}, 100);
+			return tag.title.toLowerCase().startsWith(event.query.toLowerCase())
+		})
+	}, 100)
 }
 
 /* ------------------- Lifecycle ----------------- */

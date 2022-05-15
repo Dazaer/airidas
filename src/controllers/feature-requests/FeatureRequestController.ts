@@ -1,9 +1,9 @@
-import FeatureRequest from "@/models/feature-requests/FeatureRequest";
-import BaseController from "@/controllers/BaseController";
+import FeatureRequest from "@/models/feature-requests/FeatureRequest"
+import BaseController from "@/controllers/BaseController"
 
 export default class FeatureRequestController extends BaseController<FeatureRequest> {
 
-	static readonly COLLECTION_PATH = 'feature-requests'
+	static readonly COLLECTION_PATH = "feature-requests"
 	private _withPriority = false
 
 	constructor() {
@@ -33,7 +33,7 @@ export default class FeatureRequestController extends BaseController<FeatureRequ
 				model = model.populateNestedProperties(this._withPriority)
 			}
 
-			return model;
+			return model
 		})
 
 		return models

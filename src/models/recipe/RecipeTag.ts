@@ -1,6 +1,6 @@
-import { IBaseModel } from '@/models/BaseModel';
-import RecipeRecipeTag from '@/models/recipe/RecipeRecipeTag';
-import { DocumentData, DocumentSnapshot, FirestoreDataConverter, UpdateData } from "firebase/firestore";
+import { IBaseModel } from "@/models/BaseModel"
+import RecipeRecipeTag from "@/models/recipe/RecipeRecipeTag"
+import { DocumentData, DocumentSnapshot, FirestoreDataConverter, UpdateData } from "firebase/firestore"
 
 export default class RecipeTag implements IBaseModel{
 	public id: string = "";
@@ -9,7 +9,7 @@ export default class RecipeTag implements IBaseModel{
 
 
 	constructor(data?: Partial<RecipeTag>) {
-		Object.assign(this, data);
+		Object.assign(this, data)
 	}
 
 	public toRecipeRecipeTag(): RecipeRecipeTag {
@@ -27,7 +27,7 @@ export default class RecipeTag implements IBaseModel{
 			return {
 				description: recipe.description,
 				title: recipe.title,
-			};
+			}
 		},
 		fromFirestore: (snapshot: DocumentSnapshot<DocumentData>) => {
 			const data = snapshot.data() as RecipeTag

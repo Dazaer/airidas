@@ -60,16 +60,16 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
-import useVuelidate from "@vuelidate/core";
-import { required } from '@vuelidate/validators'
-import firebaseApp from "@/utilities/firebase/firebase";
-import { confirmPasswordReset, getAuth } from "firebase/auth";
-import { useToast } from "primevue/usetoast";
+import { reactive, ref } from "vue"
+import useVuelidate from "@vuelidate/core"
+import { required } from "@vuelidate/validators"
+import firebaseApp from "@/utilities/firebase/firebase"
+import { confirmPasswordReset, getAuth } from "firebase/auth"
+import { useToast } from "primevue/usetoast"
 
 /* ------------------- Properties ----------------- */
 const auth = getAuth(firebaseApp)
-const toast = useToast();
+const toast = useToast()
 
 /* ------------------- Validation ----------------- */
 const passwordResetForm = reactive({
@@ -96,14 +96,14 @@ function confirmReset() {
 	confirmPasswordReset(auth, passwordResetForm.confirmationCode, passwordResetForm.newPassword)
 		.then(() => {
 			//password confirmed
-			return toast.add({ severity: 'success', summary: "Success", detail: "Successfully changed password", life: 5000 });
+			return toast.add({ severity: "success", summary: "Success", detail: "Successfully changed password", life: 5000 })
 		})
 		.catch((error) => {
-			const errorCode = error.code;
-			const errorMessage = error.message;
-			return toast.add({ severity: 'error', summary: errorCode, detail: errorMessage, life: 5000 });
+			const errorCode = error.code
+			const errorMessage = error.message
+			return toast.add({ severity: "error", summary: errorCode, detail: errorMessage, life: 5000 })
 
-		});
+		})
 }
 
 </script>

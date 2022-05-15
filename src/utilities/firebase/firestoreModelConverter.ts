@@ -1,4 +1,4 @@
-import { DocumentData, DocumentSnapshot, QueryDocumentSnapshot, QuerySnapshot } from "firebase/firestore";
+import { DocumentData, DocumentSnapshot, QueryDocumentSnapshot, QuerySnapshot } from "firebase/firestore"
 
 
 /**
@@ -9,17 +9,17 @@ import { DocumentData, DocumentSnapshot, QueryDocumentSnapshot, QuerySnapshot } 
  * @returns 
  */
 export function querySnapshotToModelArray<T>(Tconstructor: new (...args: any[]) => T, snapshot: QuerySnapshot<DocumentData>, modelIdentifierName: string) {
-	const returnArr: T[] = [];
+	const returnArr: T[] = []
 
 	snapshot.forEach(function (doc: QueryDocumentSnapshot<DocumentData>) {
 		const item: T = new Tconstructor(doc.data())
 		
 		Object.defineProperty(item, modelIdentifierName, {writable: true, value: doc.id})
 
-		returnArr.push(item as T);
-	});
+		returnArr.push(item as T)
+	})
 
-	return returnArr;
+	return returnArr
 }
 
 /**
@@ -34,12 +34,12 @@ export function documentSnapshotToModel<T>(Tconstructor: new (...args: any[]) =>
 
 	if (item == null) {
 		console.error(`There is no ${typeof new Tconstructor()} in firebase store.`)
-		return null;
+		return null
 	}
 
 	if(modelIdentifierName) {
 		Object.defineProperty(item, modelIdentifierName, {writable: true, value: snapshot.id})
 	}
 
-	return item as T;
+	return item as T
 }

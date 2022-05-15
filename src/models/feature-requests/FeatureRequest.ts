@@ -1,6 +1,6 @@
-import { IBaseModel } from '@/models/BaseModel';
-import { DocumentData, DocumentSnapshot, FirestoreDataConverter, UpdateData } from "firebase/firestore";
-import Priority from "@/models/feature-requests/Priority";
+import { IBaseModel } from "@/models/BaseModel"
+import { DocumentData, DocumentSnapshot, FirestoreDataConverter, UpdateData } from "firebase/firestore"
+import Priority from "@/models/feature-requests/Priority"
 
 export default class FeatureRequest implements IBaseModel {
 	public id: string = "";
@@ -15,7 +15,7 @@ export default class FeatureRequest implements IBaseModel {
 	public priority: Priority = new Priority()
 
 	constructor(data?: Partial<FeatureRequest>) {
-		Object.assign(this, data);
+		Object.assign(this, data)
 	}
 
 	/* ---------------- Firestore ---------------- */
@@ -32,10 +32,10 @@ export default class FeatureRequest implements IBaseModel {
 					label: featureRequest.priority.label,
 				},
 				isConfirmed: featureRequest.isConfirmed,
-			};
+			}
 		},
 		fromFirestore: (snapshot: DocumentSnapshot<DocumentData>) => {
-			const data = snapshot.data();
+			const data = snapshot.data()
 			return new FeatureRequest(data)
 		}
 	}

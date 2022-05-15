@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import { withDefaults, defineProps, computed, ComputedRef } from 'vue'
+import { withDefaults, defineProps, computed, ComputedRef } from "vue"
 
 /* ------------------- Props ----------------- */
 
@@ -29,7 +29,7 @@ const props = withDefaults(defineProps<PropsInterface>(), {
 	defaultUrl: "https://www.pngkey.com/png/detail/233-2332677_image-500580-placeholder-transparent.png",
 	alt: "image",
 	size: "lg"
-});
+})
 
 /* ------------------- Properties ----------------- */
 
@@ -37,15 +37,15 @@ const hasImage: ComputedRef<boolean> = computed(() => props.url.length > 0)
 const imageUrl: ComputedRef<string> = computed(() => hasImage.value ? props.url : props.defaultUrl)
 const widthSize: ComputedRef<string> = computed(() => {
 	switch (props.size) {
-		case "sm": {
-			return "25%"
-		}
-		case "md": {
-			return "50%"
-		}
-		case "lg":
-		default:
-			return "100%"
+	case "sm": {
+		return "25%"
+	}
+	case "md": {
+		return "50%"
+	}
+	case "lg":
+	default:
+		return "100%"
 	}
 })
 const constructedStyle: ComputedRef<string> = computed(() => {

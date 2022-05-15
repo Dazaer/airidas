@@ -1,5 +1,5 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import Home from "../views/Home.vue";
+import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router"
+import Home from "../views/Home.vue"
 //import { verifyAdminPermission } from "./meta";
 
 export enum RouteNames {
@@ -67,12 +67,12 @@ const routes: Array<RouteRecordRaw> = [
 		}
 	},
 	*/
-];
+]
 
 const router = createRouter({
 	history: createWebHistory(),
 	routes
-});
+})
 
 /*
 router.beforeEach((to, from, next) => {

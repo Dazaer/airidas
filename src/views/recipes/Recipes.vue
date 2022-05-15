@@ -142,22 +142,21 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ComputedRef, onMounted, reactive, Ref, ref } from "vue";
-import Recipe from "@/models/recipe/Recipe";
-import RecipeController from "@/controllers/recipes/RecipeController";
-import RecipeDetailsModal from "@/components/modals/RecipeDetailsModal.vue";
-import RecipeTag from "@/models/recipe/RecipeTag";
-import { RecipesFilter } from "@/models/recipe/virtual/RecipesFilter";
-import RecipeTagController from "@/controllers/recipes/RecipeTagController";
-import Debugger from "@/utilities/debugger";
-import firebaseApp from "@/utilities/firebase/firebase";
-import { getAuth, onAuthStateChanged } from "@firebase/auth";
-import Image from "@/components/form/Image.vue";
-import Paginator, { PaginatorMethods } from "@/components/form/Paginator.vue";
+import { computed, ComputedRef, onMounted, reactive, Ref, ref } from "vue"
+import Recipe from "@/models/recipe/Recipe"
+import RecipeController from "@/controllers/recipes/RecipeController"
+import RecipeDetailsModal from "@/components/modals/RecipeDetailsModal.vue"
+import RecipeTag from "@/models/recipe/RecipeTag"
+import { RecipesFilter } from "@/models/recipe/virtual/RecipesFilter"
+import RecipeTagController from "@/controllers/recipes/RecipeTagController"
+import firebaseApp from "@/utilities/firebase/firebase"
+import { getAuth, onAuthStateChanged } from "@firebase/auth"
+import Image from "@/components/form/Image.vue"
+import Paginator, { PaginatorMethods } from "@/components/form/Paginator.vue"
 
 /* ------------------- Properties ----------------- */
-const recipeController = new RecipeController();
-const recipeTagController = new RecipeTagController();
+const recipeController = new RecipeController()
+const recipeTagController = new RecipeTagController()
 let paginatorMethods: PaginatorMethods
 
 const recipes: Ref<Recipe[]> = ref([])
@@ -187,8 +186,8 @@ const recipes: Ref<Recipe[]> = ref([
 
 /* ------------------- Querying & Filtering ----------------- */
 
-const sortOrder = ref();
-const sortField = ref();
+const sortOrder = ref()
+const sortField = ref()
 const recipesFilter: RecipesFilter = reactive(new RecipesFilter())
 const hasFilter: ComputedRef<boolean> = computed(() => recipesFilter?.tag?.id?.length > 0)
 const hasRecipesForFilter: ComputedRef<boolean> = computed(() => previousPageLastRecipeId?.value.length > 0)
@@ -211,7 +210,7 @@ async function getRecipes(recipeController?: RecipeController): Promise<Recipe[]
 	if (hasFilter.value) {
 		controller = controller.filterBy("tags", [recipesFilter.tag])
 	}
-	window.scrollTo(0, 0);
+	window.scrollTo(0, 0)
 	return controller.limitTo().orderBy("updatedOnTimestamp", "desc").getAll()
 }
 
@@ -220,7 +219,7 @@ async function getRecipeTags(): Promise<RecipeTag[]> {
 }
 
 function openRecipeUrl(recipeUrl: string = "") {
-	window.open(recipeUrl, '_blank');
+	window.open(recipeUrl, "_blank")
 }
 
 function openDetailsModal(recipeId: string = "") {
@@ -295,19 +294,19 @@ function updateField() {
 
 /* ------------------- Lifecycle ----------------- */
 onMounted(async () => {
-	const auth = getAuth(firebaseApp);
+	const auth = getAuth(firebaseApp)
 
 	onAuthStateChanged(auth, (user) => {
 		// User is signed in
 		if (!user) {
-			return;
+			return
 		}
 
 		currentUserId.value = user.uid
-	});
+	})
 
 	await loadData()
-});
+})
 
 </script>
 
