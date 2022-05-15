@@ -1,36 +1,13 @@
 import Priority from "@/models/Priority";
-import { documentSnapshotToModel, querySnapshotToModelArray } from "@/utilities/firebase/firestoreModelConverter";
-import { collection, doc, getDoc, getDocs, getFirestore } from "firebase/firestore"
+import BaseController from "./BaseController";
 
-export default class PriorityController {
+export default class PriorityController extends BaseController<Priority> {
 	
-	private readonly COLLECTION_PATH = 'priorities'
-	private readonly db = getFirestore();
+	static readonly COLLECTION_PATH = 'priorities'
 
 	constructor(data?: Partial<PriorityController>) {
+		super(Priority, PriorityController.COLLECTION_PATH)
 		Object.assign(this, data);
   }
-	
-	async getAll(): Promise<Priority[]> {
-		const db = getFirestore();
-	
-		const querySnapshot = await getDocs(collection(db, this.COLLECTION_PATH))
-		const priorities = querySnapshotToModelArray<Priority>(Priority, querySnapshot, "id")
-		//const priorities = await firestoreConverter.priorities
-		return priorities
-	}
-
-	async get(id: string): Promise<Priority> {
-		const docRef = doc(this.db, this.COLLECTION_PATH, id);
-		const documentSnapshot = await getDoc(docRef)
-
-		let model = documentSnapshotToModel<Priority>(Priority, documentSnapshot, "id")
-
-		if (model == null) {
-			model = new Priority()
-		}
-
-		return model
-	}
 }
 
