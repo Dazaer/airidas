@@ -134,7 +134,7 @@ import useVuelidate from "@vuelidate/core";
 import { DataTableCellEditCompleteEvent } from "primevue/datatable";
 import { UnwrapNestedRefs } from "@vue/reactivity";
 import { ColumnSlots } from "primevue/column";
-import RecipeTagController from "@/controllers/RecipeTagController";
+import RecipeTagController from "@/controllers/recipes/RecipeTagController";
 
 
 /* ------------------- Properties ----------------- */

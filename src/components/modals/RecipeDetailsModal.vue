@@ -154,11 +154,11 @@ import { required } from '@vuelidate/validators'
 import useVuelidate from "@vuelidate/core";
 import { useToast } from "primevue/usetoast";
 import Recipe from "@/models/Recipe";
-import RecipeController from "@/controllers/RecipeController";
+import RecipeController from "@/controllers/recipes/RecipeController";
 import { getAuth, onAuthStateChanged } from "@firebase/auth";
 import firebaseApp from "@/utilities/firebase/firebase";
 import RecipeTag from "@/models/RecipeTag";
-import RecipeTagController from "@/controllers/RecipeTagController";
+import RecipeTagController from "@/controllers/recipes/RecipeTagController";
 import { AutoCompleteCompleteEvent } from "primevue/autocomplete";
 import Image from "@/components/form/Image.vue";
 import { useConfirm } from "primevue/useconfirm";

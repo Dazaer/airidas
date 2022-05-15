@@ -144,11 +144,11 @@
 <script lang="ts" setup>
 import { computed, ComputedRef, onMounted, reactive, Ref, ref } from "vue";
 import Recipe from "@/models/Recipe";
-import RecipeController from "@/controllers/RecipeController";
+import RecipeController from "@/controllers/recipes/RecipeController";
 import RecipeDetailsModal from "@/components/modals/RecipeDetailsModal.vue";
 import RecipeTag from "@/models/RecipeTag";
 import { RecipesFilter } from "@/models/recipe/virtual/RecipesFilter";
-import RecipeTagController from "@/controllers/RecipeTagController";
+import RecipeTagController from "@/controllers/recipes/RecipeTagController";
 import Debugger from "@/utilities/debugger";
 import firebaseApp from "@/utilities/firebase/firebase";
 import { getAuth, onAuthStateChanged } from "@firebase/auth";

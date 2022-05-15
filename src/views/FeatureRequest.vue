@@ -104,7 +104,7 @@ import { onMounted, Ref, ref } from "vue";
 import { useConfirm } from "primevue/useconfirm";
 import FeatureRequestDetailsModal from "@/components/modals/FeatureRequestDetailsModal.vue";
 import FeatureRequest from "@/models/FeatureRequest";
-import FeatureRequestController from "@/controllers/FeatureRequestController";
+import FeatureRequestController from "@/controllers/feature-requests/FeatureRequestController";
 import { useToast } from "primevue/usetoast";
 
 /* ------------------- Properties ----------------- */

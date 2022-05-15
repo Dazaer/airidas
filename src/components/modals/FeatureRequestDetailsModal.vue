@@ -95,8 +95,8 @@ import useVuelidate from "@vuelidate/core";
 import { useToast } from "primevue/usetoast";
 import FeatureRequest from "@/models/FeatureRequest";
 import Priority from "@/models/Priority";
-import PriorityController from "@/controllers/PriorityController";
-import FeatureRequestController from "@/controllers/FeatureRequestController";
+import PriorityController from "@/controllers/feature-requests/PriorityController";
+import FeatureRequestController from "@/controllers/feature-requests/FeatureRequestController";
 
 /* ------------------- Props ----------------- */
 

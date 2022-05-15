@@ -1,7 +1,7 @@
 import RecipesGlobalProperties from '@/models/recipe/RecipesGlobalProperties';
 import { documentSnapshotToModel } from "@/utilities/firebase/firestoreModelConverter";
 import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore"
-import GlobalPropertiesController from "./GlobalPropertiesController";
+import GlobalPropertiesController from "../GlobalPropertiesController";
 
 export default class RecipesGlobalPropertiesController extends GlobalPropertiesController {
 

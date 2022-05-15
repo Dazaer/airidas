@@ -1,5 +1,5 @@
 import RecipeTag from "@/models/RecipeTag";
-import BaseController from "./BaseController";
+import BaseController from "../BaseController";
 
 export default class RecipeTagController extends BaseController<RecipeTag> {
 
