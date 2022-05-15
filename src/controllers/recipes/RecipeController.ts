@@ -8,11 +8,11 @@ import RecipeRecipeTag from "@/models/recipe/RecipeRecipeTag";
 import RecipeTagController from "./RecipeTagController";
 import RecipesGlobalPropertiesController from "./RecipesGlobalPropertiesController";
 import Debugger from "@/utilities/debugger";
+import BaseController from "../BaseController";
 
-export default class RecipeController {
+export default class RecipeController extends BaseController<Recipe>{
 
 	public static readonly COLLECTION_PATH = 'recipes'
-	private readonly db = getFirestore();
 	private readonly recipeTagController = new RecipeTagController();
 	private readonly recipesGlobalPropertiesController = new RecipesGlobalPropertiesController();
 	private _orderByField: OrderByField = new OrderByField()
@@ -20,6 +20,10 @@ export default class RecipeController {
 	private _limitTo: LimitTo = new LimitTo()
 	private _startAfter: StartAfter = new StartAfter()
 	private _endBefore: EndBefore = new EndBefore()
+
+	constructor() {
+		super(Recipe, RecipeController.COLLECTION_PATH)
+	}
 
 
 	public orderBy<K extends keyof Recipe>(field: K, directionStr?: OrderByDirection): RecipeController {
@@ -57,13 +61,7 @@ export default class RecipeController {
 	}
 
 	async get(id: string): Promise<Recipe> {
-		const docRef = doc(this.db, RecipeController.COLLECTION_PATH, id).withConverter(Recipe.firestoreConverter);
-		const documentSnapshot = await getDoc(docRef)
-
-		let model = documentSnapshotToModel<Recipe>(Recipe, documentSnapshot, "id")
-		if (model == null) {
-			model = new Recipe()
-		}
+		const model = await super.get(id)
 
 		const recipeRecipeTagController = new RecipeRecipeTagController(id);
 		const recipeRecipeTags: RecipeRecipeTag[] = await recipeRecipeTagController.getAll();
@@ -73,14 +71,8 @@ export default class RecipeController {
 	}
 
 	async getAll(): Promise<Recipe[]> {
-		const collectionRef = collection(this.db, RecipeController.COLLECTION_PATH).withConverter(Recipe.firestoreConverter)
-
 		const queryConstraints: QueryConstraint[] = await this.getQueryConstraints()
-
-		const dbQuery = query(collectionRef, ...queryConstraints)
-		const querySnapshot = await getDocs(dbQuery)
-
-		const models = querySnapshotToModelArray<Recipe>(Recipe, querySnapshot, "id")
+		const models = super.getAll(queryConstraints)
 		return models
 	}
 
@@ -97,9 +89,7 @@ export default class RecipeController {
 	}
 
 	async add(recipe: Recipe): Promise<any> {
-		const collectionRef = collection(this.db, RecipeController.COLLECTION_PATH).withConverter(Recipe.firestoreConverter);
-
-		const addedDoc = await addDoc(collectionRef, recipe);
+		const addedDoc = await super.add(recipe)
 		await this.recipesGlobalPropertiesController.incrementRecipesCount(1)
 
 		const recipeRecipeTagController = new RecipeRecipeTagController(addedDoc.id);
@@ -133,11 +123,10 @@ export default class RecipeController {
 	}
 
 	async delete(recipeId: string): Promise<any> {
-		const docRef = doc(this.db, RecipeController.COLLECTION_PATH, recipeId).withConverter(Recipe.firestoreConverter);
 		const recipeRecipeTagController = new RecipeRecipeTagController(recipeId);
-
 		recipeRecipeTagController.deleteAll()
-		await deleteDoc(docRef);
+		
+		await super.delete(recipeId);
 		return this.recipesGlobalPropertiesController.incrementRecipesCount(-1)
 	}
 

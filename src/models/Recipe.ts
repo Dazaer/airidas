@@ -1,9 +1,10 @@
+import { IBaseModel } from './BaseModel';
 import RecipeTag from '@/models/RecipeTag';
 import Debugger from "@/utilities/debugger";
 import dayjs from 'dayjs';
 import { DocumentData, DocumentSnapshot, FirestoreDataConverter, Timestamp, UpdateData } from "firebase/firestore";
 
-export default class Recipe {
+export default class Recipe implements IBaseModel {
 	public id: string = "";
 	public title: string = ""
 	public description: string = "" //rename to notes
