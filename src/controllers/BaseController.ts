@@ -5,7 +5,7 @@ import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, quer
 export default class BaseController<T extends IBaseModel> {
 
 	readonly db = getFirestore();
-	private collectionPath: string
+	readonly collectionPath: string
 	private Model: IBaseModelBuilder<T>;
 
 	constructor(model: IBaseModelBuilder<T>, collectionPath: string) {
