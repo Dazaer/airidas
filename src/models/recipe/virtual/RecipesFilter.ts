@@ -1,4 +1,4 @@
-import RecipeTag from "@/models/RecipeTag";
+import RecipeTag from "@/models/recipe/RecipeTag";
 
 export class RecipesFilter {
 	public tag: RecipeTag = new RecipeTag();

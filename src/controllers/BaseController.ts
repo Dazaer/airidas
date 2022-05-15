@@ -1,4 +1,4 @@
-import { IBaseModel, IBaseModelBuilder } from './../models/BaseModel';
+import { IBaseModel, IBaseModelBuilder } from '@/models/BaseModel';
 import { documentSnapshotToModel, querySnapshotToModelArray } from "@/utilities/firebase/firestoreModelConverter";
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, query, QueryConstraint, updateDoc } from "firebase/firestore"
 

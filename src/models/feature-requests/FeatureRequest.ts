@@ -1,6 +1,6 @@
-import { IBaseModel } from './BaseModel';
+import { IBaseModel } from '@/models/BaseModel';
 import { DocumentData, DocumentSnapshot, FirestoreDataConverter, UpdateData } from "firebase/firestore";
-import Priority from "./Priority";
+import Priority from "@/models/feature-requests/Priority";
 
 export default class FeatureRequest implements IBaseModel {
 	public id: string = "";

@@ -1,4 +1,4 @@
-import { IBaseModel } from './../BaseModel';
+import { IBaseModel } from '@/models/BaseModel';
 import { DocumentData, DocumentSnapshot, FirestoreDataConverter, increment, UpdateData } from "firebase/firestore";
 
 export default class RecipesGlobalProperties implements IBaseModel{

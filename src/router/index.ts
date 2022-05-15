@@ -26,7 +26,7 @@ const routes: Array<RouteRecordRaw> = [
 	{
 		path: "/feature-request",
 		name: RouteNames.FeatureRequest,
-		component: lazyLoad("FeatureRequest"),
+		component: lazyLoad("feature-requests/FeatureRequest"),
 	},
 	{
 		path: "/recipes",

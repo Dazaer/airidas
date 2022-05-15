@@ -1,5 +1,5 @@
-import FeatureRequest from "@/models/FeatureRequest";
-import BaseController from "../BaseController";
+import FeatureRequest from "@/models/feature-requests/FeatureRequest";
+import BaseController from "@/controllers/BaseController";
 
 export default class FeatureRequestController extends BaseController<FeatureRequest> {
 

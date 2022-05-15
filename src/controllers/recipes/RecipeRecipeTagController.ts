@@ -1,8 +1,8 @@
 import { collection, limit, query, QueryConstraint } from "firebase/firestore"
 import RecipeRecipeTag from "@/models/recipe/RecipeRecipeTag";
-import RecipeController from "./RecipeController";
+import RecipeController from "@/controllers/recipes/RecipeController";
 import { deleteQueryBatch } from "@/utilities/firebase/firestoreFunctions";
-import BaseController from "../BaseController";
+import BaseController from "@/controllers/BaseController";
 
 /**
  * Yes, this should not actually exist as we do not need a collection for simple RecipeTags. We could hold them in an array of a Recipe as we're currently doing.

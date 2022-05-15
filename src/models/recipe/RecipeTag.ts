@@ -1,4 +1,4 @@
-import { IBaseModel } from './BaseModel';
+import { IBaseModel } from '@/models/BaseModel';
 import RecipeRecipeTag from '@/models/recipe/RecipeRecipeTag';
 import { DocumentData, DocumentSnapshot, FirestoreDataConverter, UpdateData } from "firebase/firestore";
 

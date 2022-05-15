@@ -1,5 +1,5 @@
 import { FirestoreDataConverter, DocumentSnapshot, DocumentData, UpdateData } from "firebase/firestore";
-import { IBaseModel } from './BaseModel';
+import { IBaseModel } from '@/models/BaseModel';
 export default class Priority implements IBaseModel {
   public id: string = ""
   public label: string = ""

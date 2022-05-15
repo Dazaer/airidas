@@ -1,5 +1,5 @@
-import Priority from "@/models/Priority";
-import BaseController from "../BaseController";
+import Priority from "@/models/feature-requests/Priority";
+import BaseController from "@/controllers/BaseController";
 
 export default class PriorityController extends BaseController<Priority> {
 	

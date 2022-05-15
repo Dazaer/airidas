@@ -1,5 +1,5 @@
-import { IBaseModel } from './BaseModel';
-import RecipeTag from '@/models/RecipeTag';
+import { IBaseModel } from '@/models/BaseModel';
+import RecipeTag from '@/models/recipe/RecipeTag';
 import Debugger from "@/utilities/debugger";
 import dayjs from 'dayjs';
 import { DocumentData, DocumentSnapshot, FirestoreDataConverter, Timestamp, UpdateData } from "firebase/firestore";

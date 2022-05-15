@@ -1,14 +1,13 @@
-import RecipeTag from '@/models/RecipeTag';
-import Recipe from "@/models/Recipe";
-import { documentSnapshotToModel, querySnapshotToModelArray } from "@/utilities/firebase/firestoreModelConverter";
-import { addDoc, collection, deleteDoc, doc, endBefore, getDoc, getDocs, getFirestore, limit, limitToLast, orderBy, OrderByDirection, query, QueryConstraint, startAfter, updateDoc, where } from "firebase/firestore"
+import RecipeTag from '@/models/recipe/RecipeTag';
+import Recipe from "@/models/recipe/Recipe";
+import { collection, doc, endBefore, getDoc, limit, limitToLast, orderBy, OrderByDirection, QueryConstraint, startAfter, updateDoc, where } from "firebase/firestore"
 import { addDefaultValueForFieldInCollection, CollectionFieldUpdateModel } from "@/utilities/firebase/firestoreFunctions";
-import RecipeRecipeTagController from "./RecipeRecipeTagController";
+import RecipeRecipeTagController from "@/controllers/recipes/RecipeRecipeTagController";
 import RecipeRecipeTag from "@/models/recipe/RecipeRecipeTag";
-import RecipeTagController from "./RecipeTagController";
-import RecipesGlobalPropertiesController from "./RecipesGlobalPropertiesController";
+import RecipeTagController from "@/controllers/recipes/RecipeTagController";
+import RecipesGlobalPropertiesController from "@/controllers/recipes/RecipesGlobalPropertiesController";
 import Debugger from "@/utilities/debugger";
-import BaseController from "../BaseController";
+import BaseController from "@/controllers/BaseController";
 
 export default class RecipeController extends BaseController<Recipe>{
 
@@ -125,7 +124,7 @@ export default class RecipeController extends BaseController<Recipe>{
 	async delete(recipeId: string): Promise<any> {
 		const recipeRecipeTagController = new RecipeRecipeTagController(recipeId);
 		recipeRecipeTagController.deleteAll()
-		
+
 		await super.delete(recipeId);
 		return this.recipesGlobalPropertiesController.incrementRecipesCount(-1)
 	}

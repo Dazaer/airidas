@@ -128,7 +128,7 @@
 import { onMounted, reactive, Ref, ref } from "vue";
 import { useConfirm } from "primevue/useconfirm";
 import { useToast } from "primevue/usetoast";
-import RecipeTag from "@/models/RecipeTag";
+import RecipeTag from "@/models/recipe/RecipeTag";
 import { required } from '@vuelidate/validators'
 import useVuelidate from "@vuelidate/core";
 import { DataTableCellEditCompleteEvent } from "primevue/datatable";

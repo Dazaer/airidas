@@ -87,14 +87,12 @@
 </template>
 
 <script setup lang="ts">
-import firebaseApp from "@/utilities/firebase/firebase";
-import { getAuth, onAuthStateChanged } from "firebase/auth"
-import { withDefaults, defineProps, defineEmits, computed, reactive, onMounted, Ref, ref as ref } from 'vue'
+import { withDefaults, defineProps, defineEmits, computed, Ref, ref as ref } from 'vue'
 import { required } from '@vuelidate/validators'
 import useVuelidate from "@vuelidate/core";
 import { useToast } from "primevue/usetoast";
-import FeatureRequest from "@/models/FeatureRequest";
-import Priority from "@/models/Priority";
+import FeatureRequest from "@/models/feature-requests/FeatureRequest";
+import Priority from "@/models/feature-requests/Priority";
 import PriorityController from "@/controllers/feature-requests/PriorityController";
 import FeatureRequestController from "@/controllers/feature-requests/FeatureRequestController";
 

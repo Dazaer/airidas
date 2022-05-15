@@ -1,7 +1,7 @@
 import RecipesGlobalProperties from '@/models/recipe/RecipesGlobalProperties';
 import { doc, updateDoc } from "firebase/firestore"
-import BaseController from "../BaseController";
-import GlobalPropertiesController from "../GlobalPropertiesController";
+import BaseController from "@/controllers/BaseController";
+import GlobalPropertiesController from "@/controllers/GlobalPropertiesController";
 
 export default class RecipesGlobalPropertiesController extends BaseController<RecipesGlobalProperties>{
 
