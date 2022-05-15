@@ -1,7 +1,8 @@
+import { IBaseModel } from './../BaseModel';
 import { DocumentData, DocumentSnapshot, FirestoreDataConverter, UpdateData } from "firebase/firestore";
 import RecipeTag from "../RecipeTag";
 
-export default class RecipeRecipeTag {
+export default class RecipeRecipeTag implements IBaseModel{
 	public id: string = ""
 	public recipeTagId: string = ""
 	public title: string = ""
@@ -34,5 +35,15 @@ export default class RecipeRecipeTag {
 			const data = snapshot.data() as RecipeRecipeTag
 			return new RecipeRecipeTag(data)
 		}
+	}
+
+	public static updateToFirestore(recipeRecipeTag: RecipeRecipeTag): UpdateData<RecipeRecipeTag> {
+		const updatedProperties: UpdateData<RecipeRecipeTag> = {
+			"recipeTagId": recipeRecipeTag.recipeTagId,
+			"title": recipeRecipeTag.title,
+			"description": recipeRecipeTag.description,
+		}
+
+		return updatedProperties
 	}
 }
