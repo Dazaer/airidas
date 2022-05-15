@@ -30,6 +30,13 @@ export default class Priority implements IBaseModel {
 		return updatedProperties
 	}
 
+	public toFirestoreFlat() {
+		return {
+			id: this.id,
+			label: this.label
+		}
+	}
+
 }
 
 export enum PriorityEnum {
