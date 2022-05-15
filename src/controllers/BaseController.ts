@@ -25,19 +25,13 @@ export default class BaseController<T extends IBaseModel> {
 		return model
 	}
 
-	async getAll(): Promise<T[]> {
+	async getAll(queryConstraints: QueryConstraint[] = []): Promise<T[]> {
 		const collectionRef = collection(this.db, this.collectionPath).withConverter(this.Model.firestoreConverter)
-		const queryConstraints: QueryConstraint[] = []
 
 		const dbQuery = query(collectionRef, ...queryConstraints)
 		const querySnapshot = await getDocs(dbQuery)
 
 		const models = querySnapshotToModelArray<T>(this.Model, querySnapshot, "id")
-
-		models.map(model => {
-			return model;
-		})
-
 		return models
 	}
 
