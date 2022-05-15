@@ -1,7 +1,8 @@
+import { IBaseModel } from './BaseModel';
 import RecipeRecipeTag from '@/models/recipe/RecipeRecipeTag';
 import { DocumentData, DocumentSnapshot, FirestoreDataConverter, UpdateData } from "firebase/firestore";
 
-export default class RecipeTag {
+export default class RecipeTag implements IBaseModel{
 	public id: string = "";
 	public title: string = ""
 	public description: string = ""
