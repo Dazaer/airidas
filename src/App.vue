@@ -11,8 +11,8 @@
 </template>
 
 <script lang="ts" setup>
-import MainNavbar from "./components/MainNavbar.vue"
-import MainFooter from "./components/MainFooter.vue"
+import MainNavbar from "@/views/MainNavbar.vue"
+import MainFooter from "@/views/MainFooter.vue"
 
 
 </script>

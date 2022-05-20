@@ -147,7 +147,7 @@
 import { computed, ComputedRef, onMounted, reactive, Ref, ref } from "vue"
 import Recipe from "@/models/recipe/Recipe"
 import RecipeController from "@/controllers/recipes/RecipeController"
-import RecipeDetailsModal from "@/components/modals/RecipeDetailsModal.vue"
+import RecipeDetailsModal from "@/views/recipes/RecipeDetailsModal.vue"
 import RecipeTag from "@/models/recipe/RecipeTag"
 import { RecipesFilter } from "@/models/recipe/virtual/RecipesFilter"
 import RecipeTagController from "@/controllers/recipes/RecipeTagController"

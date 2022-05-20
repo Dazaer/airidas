@@ -42,7 +42,7 @@
 import { onMounted, ref } from "vue"
 import firebaseApp from "@/utilities/firebase/firebase"
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth"
-import LoginModal from "./LoginModal.vue"
+import LoginModal from "@/views/LoginModal.vue"
 import { RouteNames } from "@/router"
 
 
