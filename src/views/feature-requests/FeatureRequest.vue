@@ -9,8 +9,8 @@
 				<br />
 				<br />
 				<span
-					class="text--mini"
-				>Upon a feature being confirmed, please contact the developer if you do not wish to have the feature implemented anymore, as its development might already be in progress.</span>
+					class="text--mini">Upon a feature being confirmed, please contact the developer if you do not wish to have the feature implemented anymore,
+					as its development might already be in progress.</span>
 			</p>
 		</section>
 
@@ -18,7 +18,10 @@
 		<main class="grid grid-nogutter col-12 container-box">
 			<p-toolbar class="mb-2 col-12 p-1">
 				<template #start>
-					<p-button @click="openDetailsModal()" label="New" icon="pi pi-plus" class="p-button-success"></p-button>
+					<p-button @click="openDetailsModal()" class="p-button-success">
+						<fa :icon="['fas', 'plus']" size="1x"></fa>
+						<span class="ml-2">New</span>
+					</p-button>
 				</template>
 
 				<!-- <template #end>
@@ -35,8 +38,7 @@
 				@row-edit-save="saveRowEdit"
 				responsiveLayout="stack"
 				breakpoint="720px"
-				class="col-12"
-			>
+				class="col-12">
 				<!--
 				v-model:editingRows="editingRows"
 				editMode="row"
@@ -72,13 +74,15 @@
 
 				<p-column :exportable="false" style="width: 15%; justify-content: end;" body-class="text-center">
 					<template #body="slotProps">
-						<p-button icon="pi pi-pencil" class="p-button-rounded p-button-primary m-1" @click="openDetailsModal(slotProps.data.id)" />
-						<p-button
-							:disabled="slotProps.data.isConfirmed"
-							icon="pi pi-trash"
-							class="p-button-rounded p-button-danger m-1"
-							@click="deleteFeatureRequest($event, slotProps.data)"
-						/>
+						<p-button class="col-2 md:col-12 lg:col-5 p-button-rounded p-button-primary justify-content-center mr-1"
+							@click="openDetailsModal(slotProps.data.id)">
+							<fa :icon="['fas', 'pencil-alt']" size="1x"></fa>
+						</p-button>
+
+						<p-button :disabled="slotProps.data.isConfirmed" @click="deleteFeatureRequest($event, slotProps.data)"
+							class="col-2 md:col-12 lg:col-5 p-button-rounded p-button-danger justify-content-center">
+							<fa :icon="['fas', 'trash']" size="1x"></fa>
+						</p-button>
 					</template>
 				</p-column>
 			</p-data-table>
@@ -88,8 +92,7 @@
 			:is-open="isDetailsOpen"
 			:feature-request-id="editFeatureRequestId"
 			@change-open-state="changeDetailsModalState"
-			@saved="loadData"
-		></FeatureRequestDetailsModal>
+			@saved="loadData"></FeatureRequestDetailsModal>
 
 		<p-confirm-popup></p-confirm-popup>
 		<!--
@@ -142,7 +145,7 @@ function deleteFeatureRequest(event: Event, featureRequest: FeatureRequest) {
 	confirm.require({
 		target: event.currentTarget as HTMLElement,
 		message: `Are you sure you want to delete "${featureRequest.title}"?`,
-		icon: "pi pi-exclamation-triangle",
+		icon: "fas fa-exclamation-triangle",
 		acceptClass: "p-button-danger",
 		accept: async () => {
 			await featureRequestController.delete(featureRequest.id)

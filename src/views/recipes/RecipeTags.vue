@@ -18,8 +18,10 @@
 			<!-- Toolbar -->
 			<p-toolbar class="mb-2 col-12 p-1">
 				<template #start>
-					<p-button @click="addNewRecipeTag()" label="New" icon="pi pi-plus"
-						class="p-button-success"></p-button>
+					<p-button @click="addNewRecipeTag()" label="New" class="p-button-success">
+						<fa :icon="['fas', 'plus']" size="1x"></fa>
+						<span class="ml-2">New</span>
+					</p-button>
 				</template>
 			</p-toolbar>
 

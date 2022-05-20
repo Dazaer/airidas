@@ -12,8 +12,7 @@
 		:auto-z-index="true"
 		:base-z-index="100"
 		:breakpoints="{ '1080px': '75vw', '640px': '100vw' }"
-		class="container-modal"
-	>
+		class="container-modal">
 		<article class="p-fluid pt-3">
 			<!-- Email Input -->
 			<div class="field pb-2">
@@ -23,15 +22,13 @@
 						v-model="validation.email.$model"
 						type="email"
 						autofocus
-						:class="{ 'p-invalid': validation.email.$invalid && hasBeenSubmitted }"
-					/>
+						:class="{ 'p-invalid': validation.email.$invalid && hasBeenSubmitted }" />
 					<label for="loginEmail" :class="{ 'p-error': validation.email.$invalid && hasBeenSubmitted }">Email</label>
 				</div>
 
 				<small
 					v-if="validation.email.$invalid && hasBeenSubmitted"
-					class="p-error"
-				>{{ validation.email.required.$message.replace('Value', 'Email') }}</small>
+					class="p-error">{{ validation.email.required.$message.replace('Value', 'Email') }}</small>
 			</div>
 
 			<!-- Password Input -->
@@ -42,15 +39,13 @@
 						v-model="validation.password.$model"
 						type="password"
 						autofocus
-						:class="{ 'p-invalid': validation.password.$invalid && hasBeenSubmitted }"
-					/>
+						:class="{ 'p-invalid': validation.password.$invalid && hasBeenSubmitted }" />
 					<label for="loginPassword" :class="{ 'p-error': validation.password.$invalid && hasBeenSubmitted }">Password</label>
 				</div>
 
 				<small
 					v-if="(validation.password.$invalid || validation.password.$pending) && hasBeenSubmitted"
-					class="p-error"
-				>{{ validation.password.required.$message.replace('Value', 'Password') }}</small>
+					class="p-error">{{ validation.password.required.$message.replace('Value', 'Password') }}</small>
 			</div>
 		</article>
 
@@ -60,8 +55,15 @@
 		</div>
 
 		<template #footer>
-			<p-button label="Confirm" icon="pi pi-check" @click="login()" />
-			<p-button label="Cancel" icon="pi pi-times" @click="isVisible = false" class="p-button-text" />
+			<p-button @click="login()" class="p-button-primary">
+				<fa :icon="['fas', 'check']" size="1x"></fa>
+				<span class="ml-2">Confirm</span>
+			</p-button>
+
+			<p-button @click="isVisible = false" class="p-button-text">
+				<fa :icon="['fas', 'times']" size="1x"></fa>
+				<span class="ml-2">Cancel</span>
+			</p-button>
 		</template>
 	</p-dialog>
 </template>
@@ -137,7 +139,7 @@ async function login() {
 			return toast.add({ severity: "error", summary: "Invalid login credentials", detail: "The email and password do not match an existing user." })
 		}
 
-		return toast.add({ severity: "error", summary: "Error logging in", detail: `${userCredentials.code}`})
+		return toast.add({ severity: "error", summary: "Error logging in", detail: `${userCredentials.code}` })
 	}
 
 	console.log("Successfully signed in: " + userCredentials.user.email)
@@ -157,5 +159,4 @@ function changeOpenState(isOpen: boolean) {
 
 <!-- Cannot use scoped here as it won't affect the modal -->
 <style lang="scss">
-
 </style>

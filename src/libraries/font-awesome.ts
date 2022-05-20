@@ -5,7 +5,8 @@ import { dom, library } from "@fortawesome/fontawesome-svg-core"
 import {
 	faSpinner, faMusic, faQuestionCircle, faQuestion, faUtensils, faFlask,
 	faCamera, faCheck, faBook, faDesktop, faBookReader, faPencilAlt, faTrash,
-	faTags, faSearch, faEye, faTimes, faChevronLeft, faChevronRight
+	faTags, faSearch, faEye, faTimes, faChevronLeft, faChevronRight, faPlus, 
+	faExclamationTriangle, faPowerOff, faCog
 } from "@fortawesome/free-solid-svg-icons"
 import { faLinkedin } from "@fortawesome/free-brands-svg-icons/faLinkedin"
 import { faFacebook } from "@fortawesome/free-brands-svg-icons/faFacebook"
@@ -18,11 +19,15 @@ library.add(
 	faCheck,
 	faChevronLeft,
 	faChevronRight,
+	faCog,
 	faDesktop,
 	faEye,
+	faExclamationTriangle,
 	faFlask,
 	faMusic,
 	faPencilAlt,
+	faPlus,
+	faPowerOff,
 	faQuestion,
 	faQuestionCircle,
 	faSearch,

@@ -56,8 +56,8 @@ const menu = ref([
 	{
 		label: "Profile",
 		items: [
-			{ label: "Settings", icon: "pi pi-fw pi-cog", to: { name: RouteNames.Settings } },
-			{ label: "Logout", icon: "pi pi-fw pi-power-off", command: logout }
+			{ label: "Settings", icon: "fas fa-cog", to: { name: RouteNames.Settings } },
+			{ label: "Logout", icon: "fas fa-power-off", command: logout }
 		],
 		visible: () => isLoggedIn.value,
 	},

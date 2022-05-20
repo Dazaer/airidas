@@ -13,8 +13,7 @@
 		:auto-z-index="true"
 		:base-z-index="100"
 		:breakpoints="{ '1080px': '75vw', '640px': '100vw' }"
-		class="container-modal"
-	>
+		class="container-modal">
 		<article class="p-fluid pt-3">
 			<!-- Title Input -->
 			<div class="field col-12">
@@ -26,15 +25,13 @@
 						:autofocus="props.featureRequestId == ''"
 						:class="{ 'p-invalid': validation.title.$invalid && hasBeenSubmitted }"
 						:disabled="featureRequestDetails.isConfirmed"
-						class="w-full"
-					/>
+						class="w-full" />
 					<label for="featureTitle" :class="{ 'p-error': validation.title.$invalid && hasBeenSubmitted }">Title</label>
 				</div>
 
 				<small
 					v-if="validation.title.$invalid && hasBeenSubmitted"
-					class="p-error"
-				>{{ validation.title.required.$message.replace('Value', 'Title') }}</small>
+					class="p-error">{{ validation.title.required.$message.replace('Value', 'Title') }}</small>
 			</div>
 
 			<!-- Description Input -->
@@ -53,20 +50,22 @@
 						v-model="validation.priority.$model"
 						:options="priorities"
 						optionLabel="label"
-						placeholder="Select a priority"
-					>
+						placeholder="Select a priority">
+
 						<template #value="slotProps">
 							<div v-if="slotProps.value.id != ''">
 								<div>{{ slotProps.value.label }}</div>
 							</div>
 							<span v-else>{{ slotProps.placeholder }}</span>
 						</template>
+
 						<template #option="slotProps">
 							<div>
 								<div>{{ slotProps.option.label }}</div>
 							</div>
 						</template>
 					</p-dropdown>
+
 					<label for="featurePriority" :class="{ 'p-error': validation.priority.$invalid && hasBeenSubmitted }">
 						<span v-if="validation.priority.$model != null">Priority</span>
 					</label>
@@ -74,14 +73,20 @@
 
 				<small
 					v-if="validation.priority.$invalid && hasBeenSubmitted"
-					class="p-error"
-				>{{ validation.priority.required.$message.replace('Value', 'Priority') }}</small>
+					class="p-error">{{ validation.priority.required.$message.replace('Value', 'Priority') }}</small>
 			</div>
 		</article>
 
 		<template #footer>
-			<p-button label="Save" icon="pi pi-check" @click="saveFeatureRequest()" class="p-button-success" />
-			<p-button label="Cancel" icon="pi pi-times" @click="isVisible = false" class="p-button-text" />
+			<p-button @click="saveFeatureRequest()" class="p-button-success">
+				<fa :icon="['fas', 'check']" size="1x"></fa>
+				<span class="ml-2">Save</span>
+			</p-button>
+
+			<p-button @click="isVisible = false" class="p-button-text">
+				<fa :icon="['fas', 'times']" size="1x"></fa>
+				<span class="ml-2">Cancel</span>
+			</p-button>
 		</template>
 	</p-dialog>
 </template>
@@ -166,7 +171,7 @@ async function getFeatureRequest(): Promise<FeatureRequest> {
 }
 
 async function saveFeatureRequest() {
-	
+
 	hasBeenSubmitted.value = true
 	validation.value.$validate()
 
@@ -179,7 +184,7 @@ async function saveFeatureRequest() {
 
 	if (isSaved) {
 		changeOpenState(false)
-		
+
 		hasBeenSubmitted.value = false
 
 		return emit("saved", featureRequestDetails.value)

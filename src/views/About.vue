@@ -1,4 +1,14 @@
 <template>
+
+
+
+		<!-- CURRENTLY NOT BEING USED -->
+
+
+
+
+
+
 	<main class="grid grid-nogutter col-12 md:col-8 md:col-offset-2 lg:col-4 lg:col-offset-4">
 		<h1 class="col-12 center">Airidas Dapkevicius</h1>
 		<img

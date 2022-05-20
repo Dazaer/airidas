@@ -338,7 +338,7 @@ function deleteRecipe(event: Event, recipe: Recipe) {
 	confirm.require({
 		target: event.currentTarget as HTMLElement,
 		message: `Are you sure you want to delete "${recipe.title}"?`,
-		icon: "pi pi-exclamation-triangle",
+		icon: "fas fa-exclamation-triangle",
 		acceptClass: "p-button-danger",
 		accept: async () => {
 			await recipeController.delete(recipe.id)
