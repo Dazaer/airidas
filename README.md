@@ -11,9 +11,9 @@
 [![Netlify Status](https://api.netlify.com/api/v1/badges/bfa655cf-69bb-4cf5-af78-9dbba5b0c65d/deploy-status)](https://www.netlify.com)
 
 ## About
-This is a personal project that is developed and delivered based on the requests of a person I know. New features are intended to be gifted as a birthday and/or christmas gift.
+This is a personal project that is developed and delivered based on the requests of an individual named... you guessed it: Airidas.
 
-Currently as it is mostly for their personal use, the actual website is not publicly accessible yet. Well, _it is_, but you won't be able to do anything unless you have an account (check below for a preview version though).
+Currently as it is mostly for their personal use, the actual website is not publicly accessible (yet?). Well, _it is_, but you won't be able to do anything unless you have an account (check below for a preview version though).
 
 ## Features
 
