@@ -1,6 +1,14 @@
 # Airidas website
 
-[![vue.js](https://img.shields.io/static/v1?label=Vue.js&message=v3.2.19&color=4FC08D&style=flat-square&logo=vuedotjs)](https://vuejs.org/) [![typescript](https://img.shields.io/static/v1?label=TypeScript&message=v4.1.6&color=4FC08D&style=flat-square&logo=typescript)](https://www.typescriptlang.org/) [![firebase](https://img.shields.io/static/v1?label=Firebase&message=v9.5.0&color=4FC08D&style=flat-square&logo=firebase)](https://firebase.google.com) [![primevue](https://img.shields.io/static/v1?label=Prime Vue&message=v3.10.0&color=4FC08D&style=flat-square&logo=)](https://www.primefaces.org/primevue) [![fontawesome](https://img.shields.io/static/v1?label=Font Awesome&message=v5.15.4&color=4FC08D&style=flat-square&logo=fontawesome)](https://fontawesome.com/) [![sass](https://img.shields.io/static/v1?label=Sass&message=v1.42.1&color=4FC08D&style=flat-square&logo=sass)](https://sass-lang.com/) [![eslint](https://img.shields.io/static/v1?label=ESLint&message=v6.8.0&color=4FC08D&style=flat-square&logo=eslint)](https://eslint.org) [![netlify](https://img.shields.io/static/v1?label=Netlify&message=Current&color=4FC08D&style=flat-square&logo=netlify)](https://www.netlify.com)
+[![vue.js](https://img.shields.io/static/v1?label=Vue.js&message=v3.2.19&color=4FC08D&style=flat-square&logo=vuedotjs)](https://vuejs.org/)
+[![typescript](https://img.shields.io/static/v1?label=TypeScript&message=v4.1.6&color=4FC08D&style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+[![firebase](https://img.shields.io/static/v1?label=Firebase&message=v9.5.0&color=4FC08D&style=flat-square&logo=firebase)](https://firebase.google.com)
+[![primevue](https://img.shields.io/static/v1?label=PrimeVue&message=v3.10.0&color=4FC08D&style=flat-square&logo=)](https://www.primefaces.org/primevue)
+[![fontawesome](https://img.shields.io/static/v1?label=FontAwesome&message=v5.15.4&color=4FC08D&style=flat-square&logo=fontawesome)](https://fontawesome.com/)
+[![sass](https://img.shields.io/static/v1?label=Sass&message=v1.42.1&color=4FC08D&style=flat-square&logo=sass)](https://sass-lang.com/)
+[![eslint](https://img.shields.io/static/v1?label=ESLint&message=v6.8.0&color=4FC08D&style=flat-square&logo=eslint)](https://eslint.org)
+<!-- [![netlify](https://img.shields.io/static/v1?label=Netlify&message=Current&color=4FC08D&style=flat-square&logo=netlify)](https://www.netlify.com) -->
+[![Netlify Status](https://api.netlify.com/api/v1/badges/bfa655cf-69bb-4cf5-af78-9dbba5b0c65d/deploy-status)](https://www.netlify.com)
 
 ## About
 This is a personal project that is developed and delivered based on the requests of a person I know. New features are intended to be gifted as a birthday and/or christmas gift.
@@ -32,8 +40,9 @@ Instead of searching through all the different locations where you have saved yo
 ### [airidas-preview](https://airidas-preview.netlify.app)
 
 ##### Login details
-Email: _tester@airidaspreview.com_
-Password: _preview_
+<div>Email: <i>tester@airidaspreview.com</i></div>
+<div>Password: <i>preview</i></div>
+
 ___
 
 This is where you can test the features, however the free firestore database has a limit on how many reads/writes can be done in a day so just keep that in mind.
@@ -43,20 +52,18 @@ If something is wrong (quota reached/login not working/etc) and you'd like to te
 
 ## Installation and running the project locally
 
-For the project to run you will need to configure your own [firebase](https://console.firebase.google.com) database.
-
 At some point you will need to run `yarn` in the cmd to get all the dependencies.
 
-### Firebase
+For the project to run you will need to configure your own [firebase](https://console.firebase.google.com) database.\
+Once you've created an account and added a project continue with the below instructions.
 
-Once you've created an account and added a project this is the setup you need.
 
-#### Authentication & Firestore
+### Authentication & Firestore
 
 For authentication all you need to do is set up "Email/Password" sign-in method and add a user.
 You will also need to create a firestore database.
 
-#### Config setup
+### Config setup
 
 1. In Firebase go to your project settings and add a web app
 2. Add a new file named `.env.local` to the root of the project.
@@ -70,31 +77,34 @@ VUE_APP_FIREBASE_MESSAGING_SENDER_ID_DEV = VALUE
 VUE_APP_FIREBASE_APP_ID_DEV = VALUE
 VUE_APP_FIREBASE_MEASUREMENT_ID_DEV = VALUE
 ```
-4. Make sure in firebase.ts the key names correspond to the .env.local file names
+4. Make sure in firebase.ts the key names correspond to the .env.local key names
 5. Make sure project.config.ts is using the correct environment
 
-#### Firestore setup
+### Firestore setup
 
 There's a few collections you will need to add manually due to there not existing an interface or automation for creating them:
 
-##### Collection id: global-properties
-###### Document id: _recipes-properties_
+#### Collection id: global-properties
+
+Document id: _recipes-properties_
+
 - **recipesCount**
    - number: 0
 
-##### Collection id: priorities
+#### Collection id: priorities
 
 There is no interface for creating Priorities. You will need to add them to the database yourself following the Model structure.
-###### Document id: _1_
+
+Document id: _1_
 - **label**
    - string: Low
 - **isActive**
    - boolean: true
    
-##### Collection id: recipe-tags
+#### Collection id: recipe-tags
 You don't actually have to create this one manually as there is a hidden interface for creating RecipeTags. It is hidden because it's not production ready but it's much easier to work with than having to do the same thing as was done for Priority.
 
-##### Indexing
+#### Indexing
 You will need to create indexes for the queries when they are first utilized (for example when first filtering by recipe tag).
 Just open the console and follow the link provided.
 
