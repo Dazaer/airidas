@@ -1,5 +1,5 @@
-import { ProjectConfig } from "./../../../project.config"
-import {initializeApp} from "firebase/app"
+import { ProjectConfig, ProjectEnvironments } from "./../../../project.config"
+import {FirebaseOptions, initializeApp} from "firebase/app"
 
 /*
 import { getAnalytics } from "firebase/analytics";
@@ -28,7 +28,33 @@ const devFirebaseConfig = {
 	//measurementId: process.env.VUE_APP_FIREBASE_MEASUREMENT_ID_DEV
 }
 
-const firebaseApp = initializeApp(ProjectConfig.isProductionEnv ? firebaseConfig : devFirebaseConfig)
+const previewFirebaseConfig = {
+	apiKey: process.env.VUE_APP_FIREBASE_API_KEY_PREVIEW,
+	projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID_PREVIEW,
+	authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN_PREVIEW,
+	storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET_PREVIEW,
+	messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID_PREVIEW,
+	appId: process.env.VUE_APP_FIREBASE_APP_ID_PREVIEW,
+	measurementId: process.env.VUE_APP_FIREBASE_MEASUREMENT_ID_PREVIEW
+}
+
+function getEnvironmentConfig(currentEnvironment: ProjectEnvironments): FirebaseOptions {
+	switch (currentEnvironment) {
+		case ProjectEnvironments.Production: {
+			return firebaseConfig;
+		}
+		case ProjectEnvironments.Development: {
+			return devFirebaseConfig;
+		}
+		case ProjectEnvironments.Preview: {
+			return previewFirebaseConfig;
+		}
+		default:
+			return devFirebaseConfig;
+	}
+}
+
+const firebaseApp = initializeApp(getEnvironmentConfig(ProjectConfig.currentEnvironment))
 
 export default firebaseApp
 
