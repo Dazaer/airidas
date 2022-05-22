@@ -6,8 +6,6 @@ export default class FeatureRequest implements IBaseModel {
 	public id: string = "";
 	public title: string = ""
 	public description: string = ""
-	public priorityId: string = ""
-	public priorityLabel: string = ""
 	public isConfirmed: boolean = false
 	//date added
 
@@ -25,8 +23,6 @@ export default class FeatureRequest implements IBaseModel {
 			return {
 				description: featureRequest.description,
 				title: featureRequest.title,
-				//priorityId: featureRequest.priority.id,
-				//priorityLabel: featureRequest.priority.label,
 				priority: {
 					id: featureRequest.priority.id,
 					label: featureRequest.priority.label,
@@ -35,7 +31,8 @@ export default class FeatureRequest implements IBaseModel {
 			}
 		},
 		fromFirestore: (snapshot: DocumentSnapshot<DocumentData>) => {
-			const data = snapshot.data()
+			const data = snapshot.data() as FeatureRequest
+			data.priority = new Priority(data.priority)
 			return new FeatureRequest(data)
 		}
 	}
@@ -52,20 +49,5 @@ export default class FeatureRequest implements IBaseModel {
 	}
 	
 	/* ---------------- Methods ---------------- */
-	populateNestedProperties(withPriority: boolean) {
-
-		if (withPriority) {
-
-			const priority = new Priority({
-				id: this.priorityId,
-				label: this.priorityLabel,
-				isActive: true,
-			})
-			this.priority = priority
-
-		}
-
-		return this
-	}
 
 }
