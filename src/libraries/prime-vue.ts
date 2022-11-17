@@ -14,6 +14,7 @@ import DataTable from "primevue/datatable"
 import DataView from "primevue/dataview"
 import Dialog from "primevue/dialog"
 import Dropdown from "primevue/dropdown"
+import Editor from "primevue/editor"
 import InputText from "primevue/inputtext"
 import Menubar from "primevue/menubar"
 import Password from "primevue/password"
@@ -37,6 +38,7 @@ export function appWithPrimeVue(vueApp: App<Element>): App<Element> {
 		.component("p-data-view", DataView)
 		.component("p-dialog", Dialog)
 		.component("p-dropdown", Dropdown)
+		.component("p-editor", Editor)
 		.component("p-input-text", InputText)
 		.component("p-menubar", Menubar)
 		.component("p-password", Password)
