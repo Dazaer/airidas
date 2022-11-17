@@ -44,12 +44,49 @@
 			<!-- Description Input -->
 			<div class="field col-12">
 				<div v-if="isEditing" class="p-float-label">
-					<p-textarea id="recipeDescription" v-model="validation.description.$model" :autoResize="true" rows="5" cols="30" />
 					<label for="recipeDescription" :class="{ 'p-error': validation.description.$invalid && hasBeenSubmitted }">Description</label>
+					<p-editor v-model="validation.description.$model" editorStyle="height: 320px">
+						<template #toolbar>
+							<span class="ql-formats">
+								<select class="ql-header"></select>
+							</span>
+							<span class="ql-formats">
+								<button class="ql-bold"></button>
+								<button class="ql-italic"></button>
+								<button class="ql-underline"></button>
+								<button class="ql-strike"></button>
+							</span>
+							<span class="ql-formats">
+								<select class="ql-color ql-picker ql-color-picker"></select>
+								<button class="ql-script" value="sub"></button>
+								<button class="ql-script" value="super"></button>
+							</span>
+							<span class="ql-formats">
+								<button class="ql-list" value="ordered"></button>
+								<button class="ql-list" value="bullet"></button>
+								<button class="ql-indent" value="-1"></button>
+								<button class="ql-indent" value="+1"></button>
+								<select class="ql-align ql-picker ql-icon-picker"></select>
+							</span>
+							<span class="ql-formats">
+								<button class="ql-link"></button>
+							</span>
+							<span class="ql-formats">
+								<button class="ql-clean"></button>
+							</span>
+						</template>
+					</p-editor>
 				</div>
+
 				<div v-else>
-					<label for="recipeDescription" class="text--mini text--darker">Description</label>
-					<p id="recipeDescription">{{ validation.description.$model }}</p>
+					<!-- <label for="recipeDescription" class="text--mini text--darker">Description</label> -->
+					<p-editor v-model="validation.description.$model" :readonly="true" :modules="{toolbar: false}">
+						<template #toolbar>
+							<span class="ql-formats">
+								<p class="text--mini text--darker">Description</p>
+							</span>
+						</template>
+					</p-editor>
 				</div>
 			</div>
 

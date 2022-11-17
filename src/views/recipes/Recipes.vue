@@ -62,7 +62,7 @@
 								<Image id="imageLink" :url="slotProps.data.imageLink" :default-url="defaultImageUrl" alt="Recipe image"></Image>
 
 								<div class="flex">
-									<p class="recipe-item__description">{{ slotProps.data.description }}</p>
+									<p class="recipe-item__description" v-html="slotProps.data.description"></p>
 								</div>
 
 								<div class="recipe-item__tags-container flex-none">
@@ -347,7 +347,7 @@ onMounted(async () => {
 
 	.recipe-item__description {
 		display: -webkit-box;
-		-webkit-line-clamp: 10;
+		-webkit-line-clamp: 5;
 		-webkit-box-orient: vertical;
 		overflow: hidden;
 	}
