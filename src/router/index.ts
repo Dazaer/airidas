@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router"
+import { createRouter, createWebHistory, RouteLocationNormalized, RouteRecordRaw } from "vue-router"
 import Home from "../views/Home.vue"
 //import { verifyAdminPermission } from "./meta";
 
@@ -12,10 +12,15 @@ export enum RouteNames {
 	ConfirmPasswordReset = "confirm-password-reset",
 }
 
+const DefaultPageTitle = "Airidas.net"
+
 const routes: Array<RouteRecordRaw> = [
 	{
 		path: "/",
 		name: RouteNames.Home,
+		meta: {
+			title: DefaultPageTitle
+		},
 		component: Home,
 	},
 	{
@@ -26,21 +31,33 @@ const routes: Array<RouteRecordRaw> = [
 	{
 		path: "/feature-request",
 		name: RouteNames.FeatureRequest,
+		meta: {
+			title: DefaultPageTitle + " - Feature Requests"
+		},
 		component: lazyLoad("feature-requests/FeatureRequest"),
 	},
 	{
 		path: "/recipes",
 		name: RouteNames.Recipes,
+		meta: {
+			title: DefaultPageTitle + " - Recipes"
+		},
 		component: lazyLoad("recipes/Recipes"),
 	},
 	{
 		path: "/recipe-tags",
 		name: RouteNames.RecipeTags,
+		meta: {
+			title: DefaultPageTitle + " - Recipe Tags"
+		},
 		component: lazyLoad("recipes/RecipeTags"),
 	},
 	{
 		path: "/settings",
 		name: RouteNames.Settings,
+		meta: {
+			title: DefaultPageTitle + " - Settings"
+		},
 		component: lazyLoad("settings/Settings"),
 	},
 	{
@@ -74,12 +91,20 @@ const router = createRouter({
 	routes
 })
 
-/*
 router.beforeEach((to, from, next) => {
-	verifyAdminPermission(to, next);
+	//verifyAdminPermission(to, next);
+	setPageTitle(to);
+	next();
 });
-*/
 
+function setPageTitle(to: RouteLocationNormalized) {
+	const hasMetaTitleString = typeof to.meta.title == 'string';
+	if (!hasMetaTitleString) {
+		return document.title = DefaultPageTitle;
+	}
+
+	return document.title = to.meta.title as string;
+}
 /**
  * route level code-splitting
 	 this generates a separate chunk (about.[hash].js) for this route

@@ -23,7 +23,7 @@ import MainFooter from "@/views/MainFooter.vue"
 	-moz-osx-font-smoothing: grayscale;
 
 	//text-align: center;
-	//font-family: "Butler", 'Segoe UI', 'Lucida Sans Unicode', Verdana;
+	//font-family: 'Segoe UI', 'Lucida Sans Unicode', Verdana; //using this does not apply to the theme from primevue
 	//font-size: medium;
 	height: auto;
 	min-height: 100vh;

@@ -41,15 +41,41 @@
 				</div>
 			</div>
 
+			<!-- Image Link Input -->
+			<div class="field col-12">
+				<div v-if="isEditing" class="p-float-label">
+					<p-input-text
+						id="imageLink"
+						v-model="validation.imageLink.$model"
+						type="text"
+						:class="{ 'p-invalid': validation.imageLink.$invalid && hasBeenSubmitted }"
+						class="w-full" />
+					<label for="imageLink" :class="{ 'p-error': validation.imageLink.$invalid && hasBeenSubmitted }">Image url</label>
+				</div>
+				<div v-else>
+					<label for="imageLink" class="text--mini text--darker">Image</label>
+					<Image id="imageLink" :url="recipeDetails.imageLink" :default-url="defaultImageUrl" alt="Recipe image" size="md" class="pt-1"></Image>
+				</div>
+			</div>
+
 			<!-- Description Input -->
 			<div class="field col-12">
 				<div v-if="isEditing" class="p-float-label">
-					<p-textarea id="recipeDescription" v-model="validation.description.$model" :autoResize="true" rows="5" cols="30" />
-					<label for="recipeDescription" :class="{ 'p-error': validation.description.$invalid && hasBeenSubmitted }">Description</label>
+					<span for="recipeDescription" class="text--mini text--darker pl-2">
+						Description
+					</span>
+
+					<quill-editor
+						id="recipeDescription"
+						:prop-model="recipeDetails.description"
+						placeholder-text="Description"
+						@changed="updateDescription"
+						class="pt-1">
+					</quill-editor>
 				</div>
+
 				<div v-else>
-					<label for="recipeDescription" class="text--mini text--darker">Description</label>
-					<p id="recipeDescription">{{ validation.description.$model }}</p>
+					<quill-editor :prop-model="recipeDetails.description" :readonly="true" placeholder-text="Description"></quill-editor>
 				</div>
 			</div>
 
@@ -63,23 +89,6 @@
 						:class="{ 'p-invalid': validation.recipeUrl.$invalid && hasBeenSubmitted }"
 						class="w-full" />
 					<label for="recipeUrl" :class="{ 'p-error': validation.recipeUrl.$invalid && hasBeenSubmitted }">Recipe url</label>
-				</div>
-			</div>
-
-			<!-- Image Link Input -->
-			<div class="field col-12">
-				<div v-if="isEditing" class="p-float-label">
-					<p-input-text
-						id="imageLink"
-						v-model="validation.imageLink.$model"
-						type="text"
-						:class="{ 'p-invalid': validation.imageLink.$invalid && hasBeenSubmitted }"
-						class="w-full" />
-					<label for="imageLink" :class="{ 'p-error': validation.imageLink.$invalid && hasBeenSubmitted }">Image url</label>
-				</div>
-				<div v-else>
-					<label for="imageLink" class="text--mini text--darker">Image url</label>
-					<Image id="imageLink" :url="recipeDetails.imageLink" :default-url="defaultImageUrl" alt="Recipe image" size="md" class="pt-1"></Image>
 				</div>
 			</div>
 
@@ -161,6 +170,7 @@ import RecipeTag from "@/models/recipe/RecipeTag"
 import RecipeTagController from "@/controllers/recipes/RecipeTagController"
 import { AutoCompleteCompleteEvent } from "primevue/autocomplete"
 import Image from "@/components/form/Image.vue"
+import QuillEditor from "@/components/form/QuillEditor.vue"
 import { useConfirm } from "primevue/useconfirm"
 
 
@@ -211,7 +221,7 @@ const defaultImageUrl: Ref<string> = ref("")
 
 const rules = {
 	title: { required },
-	description: {},
+	//description: {},
 	recipeUrl: {},
 	imageLink: {},
 }
@@ -256,6 +266,10 @@ async function loadRecipeModal() {
 
 function beginEdit() {
 	isEditing.value = true
+}
+
+function updateDescription(newDescription:string) {
+	recipeDetails.value.description = newDescription;
 }
 
 function cancelEdit() {
