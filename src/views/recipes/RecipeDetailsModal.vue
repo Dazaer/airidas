@@ -68,13 +68,14 @@
 					<quill-editor
 						id="recipeDescription"
 						:prop-model="recipeDetails.description"
+						placeholder-text="Description"
 						@changed="updateDescription"
 						class="pt-1">
 					</quill-editor>
 				</div>
 
 				<div v-else>
-					<quill-editor :prop-model="recipeDetails.description" :readonly="true" toolbar-text="Description"></quill-editor>
+					<quill-editor :prop-model="recipeDetails.description" :readonly="true" placeholder-text="Description"></quill-editor>
 				</div>
 			</div>
 

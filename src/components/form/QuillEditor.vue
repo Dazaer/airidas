@@ -1,9 +1,9 @@
 <template>
-	<p-editor v-model="innerModel" editorStyle="height: 320px" :readonly="isReadonly">
+	<p-editor v-model="innerModel" editorStyle="height: 320px" :readonly="isReadonly" :placeholder="`${placeholderText}...`">
 
 		<template v-if="isReadonly" #toolbar>
 			<span class="ql-formats">
-				<p class="text--mini text--darker">{{toolbarText}}</p>
+				<p class="text--mini text--darker">{{placeholderText}}</p>
 			</span>
 		</template>
 
@@ -49,15 +49,15 @@ interface PropsInterface {
 	propModel: string;
 	readonly?: boolean;
 	/**
-	 * Text to display in toolbar when readonly is set to true.
+	 * Will also display instead of toolbar when readonly is set to true.
 	 */
-	toolbarText?: string;
+	placeholderText?: string;
 }
 
 const props = withDefaults(defineProps<PropsInterface>(), {
 	propModel: "",
 	readonly: false,
-	toolbarText: "",
+	placeholderText: "",
 })
 
 const emit = defineEmits<{
