@@ -41,6 +41,23 @@
 				</div>
 			</div>
 
+			<!-- Image Link Input -->
+			<div class="field col-12">
+				<div v-if="isEditing" class="p-float-label">
+					<p-input-text
+						id="imageLink"
+						v-model="validation.imageLink.$model"
+						type="text"
+						:class="{ 'p-invalid': validation.imageLink.$invalid && hasBeenSubmitted }"
+						class="w-full" />
+					<label for="imageLink" :class="{ 'p-error': validation.imageLink.$invalid && hasBeenSubmitted }">Image url</label>
+				</div>
+				<div v-else>
+					<label for="imageLink" class="text--mini text--darker">Image</label>
+					<Image id="imageLink" :url="recipeDetails.imageLink" :default-url="defaultImageUrl" alt="Recipe image" size="md" class="pt-1"></Image>
+				</div>
+			</div>
+
 			<!-- Description Input -->
 			<div class="field col-12">
 				<div v-if="isEditing" class="p-float-label">
@@ -71,23 +88,6 @@
 						:class="{ 'p-invalid': validation.recipeUrl.$invalid && hasBeenSubmitted }"
 						class="w-full" />
 					<label for="recipeUrl" :class="{ 'p-error': validation.recipeUrl.$invalid && hasBeenSubmitted }">Recipe url</label>
-				</div>
-			</div>
-
-			<!-- Image Link Input -->
-			<div class="field col-12">
-				<div v-if="isEditing" class="p-float-label">
-					<p-input-text
-						id="imageLink"
-						v-model="validation.imageLink.$model"
-						type="text"
-						:class="{ 'p-invalid': validation.imageLink.$invalid && hasBeenSubmitted }"
-						class="w-full" />
-					<label for="imageLink" :class="{ 'p-error': validation.imageLink.$invalid && hasBeenSubmitted }">Image url</label>
-				</div>
-				<div v-else>
-					<label for="imageLink" class="text--mini text--darker">Image url</label>
-					<Image id="imageLink" :url="recipeDetails.imageLink" :default-url="defaultImageUrl" alt="Recipe image" size="md" class="pt-1"></Image>
 				</div>
 			</div>
 
