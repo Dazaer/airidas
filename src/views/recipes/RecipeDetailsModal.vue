@@ -44,49 +44,20 @@
 			<!-- Description Input -->
 			<div class="field col-12">
 				<div v-if="isEditing" class="p-float-label">
-					<label for="recipeDescription" :class="{ 'p-error': validation.description.$invalid && hasBeenSubmitted }">Description</label>
-					<p-editor v-model="validation.description.$model" editorStyle="height: 320px">
-						<template #toolbar>
-							<span class="ql-formats">
-								<select class="ql-header"></select>
-							</span>
-							<span class="ql-formats">
-								<button class="ql-bold"></button>
-								<button class="ql-italic"></button>
-								<button class="ql-underline"></button>
-								<button class="ql-strike"></button>
-							</span>
-							<span class="ql-formats">
-								<select class="ql-color ql-picker ql-color-picker"></select>
-								<button class="ql-script" value="sub"></button>
-								<button class="ql-script" value="super"></button>
-							</span>
-							<span class="ql-formats">
-								<button class="ql-list" value="ordered"></button>
-								<button class="ql-list" value="bullet"></button>
-								<button class="ql-indent" value="-1"></button>
-								<button class="ql-indent" value="+1"></button>
-								<select class="ql-align ql-picker ql-icon-picker"></select>
-							</span>
-							<span class="ql-formats">
-								<button class="ql-link"></button>
-							</span>
-							<span class="ql-formats">
-								<button class="ql-clean"></button>
-							</span>
-						</template>
-					</p-editor>
+					<span for="recipeDescription" class="text--mini text--darker pl-2">
+						Description
+					</span>
+
+					<quill-editor
+						id="recipeDescription"
+						:prop-model="recipeDetails.description"
+						@changed="updateDescription"
+						class="pt-1">
+					</quill-editor>
 				</div>
 
 				<div v-else>
-					<!-- <label for="recipeDescription" class="text--mini text--darker">Description</label> -->
-					<p-editor v-model="validation.description.$model" :readonly="true" :modules="{toolbar: false}">
-						<template #toolbar>
-							<span class="ql-formats">
-								<p class="text--mini text--darker">Description</p>
-							</span>
-						</template>
-					</p-editor>
+					<quill-editor :prop-model="recipeDetails.description" :readonly="true" toolbar-text="Description"></quill-editor>
 				</div>
 			</div>
 
@@ -198,6 +169,7 @@ import RecipeTag from "@/models/recipe/RecipeTag"
 import RecipeTagController from "@/controllers/recipes/RecipeTagController"
 import { AutoCompleteCompleteEvent } from "primevue/autocomplete"
 import Image from "@/components/form/Image.vue"
+import QuillEditor from "@/components/form/QuillEditor.vue"
 import { useConfirm } from "primevue/useconfirm"
 
 
@@ -248,7 +220,7 @@ const defaultImageUrl: Ref<string> = ref("")
 
 const rules = {
 	title: { required },
-	description: {},
+	//description: {},
 	recipeUrl: {},
 	imageLink: {},
 }
@@ -293,6 +265,10 @@ async function loadRecipeModal() {
 
 function beginEdit() {
 	isEditing.value = true
+}
+
+function updateDescription(newDescription:string) {
+	recipeDetails.value.description = newDescription;
 }
 
 function cancelEdit() {

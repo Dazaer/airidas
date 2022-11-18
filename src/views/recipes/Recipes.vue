@@ -134,6 +134,7 @@
 		</main>
 
 		<RecipeDetailsModal
+			v-if="isDetailsOpen"
 			:is-open="isDetailsOpen"
 			:recipe-id="editRecipeId"
 			@change-open-state="changeDetailsModalState"
