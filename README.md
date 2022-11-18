@@ -10,6 +10,23 @@
 <!-- [![netlify](https://img.shields.io/static/v1?label=Netlify&message=Current&color=4FC08D&style=flat-square&logo=netlify)](https://www.netlify.com) -->
 [![Netlify Status](https://api.netlify.com/api/v1/badges/bfa655cf-69bb-4cf5-af78-9dbba5b0c65d/deploy-status)](https://www.netlify.com)
 
+
+- [About](#about)
+- [Features](#features)
+	- [Main requested features](#main-requested-features)
+		- [Feature Requests](#feature-requests)
+		- [Recipes](#recipes)
+	- [Extra QOL features](#extra-qol-features)
+- [Preview](#preview)
+	- [airidas-preview](#airidas-preview)
+- [Installation and running the project locally](#installation-and-running-the-project-locally)
+	- [Authentication & Firestore](#authentication--firestore)
+	- [Config setup](#config-setup)
+	- [Firestore setup](#firestore-setup)
+- [Publishing your own version](#publishing-your-own-version)
+	- [Netlify](#netlify)
+- [Contributing](#contributing)
+
 ## About
 This is a personal project that is developed and delivered based on the requests of an individual named... you guessed it: Airidas.
 
