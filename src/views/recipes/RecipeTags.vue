@@ -23,6 +23,15 @@
 						<span class="ml-2">New</span>
 					</p-button>
 				</template>
+
+				<template #end v-if="isMobile()">
+					<div class="p-2">Sort by: </div>
+					<p-button @click="sortByTitle()" label="Title" class="p-button-secondary" :class="isSortAscending || isSortDescending ? '' : 'p-button-outlined'">
+						<fa v-if="isSortAscending" :icon="['fas', 'sort-alpha-down-alt']" size="1x"></fa>
+						<fa v-else :icon="['fas', 'sort-alpha-up']" size="1x"></fa>
+						<span class="ml-2">Title</span>
+					</p-button>
+				</template>
 			</p-toolbar>
 
 			<!-- Table -->
@@ -31,9 +40,11 @@
 				data-key="id"
 				removableSort
 				stripedRows
-				sortMode="multiple"
+				sortMode="single"
+				:sortField="sortField"
+				:sortOrder="sortOrder"
 				responsiveLayout="stack"
-				breakpoint="720px"
+				:breakpoint="`${VisualBreakpoints.Mobile}px`"
 				class="col-12">
 
 				<p-column field="title" header="Title" sortable style="width:20%">
@@ -81,9 +92,10 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, Ref, ref } from "vue"
+import { computed, onMounted, Ref, ref } from "vue"
 import { useConfirm } from "primevue/useconfirm"
 import { useToast } from "primevue/usetoast"
+import { VisualBreakpoints, isMobile } from "@/constants/global"
 import RecipeTag from "@/models/recipe/RecipeTag"
 import RecipeTagDetailsModal from "@/views/recipes/RecipeTagDetailsModal.vue"
 import RecipeTagController from "@/controllers/recipes/RecipeTagController"
@@ -95,6 +107,21 @@ const confirm = useConfirm()
 const recipeTagController = new RecipeTagController()
 
 let recipeTags: Ref<RecipeTag[]> = ref([])
+
+const sortField: Ref<string> = ref("")
+const sortOrder: Ref<number> = ref(0)
+const isSortAscending = computed({
+	get() { return sortOrder.value === -1 },
+	set(isSettingAscending: boolean) { 
+		sortOrder.value = isSettingAscending ? -1 : 0
+	}
+})
+const isSortDescending = computed({
+	get() { return sortOrder.value === 1 },
+	set(isSettingDescending: boolean) { 
+		sortOrder.value = isSettingDescending ? 1 : 0
+	}
+})
 
 const isDetailsOpen = ref(false)
 const editRecipeTagId: Ref<string> = ref("")
@@ -116,6 +143,20 @@ async function openDetailsModal(recipeTagId: string = "") {
 
 function changeDetailsModalState(isOpening: boolean) {
 	isDetailsOpen.value = isOpening
+}
+
+function sortByTitle() {
+	sortField.value = 'title'
+
+	if (isSortDescending.value) {
+		return isSortAscending.value = true
+	}
+	
+	if (isSortAscending.value) {
+		return isSortAscending.value = false
+	}
+
+	isSortDescending.value = true
 }
 
 function deleteRecipeTag(event: Event, recipeTag: RecipeTag) {
