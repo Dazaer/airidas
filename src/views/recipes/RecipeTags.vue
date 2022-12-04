@@ -18,7 +18,7 @@
 			<!-- Toolbar -->
 			<p-toolbar class="mb-2 col-12 p-1">
 				<template #start>
-					<p-button @click="addNewRecipeTag()" label="New" class="p-button-success">
+					<p-button @click="openDetailsModal()" label="New" class="p-button-success">
 						<fa :icon="['fas', 'plus']" size="1x"></fa>
 						<span class="ml-2">New</span>
 					</p-button>
@@ -29,113 +29,63 @@
 			<p-data-table
 				:value="recipeTags"
 				data-key="id"
-				@cell-edit-complete="onCellEditComplete"
-				editMode="cell"
-				stripedRows
 				removableSort
-				:autoLayout="true"
-				breakpoint="720px"
+				stripedRows
+				sortMode="multiple"
 				responsiveLayout="stack"
+				breakpoint="720px"
 				class="col-12">
 
-				<p-column field="title" header="Title" sortable>
-					<template #body="{ data, field }">
-						<p-input-text
-							v-if="data.id.length === 0"
-							name="recipeTagTitleBody"
-							v-model="data[field]"
-							type="text"
-							autofocus
-							placeholder="title"
-							:class="{ 'p-invalid': validation.title.$invalid && hasBeenSubmitted }"
-							class="w-full" />
-
-						<span v-else>{{ data[field] }}</span>
-						<small
-							v-if="validation.title.$invalid && hasBeenSubmitted && data.id == lastEditedTag.id"
-							class="p-error">
-							{{ validation.title.required.$message.replace('Value', 'Title') }}
-						</small>
-					</template>
-
-					<template #editor="{ data, field }">
-						<span>
-							<p-input-text
-								name="recipeTagTitleEditor"
-								v-model="data[field]"
-								type="text"
-								placeholder="title"
-								:class="{ 'p-invalid': validation.title.$invalid && hasBeenSubmitted }"
-								class="w-full" />
-						</span>
+				<p-column field="title" header="Title" sortable style="width:20%">
+					<template #body="slotProps">
+						<div class="pl-2 text-center md:pl-0 md:text-left w-full">{{ slotProps.data.title }}</div>
 					</template>
 				</p-column>
 
 				<p-column field="description" header="Description" style="width: 65%">
-					<template #body="{ data, field }">
-						<p-input-text
-							v-if="data.id.length === 0"
-							id="recipeTagDescriptionBody"
-							v-model="data[field]"
-							type="text"
-							placeholder="description"
-							:class="{ 'p-invalid': validation.description.$invalid && hasBeenSubmitted }"
-							class="w-full" />
-
-						<span v-else>{{ data[field] }}</span>
-					</template>
-
-					<template #editor="{ data, field }">
-						<p-input-text
-							id="recipeTagDescriptionEditor"
-							v-model="data[field]"
-							type="text"
-							placeholder="description"
-							:class="{ 'p-invalid': validation.description.$invalid && hasBeenSubmitted }"
-							class="w-full" />
+					<template #body="slotProps">
+						<div class="pl-2 text-center md:pl-0 md:text-left w-full">{{slotProps.data.description}}</div>
 					</template>
 				</p-column>
 
 				<p-column
 					:exportable="false"
-					style="width: 20%; 
-					justify-content: end;"
+					style="width: 15%; justify-content: end;"
 					body-class="text-center">
 
 					<template #body="slotProps">
-						<span v-if="slotProps.data.id.length === 0">
-							<p-button @click="saveNewRecipeTag(slotProps)"
-								class="p-button-rounded p-button-primary m-1">
-								<fa :icon="['fas', 'check']"></fa>
-							</p-button>
-						</span>
+						<p-button class="col-2 md:col-12 lg:col-5 p-button-rounded p-button-primary justify-content-center mr-1"
+							@click="openDetailsModal(slotProps.data.id)">
+							<fa :icon="['fas', 'pencil-alt']" size="1x"></fa>
+						</p-button>
 
-						<span>
-							<p-button @click="deleteRecipeTag($event, slotProps)"
-								class="p-button-rounded p-button-danger m-1">
-								<fa :icon="['fas', 'trash']"></fa>
-							</p-button>
-						</span>
+						<p-button :disabled="slotProps.data.isConfirmed" @click="deleteRecipeTag($event, slotProps.data)"
+							class="col-2 md:col-12 lg:col-5 p-button-rounded p-button-danger justify-content-center">
+							<fa :icon="['fas', 'trash']" size="1x"></fa>
+						</p-button>
 					</template>
 				</p-column>
+				
 			</p-data-table>
 
 		</main>
 
+		<RecipeTagDetailsModal
+			:is-open="isDetailsOpen"
+			:recipe-tag-id="editRecipeTagId"
+			@change-open-state="changeDetailsModalState"
+			@saved="loadData">
+		</RecipeTagDetailsModal>
 		<p-confirm-popup></p-confirm-popup>
 	</div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, Ref, ref } from "vue"
+import { onMounted, Ref, ref } from "vue"
 import { useConfirm } from "primevue/useconfirm"
 import { useToast } from "primevue/usetoast"
 import RecipeTag from "@/models/recipe/RecipeTag"
-import { required } from "@vuelidate/validators"
-import useVuelidate from "@vuelidate/core"
-import { DataTableCellEditCompleteEvent } from "primevue/datatable"
-import { UnwrapNestedRefs } from "@vue/reactivity"
-import { ColumnSlots } from "primevue/column"
+import RecipeTagDetailsModal from "@/views/recipes/RecipeTagDetailsModal.vue"
 import RecipeTagController from "@/controllers/recipes/RecipeTagController"
 
 
@@ -145,17 +95,9 @@ const confirm = useConfirm()
 const recipeTagController = new RecipeTagController()
 
 let recipeTags: Ref<RecipeTag[]> = ref([])
-let lastEditedTag: UnwrapNestedRefs<RecipeTag> = reactive(new RecipeTag())
 
-/* ------------------- Validation ----------------- */
-
-const rules = {
-	title: { required },
-	description: {},
-}
-const validation = useVuelidate(rules, lastEditedTag)
-//const tagsValidations: any[] = []
-const hasBeenSubmitted = ref(false)
+const isDetailsOpen = ref(false)
+const editRecipeTagId: Ref<string> = ref("")
 
 /* ------------------- Methods ----------------- */
 
@@ -164,80 +106,23 @@ async function loadData() {
 }
 
 async function getRecipeTags() {
-	const virtualNewRecipeTags = recipeTags.value.filter(rt => rt.id.length === 0)
-	const databaseRecipeTags = await recipeTagController.getAll()
-	return databaseRecipeTags.concat(virtualNewRecipeTags)
+	return recipeTagController.getAll()
 }
 
-function addNewRecipeTag() {
-	const hasUnsavedNewRecipeTag = recipeTags.value.some(rt => rt.id.length === 0)
-	if (hasUnsavedNewRecipeTag) {
-		return
-	}
-
-	const newRecipe = new RecipeTag({})
-	lastEditedTag = newRecipe
-	recipeTags.value.push(newRecipe)
+async function openDetailsModal(recipeTagId: string = "") {
+	editRecipeTagId.value = recipeTagId
+	changeDetailsModalState(true)
 }
 
-/**
- * There is a bug when clicking the save button immediately after editing a cell, but without exiting. -> This is called before onCellEditComplete.
- * @param slotProps 
- */
-async function saveNewRecipeTag(slotProps: Parameters<ColumnSlots["body"]>[0]) {
-	hasBeenSubmitted.value = true
-
-	const recipeTag: RecipeTag = slotProps.data
-	const recipeTagValidation = useVuelidate(rules, recipeTag)
-
-	const isValid = await recipeTagValidation.value.$validate()
-	if (!isValid) {
-		return
-	}
-
-	recipeTags.value.splice(slotProps.index, 1)
-	await recipeTagController.add(recipeTag)
-	loadData()
+function changeDetailsModalState(isOpening: boolean) {
+	isDetailsOpen.value = isOpening
 }
 
-async function onCellEditComplete(event: DataTableCellEditCompleteEvent) {
-	hasBeenSubmitted.value = true
-
-	const recipeTag = event.newData
-	const isNew = recipeTag.id.length === 0
-	const recipeTagValidation = useVuelidate(rules, recipeTag)
-	lastEditedTag = recipeTag
-	//tagsValidations.push(recipeTagValidation)
-
-	const isValid = await recipeTagValidation.value.$validate()
-	if (!isValid) {
-		return
-	}
-
-	if (isNew) {
-		return recipeTags.value[event.index] = event.newData
-	}
-
-	return updateRecipeTag(recipeTag)
-}
-
-async function updateRecipeTag(recipeTag: RecipeTag) {
-	await recipeTagController.update(recipeTag)
-	loadData()
-}
-
-function deleteRecipeTag(event: Event, slotProps: Parameters<ColumnSlots["body"]>[0]) {
-	const recipeTag: RecipeTag = slotProps.data
-	const isNew = recipeTag.id.length === 0
-
-	if (isNew) {
-		return recipeTags.value.splice(slotProps.index, 1)
-	}
-
+function deleteRecipeTag(event: Event, recipeTag: RecipeTag) {
 	confirm.require({
 		target: event.currentTarget as HTMLElement,
 		message: `Are you sure you want to delete "${recipeTag.title}"?`,
-		icon: "pi pi-exclamation-triangle",
+		icon: "fas fa-exclamation-triangle",
 		acceptClass: "p-button-danger",
 		accept: async () => {
 			await recipeTagController.delete(recipeTag.id)
@@ -245,7 +130,7 @@ function deleteRecipeTag(event: Event, slotProps: Parameters<ColumnSlots["body"]
 			return toast.add({ severity: "success", summary: "Success", detail: `Successfully deleted "${recipeTag.title}"`, life: 3000 })
 		},
 		reject: () => {
-			return toast.add({ severity: "error", summary: "Error", detail: `Error deleting "${recipeTag.title}"`, life: 3000 })
+			return
 		}
 	})
 }
