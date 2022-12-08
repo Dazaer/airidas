@@ -370,12 +370,14 @@ function deleteRecipe(event: Event, recipe: Recipe) {
 
 function searchTags(event: AutoCompleteCompleteEvent) {
 	setTimeout(() => {
-		if (!event.query.trim().length) {
+		const searchInput = event.query.trim()
+		if (searchInput.length === 0) {
 			return filteredRecipeTags.value = [...recipeTags.value]
 		}
 
 		filteredRecipeTags.value = recipeTags.value.filter((tag) => {
-			return tag.title.toLowerCase().startsWith(event.query.toLowerCase())
+			const tagContainsInput = tag.title.toLowerCase().includes(searchInput.toLowerCase())
+			return tagContainsInput
 		})
 	}, 100)
 }
