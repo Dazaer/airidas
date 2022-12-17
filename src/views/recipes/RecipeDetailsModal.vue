@@ -101,10 +101,12 @@
 						v-model="recipeDetails.tags"
 						:suggestions="filteredRecipeTags"
 						field="title"
-						@complete="searchTags($event)"
 						multiple
 						dropdown
-						forceSelection>
+						@keyup.enter="addNewRecipeTag($event)"
+						@complete="searchRecipeTags($event)"
+						>
+						<!-- 'field' needs to be replaced with 'optionLabel' when upgrading PrimeVue -->
 						<template #chip="{ value }">
 							<div v-tooltip.bottom="{ value: value.description, disabled: value.description.length === 0 }">{{ value.title }}</div>
 						</template>
@@ -205,10 +207,9 @@ const isVisible = computed({
 		emit("change-open-state", value)
 	}
 })
-
 const isNew: ComputedRef<boolean> = computed(() => recipeDetails.value.id.length === 0)
 const canEdit: ComputedRef<boolean> = computed(() => isNew.value || currentUserId.value === recipeDetails.value.insertedByUID)
-
+		
 const currentUserId: Ref<string> = ref("")
 const isEditing: Ref<boolean> = ref(false)
 const recipeDetailsOriginal: Ref<Recipe> = ref(new Recipe())
@@ -368,16 +369,59 @@ function deleteRecipe(event: Event, recipe: Recipe) {
 	})
 }
 
-function searchTags(event: AutoCompleteCompleteEvent) {
+async function addNewRecipeTag(keyPressEvent: KeyboardEvent): Promise<void> {
+	let inputElement = (keyPressEvent?.currentTarget as HTMLInputElement)
+	const newRecipeTagTitle = inputElement?.value
+
+	const existingTag = recipeTags.value.find(recipeTag => recipeTag.title.toLowerCase() === newRecipeTagTitle.toLowerCase())
+	if (existingTag != null) {
+		inputElement.value = ''
+		filteredRecipeTags.value = [...recipeTags.value]
+
+		const isTagAlreadyAdded = recipeDetails.value.tags.some(recipeTag => recipeTag.title.toLowerCase() === newRecipeTagTitle.toLowerCase())
+		if (isTagAlreadyAdded) return
+
+		recipeDetails.value.tags.push(existingTag)
+		return
+	}
+
+	const isValidTag = newRecipeTagTitle?.length > 2;
+	if (!isValidTag) {
+		return toast.add({ severity: "error", summary: "Error adding recipe tag", detail: `The tag must have more than 2 characters and they must be valid`, life: 3000 })
+	}
+
+	const newRecipeTag = new RecipeTag({title: newRecipeTagTitle})
+	try {
+		inputElement.value = ''
+		filteredRecipeTags.value = [...recipeTags.value]
+
+		await recipeTagController.add(newRecipeTag)
+		recipeTags.value = await getRecipeTags()
+
+		const newSavedTag = recipeTags.value.find(recipeTag => recipeTag.title.toLowerCase() === newRecipeTagTitle.toLowerCase())
+		if (newSavedTag == null) {
+			throw new Error("The tag does not exist in the database")
+		}
+
+		recipeDetails.value.tags.push(newSavedTag)
+
+		toast.add({ severity: "success", summary: "Success", detail: `Successfully created new tag: "${newRecipeTagTitle}"`, life: 3000 })
+	} catch (error) {
+		toast.add({ severity: "error", summary: "Error adding recipe tag", detail: `${error}` })
+	}
+
+}
+
+function searchRecipeTags(event: AutoCompleteCompleteEvent) {
 	setTimeout(() => {
-		const searchInput = event.query.trim()
-		if (searchInput.length === 0) {
+		const searchInput = event?.query?.trim()
+		if (searchInput?.length === 0) {
 			return filteredRecipeTags.value = [...recipeTags.value]
 		}
 
 		filteredRecipeTags.value = recipeTags.value.filter((tag) => {
-			const tagContainsInput = tag.title.toLowerCase().includes(searchInput.toLowerCase())
-			return tagContainsInput
+			const hasSearchInput = tag.title.toLowerCase().includes(searchInput.toLowerCase())
+			return hasSearchInput
 		})
 	}, 100)
 }
