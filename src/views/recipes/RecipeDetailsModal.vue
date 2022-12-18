@@ -414,14 +414,15 @@ async function addNewRecipeTag(): Promise<void> {
 
 function searchRecipeTags(event: AutoCompleteCompleteEvent) {
 	setTimeout(() => {
-		const searchInput = event?.query?.trim()
+		const searchInput = event?.query?.trim().toLowerCase()
 		if (searchInput?.length === 0) {
 			return filteredRecipeTags.value = [...recipeTags.value]
 		}
 
 		filteredRecipeTags.value = recipeTags.value.filter((tag) => {
-			const hasSearchInput = tag.title.toLowerCase().includes(searchInput.toLowerCase())
-			return hasSearchInput
+			const hasSearchInput = tag.title.toLowerCase().includes(searchInput)
+			const isAlreadyAdded = recipeDetails.value.tags.some(existingTag => existingTag.title === tag.title)
+			return hasSearchInput && !isAlreadyAdded
 		})
 	}, 100)
 }
