@@ -99,12 +99,13 @@
 
 					<p-auto-complete
 						id="tags"
+						inputId="autoCompleteInputId"
 						v-model="recipeDetails.tags"
 						:suggestions="filteredRecipeTags"
 						optionLabel="title"
 						multiple
 						dropdown
-						@keyup.enter="addNewRecipeTag($event)"
+						@keyup.enter="addNewRecipeTag()"
 						@complete="searchRecipeTags($event)"
 						>
 						<template #chip="{ value }">
@@ -368,8 +369,8 @@ function deleteRecipe(event: Event, recipe: Recipe) {
 	})
 }
 
-async function addNewRecipeTag(keyPressEvent: KeyboardEvent): Promise<void> {
-	let inputElement = (keyPressEvent?.currentTarget as HTMLInputElement)
+async function addNewRecipeTag(): Promise<void> {
+	const inputElement = document.getElementById("autoCompleteInputId") as HTMLInputElement;
 	const newRecipeTagTitle = inputElement?.value
 
 	const existingTag = recipeTags.value.find(recipeTag => recipeTag.title.toLowerCase() === newRecipeTagTitle.toLowerCase())
