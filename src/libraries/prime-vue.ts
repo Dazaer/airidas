@@ -4,7 +4,9 @@ import ConfirmationService from "primevue/confirmationservice"
 import ToastService from "primevue/toastservice"
 import "primeflex/primeflex.css" //IMPORTANT: p-col and p-p-3 (grid, flex, spacing) has had the prefix of "p" removed: col and p-3  || jc == justify-content
 import "primevue/resources/primevue.min.css"                 //core css
-import "primeicons/primeicons.css"                           //icons -- using font-awesome but still need these icons for primevue to work
+import "primevue/resources/themes/bootstrap4-dark-blue/theme.css" //theme
+require("@/assets/_theme.scss") //theme adjustments
+import "primeicons/primeicons.css"                           //icons -- using font-awesome but still need these icons for primevue to work in some locations
 import AutoComplete from "primevue/autocomplete"
 import Button from "primevue/button"
 import Chip from "primevue/chip"
