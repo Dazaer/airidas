@@ -96,17 +96,17 @@
 			<div class="field col-12">
 
 				<div v-if="isEditing" class="p-float-label">
+
 					<p-auto-complete
 						id="tags"
 						v-model="recipeDetails.tags"
 						:suggestions="filteredRecipeTags"
-						field="title"
+						optionLabel="title"
 						multiple
 						dropdown
 						@keyup.enter="addNewRecipeTag($event)"
 						@complete="searchRecipeTags($event)"
 						>
-						<!-- 'field' needs to be replaced with 'optionLabel' when upgrading PrimeVue -->
 						<template #chip="{ value }">
 							<div v-tooltip.bottom="{ value: value.description, disabled: value.description.length === 0 }">{{ value.title }}</div>
 						</template>
@@ -190,7 +190,6 @@ const emit = defineEmits<{
 	(event: "change-open-state", isOpen: boolean): void,
 	(event: "list-changed", recipe: Recipe): string,
 }>()
-
 
 /* ------------------- Properties ----------------- */
 
