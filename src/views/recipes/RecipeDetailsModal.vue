@@ -105,7 +105,8 @@
 						optionLabel="title"
 						multiple
 						dropdown
-						@keyup.enter="addNewRecipeTag()"
+						:forceSelection="true"
+						@item-select="addNewRecipeTag"
 						@complete="searchRecipeTags($event)"
 						>
 						<template #chip="{ value }">
@@ -171,7 +172,7 @@ import { getAuth, onAuthStateChanged } from "@firebase/auth"
 import firebaseApp from "@/utilities/firebase/firebase"
 import RecipeTag from "@/models/recipe/RecipeTag"
 import RecipeTagController from "@/controllers/recipes/RecipeTagController"
-import { AutoCompleteCompleteEvent } from "primevue/autocomplete"
+import { AutoCompleteCompleteEvent, AutoCompleteItemSelectEvent } from "primevue/autocomplete"
 import Image from "@/components/form/Image.vue"
 import QuillEditor from "@/components/form/QuillEditor.vue"
 import { useConfirm } from "primevue/useconfirm"
@@ -369,41 +370,37 @@ function deleteRecipe(event: Event, recipe: Recipe) {
 	})
 }
 
-async function addNewRecipeTag(): Promise<void> {
-	const inputElement = document.getElementById("autoCompleteInputId") as HTMLInputElement;
-	const newRecipeTagTitle = inputElement?.value
+async function addNewRecipeTag(event: AutoCompleteItemSelectEvent): Promise<void> {
 
-	const existingTag = recipeTags.value.find(recipeTag => recipeTag.title.toLowerCase() === newRecipeTagTitle.toLowerCase())
-	if (existingTag != null) {
-		inputElement.value = ''
-		filteredRecipeTags.value = [...recipeTags.value]
-
-		const isTagAlreadyAdded = recipeDetails.value.tags.some(recipeTag => recipeTag.title.toLowerCase() === newRecipeTagTitle.toLowerCase())
-		if (isTagAlreadyAdded) return
-
-		recipeDetails.value.tags.push(existingTag)
+	let recipeTag = event?.value as RecipeTag
+	const isNewRecipeTag = recipeTag?.id?.length === 0
+	if (!isNewRecipeTag) {
 		return
 	}
 
-	const isValidTag = newRecipeTagTitle?.length > 2;
+	const startIndex = recipeTag.title.indexOf('"') + 1
+	const endIndex = recipeTag.title.lastIndexOf('"')
+	const newRecipeTagTitle = recipeTag.title.substring(startIndex, endIndex)
+	recipeTag.title = newRecipeTagTitle
+
+	const isValidTag = recipeTag.title?.length > 2;
 	if (!isValidTag) {
+		setTimeout(() => {
+			recipeDetails.value.tags = recipeDetails.value.tags.filter(tag => tag.title !== newRecipeTagTitle)
+		}, 0);
 		return toast.add({ severity: "error", summary: "Error adding recipe tag", detail: `The tag must have more than 2 characters and they must be valid`, life: 3000 })
 	}
 
-	const newRecipeTag = new RecipeTag({title: newRecipeTagTitle})
 	try {
-		inputElement.value = ''
 		filteredRecipeTags.value = [...recipeTags.value]
 
-		await recipeTagController.add(newRecipeTag)
+		await recipeTagController.add(recipeTag)
 		recipeTags.value = await getRecipeTags()
 
-		const newSavedTag = recipeTags.value.find(recipeTag => recipeTag.title.toLowerCase() === newRecipeTagTitle.toLowerCase())
+		const newSavedTag = recipeTags.value.find(tag => tag.title.toLowerCase() === newRecipeTagTitle.toLowerCase())
 		if (newSavedTag == null) {
 			throw new Error("The tag does not exist in the database")
 		}
-
-		recipeDetails.value.tags.push(newSavedTag)
 
 		toast.add({ severity: "success", summary: "Success", detail: `Successfully created new tag: "${newRecipeTagTitle}"`, life: 3000 })
 	} catch (error) {
@@ -416,14 +413,28 @@ function searchRecipeTags(event: AutoCompleteCompleteEvent) {
 	setTimeout(() => {
 		const searchInput = event?.query?.trim().toLowerCase()
 		if (searchInput?.length === 0) {
-			return filteredRecipeTags.value = [...recipeTags.value]
+			filteredRecipeTags.value = [...recipeTags.value]
+			return
+		}
+
+		const hasRecipeTagTemplate = filteredRecipeTags.value.some(tag => tag?.id?.length === 0)
+		if (hasRecipeTagTemplate) {
+			filteredRecipeTags.value.pop()
 		}
 
 		filteredRecipeTags.value = recipeTags.value.filter((tag) => {
 			const hasSearchInput = tag.title.toLowerCase().includes(searchInput)
 			const isAlreadyAdded = recipeDetails.value.tags.some(existingTag => existingTag.title === tag.title)
+
 			return hasSearchInput && !isAlreadyAdded
 		})
+
+		const isSearchInputExactMatch = filteredRecipeTags.value.some(filteredTag => filteredTag.title.toLowerCase() === searchInput)
+		if (isSearchInputExactMatch) {
+			return
+		}
+		const newRecipeTagTemplate = new RecipeTag({title:` + Add new recipe tag: "${searchInput}"`})
+		filteredRecipeTags.value.push(newRecipeTagTemplate)
 	}, 100)
 }
 
