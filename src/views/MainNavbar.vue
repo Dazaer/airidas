@@ -64,19 +64,12 @@ const menu = ref([
 
 	{
 		label: "Recipes",
-		to: { name: RouteNames.Recipes },
-		visible: () => isLoggedIn.value,
-	},
-	/*
-	{
-		label: "Recipes",
 		items: [
 			{ label: "Recipes List", icon: "fas fa-utensils", to: { name: RouteNames.Recipes } },
 			{ label: "Tags", icon: "fas fa-tags", to: { name: RouteNames.RecipeTags } }
 		],
 		visible: () => isLoggedIn.value,
 	},
-	*/
 
 	{
 		label: "Feature Request",

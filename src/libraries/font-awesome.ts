@@ -6,7 +6,7 @@ import {
 	faSpinner, faMusic, faQuestionCircle, faQuestion, faUtensils, faFlask,
 	faCamera, faCheck, faBook, faDesktop, faBookReader, faPencilAlt, faTrash,
 	faTags, faSearch, faEye, faTimes, faChevronLeft, faChevronRight, faPlus, 
-	faExclamationTriangle, faPowerOff, faCog
+	faExclamationTriangle, faPowerOff, faCog, faSortAlphaUp, faSortAlphaDownAlt
 } from "@fortawesome/free-solid-svg-icons"
 import { faLinkedin } from "@fortawesome/free-brands-svg-icons/faLinkedin"
 import { faFacebook } from "@fortawesome/free-brands-svg-icons/faFacebook"
@@ -31,6 +31,8 @@ library.add(
 	faQuestion,
 	faQuestionCircle,
 	faSearch,
+	faSortAlphaDownAlt,
+	faSortAlphaUp,
 	faSpinner,
 	faTags,
 	faTimes,

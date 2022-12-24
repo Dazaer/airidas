@@ -96,15 +96,19 @@
 			<div class="field col-12">
 
 				<div v-if="isEditing" class="p-float-label">
+
 					<p-auto-complete
 						id="tags"
+						inputId="autoCompleteInputId"
 						v-model="recipeDetails.tags"
 						:suggestions="filteredRecipeTags"
-						field="title"
-						@complete="searchTags($event)"
+						optionLabel="title"
 						multiple
 						dropdown
-						forceSelection>
+						:forceSelection="true"
+						@item-select="addNewRecipeTag"
+						@complete="searchRecipeTags($event)"
+						>
 						<template #chip="{ value }">
 							<div v-tooltip.bottom="{ value: value.description, disabled: value.description.length === 0 }">{{ value.title }}</div>
 						</template>
@@ -168,7 +172,7 @@ import { getAuth, onAuthStateChanged } from "@firebase/auth"
 import firebaseApp from "@/utilities/firebase/firebase"
 import RecipeTag from "@/models/recipe/RecipeTag"
 import RecipeTagController from "@/controllers/recipes/RecipeTagController"
-import { AutoCompleteCompleteEvent } from "primevue/autocomplete"
+import { AutoCompleteCompleteEvent, AutoCompleteItemSelectEvent } from "primevue/autocomplete"
 import Image from "@/components/form/Image.vue"
 import QuillEditor from "@/components/form/QuillEditor.vue"
 import { useConfirm } from "primevue/useconfirm"
@@ -189,7 +193,6 @@ const emit = defineEmits<{
 	(event: "list-changed", recipe: Recipe): string,
 }>()
 
-
 /* ------------------- Properties ----------------- */
 
 const toast = useToast()
@@ -205,10 +208,9 @@ const isVisible = computed({
 		emit("change-open-state", value)
 	}
 })
-
 const isNew: ComputedRef<boolean> = computed(() => recipeDetails.value.id.length === 0)
 const canEdit: ComputedRef<boolean> = computed(() => isNew.value || currentUserId.value === recipeDetails.value.insertedByUID)
-
+		
 const currentUserId: Ref<string> = ref("")
 const isEditing: Ref<boolean> = ref(false)
 const recipeDetailsOriginal: Ref<Recipe> = ref(new Recipe())
@@ -368,15 +370,71 @@ function deleteRecipe(event: Event, recipe: Recipe) {
 	})
 }
 
-function searchTags(event: AutoCompleteCompleteEvent) {
+async function addNewRecipeTag(event: AutoCompleteItemSelectEvent): Promise<void> {
+
+	let recipeTag = event?.value as RecipeTag
+	const isNewRecipeTag = recipeTag?.id?.length === 0
+	if (!isNewRecipeTag) {
+		return
+	}
+
+	const startIndex = recipeTag.title.indexOf('"') + 1
+	const endIndex = recipeTag.title.lastIndexOf('"')
+	const newRecipeTagTitle = recipeTag.title.substring(startIndex, endIndex)
+	recipeTag.title = newRecipeTagTitle
+
+	const isValidTag = recipeTag.title?.length > 2;
+	if (!isValidTag) {
+		setTimeout(() => {
+			recipeDetails.value.tags = recipeDetails.value.tags.filter(tag => tag.title !== newRecipeTagTitle)
+		}, 0);
+		return toast.add({ severity: "error", summary: "Error adding recipe tag", detail: `The tag must have more than 2 characters and they must be valid`, life: 3000 })
+	}
+
+	try {
+		filteredRecipeTags.value = [...recipeTags.value]
+
+		await recipeTagController.add(recipeTag)
+		recipeTags.value = await getRecipeTags()
+
+		const newSavedTag = recipeTags.value.find(tag => tag.title.toLowerCase() === newRecipeTagTitle.toLowerCase())
+		if (newSavedTag == null) {
+			throw new Error("The tag does not exist in the database")
+		}
+
+		toast.add({ severity: "success", summary: "Success", detail: `Successfully created new tag: "${newRecipeTagTitle}"`, life: 3000 })
+	} catch (error) {
+		toast.add({ severity: "error", summary: "Error adding recipe tag", detail: `${error}` })
+	}
+
+}
+
+function searchRecipeTags(event: AutoCompleteCompleteEvent) {
 	setTimeout(() => {
-		if (!event.query.trim().length) {
-			return filteredRecipeTags.value = [...recipeTags.value]
+		const searchInput = event?.query?.trim().toLowerCase()
+		if (searchInput?.length === 0) {
+			filteredRecipeTags.value = [...recipeTags.value]
+			return
+		}
+
+		const hasRecipeTagTemplate = filteredRecipeTags.value.some(tag => tag?.id?.length === 0)
+		if (hasRecipeTagTemplate) {
+			filteredRecipeTags.value.pop()
 		}
 
 		filteredRecipeTags.value = recipeTags.value.filter((tag) => {
-			return tag.title.toLowerCase().startsWith(event.query.toLowerCase())
+			const hasSearchInput = tag.title.toLowerCase().includes(searchInput)
+			const isAlreadyAdded = recipeDetails.value.tags.some(existingTag => existingTag.title === tag.title)
+
+			return hasSearchInput && !isAlreadyAdded
 		})
+
+		const isSearchInputExactMatch = filteredRecipeTags.value.some(filteredTag => filteredTag.title.toLowerCase() === searchInput)
+		if (isSearchInputExactMatch) {
+			return
+		}
+		const newRecipeTagTemplate = new RecipeTag({title:` + Add new recipe tag: "${searchInput}"`})
+		filteredRecipeTags.value.push(newRecipeTagTemplate)
 	}, 100)
 }
 

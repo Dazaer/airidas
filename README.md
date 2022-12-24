@@ -143,3 +143,7 @@ You should also add the keys created in .env.local to Environment Variables.
 
 ## Contributing
 If you feel like contributing for some reason, go ahead! However the project is rather specific so it's probably best to discuss any changes if you don't want to waste your time.
+
+## Versions
+
+Working node version: 14.21.2

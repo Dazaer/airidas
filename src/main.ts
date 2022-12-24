@@ -4,8 +4,6 @@ import router from "./router"
 import { FontAwesomeIcon } from "./libraries/font-awesome"
 import { FontAwesomeLayers } from "@fortawesome/vue-fontawesome"
 import { appWithPrimeVue } from "./libraries/prime-vue"
-require("@/assets/_theme.scss")
-
 
 /* Dayjs */
 /*
